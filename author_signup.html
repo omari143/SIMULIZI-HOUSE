@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jisajili - STORIES ZONE | Muandishi</title>
+  <style>
+    :root {
+      --primary: #00B4D8;
+      --primary-dark: #0077B6;
+      --secondary: #48CAE4;
+      --dark: #0A0A0A;
+      --darker: #050505;
+      --light: #F5F5F5;
+      --gray: #1A1A1A;
+      --light-gray: #AAAAAA;
+      --gradient-start: #03045E;
+      --gradient-end: #0077B6;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+    
+    body {
+      background: linear-gradient(135deg, #03045E 0%, #000000 50%, #0077B6 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 20px;
+      overflow-y: auto;
+    }
+    
+    .auth-container {
+      background: linear-gradient(135deg, rgba(3, 4, 94, 0.95) 0%, rgba(0, 0, 0, 0.95) 50%, rgba(0, 119, 182, 0.95) 100%);
+      backdrop-filter: blur(10px);
+      border-radius: 15px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.5), 0 0 0 1px rgba(0, 180, 216, 0.2);
+      width: 100%;
+      max-width: 550px;
+      padding: 40px;
+      border: 1px solid rgba(0, 180, 216, 0.3);
+      animation: fadeIn 0.5s ease;
+      position: relative;
+      margin: 20px 0;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .logo {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    
+    .logo img {
+      height: 70px;
+      width: auto;
+      border-radius: 50%;
+      border: 2px solid var(--primary);
+      box-shadow: 0 0 20px rgba(0, 180, 216, 0.4);
+      transition: transform 0.3s ease;
+    }
+    
+    .logo img:hover {
+      transform: scale(1.1);
+    }
+    
+    .logo h1 {
+      background: linear-gradient(135deg, #00B4D8, #48CAE4, #90E0EF);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-top: 10px;
+      font-size: 1.8rem;
+      text-shadow: 0 2px 10px rgba(0, 180, 216, 0.3);
+      letter-spacing: 1px;
+    }
+    
+    .auth-form h2 {
+      color: var(--light);
+      margin-bottom: 20px;
+      text-align: center;
+      font-size: 1.5rem;
+      position: relative;
+    }
+    
+    .auth-form h2::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 3px;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      border-radius: 2px;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+      position: relative;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--light-gray);
+      font-weight: 500;
+    }
+    
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%;
+      padding: 12px 15px;
+      border-radius: 8px;
+      border: 1px solid rgba(0, 180, 216, 0.3);
+      background-color: rgba(0, 0, 0, 0.6);
+      color: var(--light);
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+    
+    .form-group textarea {
+      resize: vertical;
+      font-family: 'Poppins', sans-serif;
+    }
+    
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 5px rgba(0, 180, 216, 0.5);
+      background-color: rgba(0, 0, 0, 0.8);
+    }
+    
+    .form-group input[type="file"] {
+      padding: 10px;
+      background-color: rgba(0, 0, 0, 0.6);
+      cursor: pointer;
+    }
+    
+    .form-group input[type="file"]::-webkit-file-upload-button {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      border: none;
+      padding: 8px 15px;
+      border-radius: 5px;
+      color: white;
+      cursor: pointer;
+      margin-right: 10px;
+      transition: all 0.3s ease;
+    }
+    
+    .form-group input[type="file"]::-webkit-file-upload-button:hover {
+      transform: scale(1.02);
+      box-shadow: 0 2px 8px rgba(0, 180, 216, 0.3);
+    }
+    
+    .password-toggle {
+      position: absolute;
+      right: 15px;
+      top: 50px;
+      color: var(--light-gray);
+      cursor: pointer;
+      font-size: 1.2rem;
+      transition: color 0.3s ease;
+    }
+    
+    .password-toggle:hover {
+      color: var(--primary);
+    }
+    
+    .avatar-preview {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    
+    .avatar-preview img {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid var(--primary);
+      background-color: var(--gray);
+      box-shadow: 0 0 20px rgba(0, 180, 216, 0.3);
+    }
+    
+    .avatar-preview .avatar-placeholder {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      font-weight: bold;
+      color: white;
+      border: 3px solid var(--primary);
+      box-shadow: 0 0 20px rgba(0, 180, 216, 0.3);
+    }
+    
+    .secret-code-hint {
+      font-size: 0.85rem;
+      color: var(--secondary);
+      margin-top: 5px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    
+    .btn {
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      border: none;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      font-weight: bold;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    
+    .btn:hover {
+      background: linear-gradient(135deg, var(--secondary), var(--primary));
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 180, 216, 0.4);
+    }
+    
+    .auth-footer {
+      text-align: center;
+      margin-top: 20px;
+      color: var(--light-gray);
+      font-size: 0.95rem;
+    }
+    
+    .auth-footer a {
+      color: var(--secondary);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+    
+    .auth-footer a:hover {
+      color: var(--primary);
+      text-decoration: underline;
+    }
+    
+    small {
+      font-size: 0.7rem;
+      opacity: 0.8;
+    }
+    
+    @media (max-width: 576px) {
+      .auth-container {
+        padding: 30px 20px;
+        margin: 10px;
+      }
+      
+      .logo h1 {
+        font-size: 1.5rem;
+      }
+      
+      .auth-form h2 {
+        font-size: 1.3rem;
+      }
+      
+      .form-group input, .form-group select, .form-group textarea {
+        padding: 10px 12px;
+        font-size: 0.95rem;
+      }
+      
+      .btn {
+        padding: 10px;
+        font-size: 0.95rem;
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+  <div class="auth-container">
+    <div class="logo">
+      <img src="/Picsart_26-05-13_01-57-22-165.png" alt="STORIES ZONE Logo">
+      <h1>STORIES ZONE</h1>
+    </div>
+    
+    <div class="auth-form">
+      <h2>Jisajili kama Muandishi</h2>
+      
+      <form id="authorSignupForm">
+        <!-- Avatar preview -->
+        <div class="avatar-preview" id="avatarPreview">
+          <div class="avatar-placeholder" id="avatarPlaceholder">
+            <i class="fas fa-user"></i>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="avatarImage">
+            <i class="fas fa-camera"></i> Picha ya Profaili (Avatar)
+          </label>
+          <input type="file" id="avatarImage" accept="image/*">
+          <small style="color: var(--light-gray); display: block; margin-top: 5px;">Weka picha yako (itakuwa avatar yako kama muandishi)</small>
+        </div>
+        
+        <div class="form-group">
+          <label for="secretCode">
+            <i class="fas fa-key"></i> Secret Code (Muhimu)
+          </label>
+          <input type="text" id="secretCode" name="secretCode" required placeholder="Weka secret code">
+          <div class="secret-code-hint">
+            <i class="fas fa-info-circle"></i>
+            <span>Ingiza secret code ili kuthibitisha kuwa wewe ni muandishi</span>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="fullName">Jina Kamili (Litakaloonekana kama Muandishi)</label>
+          <input type="text" id="fullName" name="fullName" required placeholder="Weka jina lako kamili">
+        </div>
+        
+        <div class="form-group">
+          <label for="bio">Wasifu Wako (Bio)</label>
+          <textarea id="bio" name="bio" rows="3" placeholder="Jieleze kwa ufupi (k.m. Muandishi mahiri wa hadithi za Kisasa...)"></textarea>
+        </div>
+        
+        <div class="form-group">
+          <label for="email">Barua Pepe</label>
+          <input type="email" id="email" name="email" required placeholder="muandishi@example.com">
+        </div>
+        
+        <div class="form-group">
+          <label for="phone">Namba ya Simu</label>
+          <input type="tel" id="phone" name="phone" placeholder="Weka namba yako ya simu (k.m. 255712345678)">
+        </div>
+        
+        <div class="form-group">
+          <label for="password">Nenosiri</label>
+          <input type="password" id="password" name="password" required placeholder="Weka nenosiri (herufi 8 za chini)">
+          <i class="fas fa-eye password-toggle" id="passwordToggle"></i>
+        </div>
+        
+        <div class="form-group">
+          <label for="confirmPassword">Thibitisha Nenosiri</label>
+          <input type="password" id="confirmPassword" name="confirmPassword" required placeholder="Thibitisha nenosiri">
+          <i class="fas fa-eye password-toggle" id="confirmPasswordToggle"></i>
+        </div>
+        
+        <button type="submit" class="btn"><i class="fas fa-user-plus"></i> Jisajili kama Muandishi</button>
+      </form>
+      
+      <div class="auth-footer">
+        <p>Tayari una akaunti? <a href="author_login.html">Ingia hapa</a></p>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script>
+    (function() {
+      const CORRECT_SECRET_CODE = '@malkiasimulizi';
+      
+      // Initialize Supabase with unique global name to avoid conflicts
+      const supabaseUrl = 'https://ifpntbnrwgsooqqkoefk.supabase.co';
+      const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlmcG50Ym5yd2dzb29xcWtvZWZrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg5MzE4MzMsImV4cCI6MjA5NDUwNzgzM30.m0ggLnB8ywRNNRSJv3YsJaKZ5g8a0VDIN6mQzM-BAwM';
+      
+      // Use a unique global variable name that won't conflict with CDN
+      if (typeof window.__STORIES_ZONE_SIGNUP_CLIENT__ === 'undefined') {
+        window.__STORIES_ZONE_SIGNUP_CLIENT__ = window.supabase.createClient(supabaseUrl, supabaseKey);
+      }
+      const supabase = window.__STORIES_ZONE_SIGNUP_CLIENT__;
+      
+      // Selected avatar file
+      let selectedAvatarFile = null;
+      
+      // Avatar preview
+      const avatarImageInput = document.getElementById('avatarImage');
+      const avatarPreview = document.getElementById('avatarPreview');
+      
+      if (avatarImageInput) {
+        avatarImageInput.addEventListener('change', (e) => {
+          const file = e.target.files[0];
+          if (file) {
+            selectedAvatarFile = file;
+            const reader = new FileReader();
+            reader.onload = function(event) {
+              avatarPreview.innerHTML = `<img src="${event.target.result}" alt="Avatar Preview">`;
+            };
+            reader.readAsDataURL(file);
+          } else {
+            selectedAvatarFile = null;
+            avatarPreview.innerHTML = `<div class="avatar-placeholder"><i class="fas fa-user"></i></div>`;
+          }
+        });
+      }
+      
+      // Upload avatar to Supabase Storage
+      async function uploadAvatar(userId, file) {
+        if (!file || !userId) return null;
+        
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${userId}/avatar-${Date.now()}.${fileExt}`;
+        const filePath = `avatars/${fileName}`;
+        
+        try {
+          const { error: uploadError } = await supabase.storage
+            .from('author-avatars')
+            .upload(filePath, file);
+          
+          if (uploadError) {
+            console.error('Upload avatar error:', uploadError);
+            return null;
+          }
+          
+          const { data: { publicUrl } } = supabase.storage
+            .from('author-avatars')
+            .getPublicUrl(filePath);
+          
+          return publicUrl;
+        } catch (err) {
+          console.error('Upload error:', err);
+          return null;
+        }
+      }
+      
+      // Password toggles
+      const passwordInput = document.getElementById('password');
+      const passwordToggle = document.getElementById('passwordToggle');
+      if (passwordToggle) {
+        passwordToggle.addEventListener('click', () => {
+          const type = passwordInput.type === 'password' ? 'text' : 'password';
+          passwordInput.type = type;
+          passwordToggle.classList.toggle('fa-eye');
+          passwordToggle.classList.toggle('fa-eye-slash');
+        });
+      }
+      
+      const confirmPasswordInput = document.getElementById('confirmPassword');
+      const confirmPasswordToggle = document.getElementById('confirmPasswordToggle');
+      if (confirmPasswordToggle) {
+        confirmPasswordToggle.addEventListener('click', () => {
+          const type = confirmPasswordInput.type === 'password' ? 'text' : 'password';
+          confirmPasswordInput.type = type;
+          confirmPasswordToggle.classList.toggle('fa-eye');
+          confirmPasswordToggle.classList.toggle('fa-eye-slash');
+        });
+      }
+      
+      const signupForm = document.getElementById('authorSignupForm');
+      if (signupForm) {
+        signupForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          
+          const secretCode = document.getElementById('secretCode').value.trim();
+          const fullName = document.getElementById('fullName').value.trim();
+          const bio = document.getElementById('bio').value.trim();
+          const email = document.getElementById('email').value.trim();
+          const phone = document.getElementById('phone').value.trim();
+          const password = document.getElementById('password').value;
+          const confirmPassword = document.getElementById('confirmPassword').value;
+          
+          // Validate Secret Code
+          if (secretCode !== CORRECT_SECRET_CODE) {
+            Swal.fire({ 
+              title: 'Secret Code Si Sahihi!', 
+              text: 'Secret code uliyoingiza si sahihi. Tafadhali jaribu tena.', 
+              icon: 'error', 
+              confirmButtonColor: '#00B4D8', 
+              background: '#0A0A0A', 
+              color: '#F5F5F5' 
+            });
+            return;
+          }
+          
+          if (!fullName || !email || !password || !confirmPassword) {
+            Swal.fire({ title: 'Hitilafu!', text: 'Jaza sehemu zote muhimu!', icon: 'error', confirmButtonColor: '#00B4D8', background: '#0A0A0A', color: '#F5F5F5' });
+            return;
+          }
+          
+          if (password !== confirmPassword) {
+            Swal.fire({ title: 'Hitilafu!', text: 'Manenosiri hayafanani!', icon: 'error', confirmButtonColor: '#00B4D8', background: '#0A0A0A', color: '#F5F5F5' });
+            return;
+          }
+          
+          if (password.length < 8) {
+            Swal.fire({ title: 'Hitilafu!', text: 'Nenosiri linapaswa kuwa na herufi 8 za chini!', icon: 'error', confirmButtonColor: '#00B4D8', background: '#0A0A0A', color: '#F5F5F5' });
+            return;
+          }
+          
+          if (phone && !/^[0-9]{9,12}$/.test(phone)) {
+            Swal.fire({ title: 'Hitilafu!', text: 'Namba ya simu si sahihi (tumia k.m. 712345678 au 255712345678)', icon: 'error', confirmButtonColor: '#00B4D8', background: '#0A0A0A', color: '#F5F5F5' });
+            return;
+          }
+          
+          Swal.fire({ title: 'Inasajili...', html: 'Subiri...', allowOutsideClick: false, didOpen: () => Swal.showLoading(), background: '#0A0A0A', color: '#F5F5F5' });
+          
+          try {
+            // 1. Check if email already exists in public.users
+            const { data: existingUser, error: checkError } = await supabase
+              .from('users')
+              .select('email')
+              .eq('email', email)
+              .maybeSingle();
+            
+            if (existingUser) {
+              throw new Error('Barua pepe tayari imesajiliwa!');
+            }
+            
+            // 2. Check phone if provided
+            if (phone) {
+              const { data: existingPhone } = await supabase
+                .from('users')
+                .select('phone')
+                .eq('phone', phone)
+                .maybeSingle();
+              if (existingPhone) {
+                throw new Error('Namba ya simu tayari imesajiliwa!');
+              }
+            }
+            
+            // 3. Sign up user with Supabase Auth
+            const { data: authData, error: signUpError } = await supabase.auth.signUp({
+              email,
+              password,
+              options: {
+                data: {
+                  full_name: fullName,
+                  phone: phone,
+                  role: 'author'
+                }
+              }
+            });
+            
+            if (signUpError) throw signUpError;
+            
+            if (!authData.user) throw new Error('Usajili ulishindwa, jaribu tena.');
+            
+            const userId = authData.user.id;
+            
+            // 4. Upload avatar if provided
+            let avatarUrl = null;
+            if (selectedAvatarFile) {
+              avatarUrl = await uploadAvatar(userId, selectedAvatarFile);
+            }
+            
+            // 5. Insert into public.users table (without avatar_url if column doesn't exist)
+            // First check what columns exist in users table
+            const insertData = {
+              id: userId,
+              full_name: fullName,
+              email: email,
+              role: 'author',
+              phone: phone || null,
+              created_at: new Date().toISOString()
+            };
+            
+            // Add avatar_url only if the column exists
+            if (avatarUrl) {
+              insertData.avatar_url = avatarUrl;
+            }
+            
+            const { error: userInsertError } = await supabase
+              .from('users')
+              .insert(insertData);
+            
+            if (userInsertError) {
+              console.error('User insert error:', userInsertError);
+              throw new Error('Imeshindwa kuweka taarifa za mtumiaji: ' + userInsertError.message);
+            }
+            
+            // 6. Create author profile (important for authors.html)
+            const authorProfileData = {
+              user_id: userId,
+              name: fullName,
+              bio: bio || null,
+              is_verified: true,
+              followers_count: 0,
+              stories_count: 0,
+              created_at: new Date().toISOString(),
+              updated_at: new Date().toISOString()
+            };
+            
+            // Add avatar_url to author_profiles if available
+            if (avatarUrl) {
+              authorProfileData.avatar_url = avatarUrl;
+            }
+            
+            const { error: authorProfileError } = await supabase
+              .from('author_profiles')
+              .insert(authorProfileData);
+            
+            if (authorProfileError) {
+              console.error('Author profile creation error:', authorProfileError);
+              Swal.fire({
+                title: 'Tahadhari',
+                text: 'Akaunti imeundwa lakini kuna tatizo la wasifu wa muandishi. Tafadhali ingia na uwasiliane na msimamizi.',
+                icon: 'warning',
+                confirmButtonColor: '#00B4D8',
+                background: '#0A0A0A',
+                color: '#F5F5F5'
+              }).then(() => window.location.href = 'admin-login.html');
+              return;
+            }
+            
+            // 7. Show success message
+            Swal.fire({
+              title: 'Karibu Muandishi!', 
+              text: 'Umesajiliwa kikamilifu kama muandishi wa STORIES ZONE! Sasa unaweza kuingia na kuanza kuandika hadithi zako!', 
+              icon: 'success',
+              confirmButtonText: 'Ingia Sasa', 
+              confirmButtonColor: '#00B4D8', 
+              background: '#0A0A0A', 
+              color: '#F5F5F5'
+            }).then(() => window.location.href = 'admin-login.html');
+            
+          } catch (error) {
+            Swal.fire({ 
+              title: 'Hitilafu!', 
+              text: error.message || 'Usajili ulishindwa.', 
+              icon: 'error', 
+              confirmButtonColor: '#00B4D8', 
+              background: '#0A0A0A', 
+              color: '#F5F5F5' 
+            });
+          }
+        });
+      }
+      
+      // Content protection
+      document.addEventListener('contextmenu', e => e.preventDefault());
+      document.addEventListener('keydown', e => { 
+        if (e.key === 'PrintScreen' || (e.ctrlKey && e.key === 'u')) {
+          e.preventDefault();
+          return false;
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

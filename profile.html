@@ -1,0 +1,1441 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Akaunti Yangu - SIMULIZI HOUSE</title>
+  <style>
+    :root {
+      --primary: #FF3D81;
+      --secondary: #00F0FF;
+      --dark: #0A0A12;
+      --darker: #05050A;
+      --light: #E6E6FA;
+      --gray: #1F1F2E;
+      --light-gray: #A0A0C0;
+      --whatsapp-green: #25D366;
+      --neon-pink: #FF1F8A;
+      --neon-cyan: #00F0FF;
+      --header-bg-start: #1B0034;
+      --header-bg-end: #3A006F;
+      --accent-purple: #8A2BE2;
+      --accent-blue: #1E90FF;
+      --transition: all 0.4s ease;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+      overflow-x: hidden;
+      font-family: 'Poppins', 'Inter', 'Nunito Sans', sans-serif;
+      background: linear-gradient(180deg, #FFFFFF 0%, #F5F5F5 100%);
+      color: #000000;
+      scroll-behavior: smooth;
+      user-select: none;
+    }
+
+    body.dark-theme {
+      background: linear-gradient(180deg, var(--dark) 0%, var(--darker) 100%);
+      color: var(--light);
+    }
+
+    /* Header */
+    header {
+      background: linear-gradient(135deg, #FFFFFF, #F0F0F0);
+      padding: 0.8rem 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    body.dark-theme header {
+      background: linear-gradient(135deg, var(--header-bg-start), var(--header-bg-end));
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-container img {
+      height: 50px;
+      border-radius: 50%;
+      border: 2px solid var(--neon-cyan);
+      box-shadow: 0 0 10px var(--neon-pink);
+      animation: spinGlow 3s linear infinite;
+    }
+
+    @keyframes spinGlow {
+      0% { box-shadow: 0 0 10px var(--neon-pink); }
+      50% { box-shadow: 0 0 15px var(--neon-cyan); }
+      100% { box-shadow: 0 0 10px var(--neon-pink); }
+    }
+
+    .logo-text {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--neon-pink);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    body.dark-theme .logo-text {
+      color: var(--secondary);
+    }
+
+    .back-btn {
+      background: var(--neon-cyan);
+      color: #000;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      box-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
+    }
+
+    .back-btn:hover {
+      background: var(--neon-pink);
+      color: #fff;
+      transform: scale(1.05);
+    }
+
+    /* Main Container */
+    .main-container {
+      padding: 1rem;
+      max-width: 100%;
+      margin: 0 auto;
+    }
+
+    /* Profile Header */
+    .profile-header {
+      background: linear-gradient(135deg, var(--neon-pink), var(--neon-cyan));
+      border-radius: 16px;
+      padding: 1.5rem;
+      text-align: center;
+      color: #000;
+      margin-bottom: 1.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .profile-avatar {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.95);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--neon-pink);
+      margin: 0 auto 0.8rem;
+      border: 3px solid #fff;
+      box-shadow: 0 0 15px rgba(255, 31, 138, 0.4);
+    }
+
+    .profile-name {
+      font-size: 1.5rem;
+      font-weight: 800;
+      margin-bottom: 0.4rem;
+    }
+
+    .profile-email {
+      font-size: 0.9rem;
+      font-weight: 600;
+      opacity: 0.9;
+    }
+
+    .profile-badge {
+      background: rgba(0, 0, 0, 0.7);
+      color: #fff;
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      display: inline-block;
+      margin-top: 0.5rem;
+    }
+
+    /* Profile Content */
+    .profile-content {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .profile-sidebar {
+      background: #fff;
+      border-radius: 14px;
+      padding: 1.2rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    body.dark-theme .profile-sidebar {
+      background: var(--gray);
+    }
+
+    .sidebar-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--neon-pink);
+      margin-bottom: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    body.dark-theme .sidebar-title {
+      color: var(--neon-cyan);
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.7rem;
+    }
+
+    .stat-item {
+      text-align: center;
+      padding: 0.7rem;
+      background: #f8f8f8;
+      border-radius: 10px;
+      transition: var(--transition);
+    }
+
+    body.dark-theme .stat-item {
+      background: var(--darker);
+    }
+
+    .stat-item:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(255, 31, 138, 0.15);
+    }
+
+    .stat-number {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: var(--neon-pink);
+    }
+
+    body.dark-theme .stat-number {
+      color: var(--neon-cyan);
+    }
+
+    .stat-label {
+      font-size: 0.7rem;
+      color: #666;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    body.dark-theme .stat-label {
+      color: var(--light-gray);
+    }
+
+    .quick-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+
+    .action-btn {
+      background: #f5f5f5;
+      color: #000;
+      border: none;
+      padding: 0.6rem 0.8rem;
+      border-radius: 10px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: left;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: var(--transition);
+    }
+
+    body.dark-theme .action-btn {
+      background: var(--darker);
+      color: var(--light);
+    }
+
+    .action-btn:hover {
+      background: var(--neon-cyan);
+      color: #000;
+      transform: translateX(4px);
+    }
+
+    .profile-main {
+      background: #fff;
+      border-radius: 14px;
+      padding: 1.2rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    body.dark-theme .profile-main {
+      background: var(--gray);
+    }
+
+    .section-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--neon-pink);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    body.dark-theme .section-title {
+      color: var(--neon-cyan);
+    }
+
+    .info-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .info-group {
+      position: relative;
+    }
+
+    .info-label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #555;
+      margin-bottom: 0.3rem;
+    }
+
+    body.dark-theme .info-label {
+      color: var(--light-gray);
+    }
+
+    .info-value {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #000;
+      padding: 0.7rem 0.9rem;
+      background: #f8f8f8;
+      border-radius: 8px;
+      border: 1px solid #eee;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    body.dark-theme .info-value {
+      background: var(--darker);
+      color: var(--light);
+      border-color: #444;
+    }
+
+    .edit-btn {
+      background: transparent;
+      border: none;
+      color: var(--neon-pink);
+      font-size: 1rem;
+      cursor: pointer;
+      padding: 0.2rem;
+    }
+
+    .edit-btn:hover {
+      color: var(--neon-cyan);
+      transform: scale(1.1);
+    }
+
+    /* Modern Activity Cards */
+    .activity-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1rem;
+      margin-top: 0.5rem;
+    }
+
+    .activity-card {
+      background: #f9f9f9;
+      border-radius: 14px;
+      padding: 1rem;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+      border-left: 4px solid var(--neon-pink);
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+
+    body.dark-theme .activity-card {
+      background: var(--darker);
+      border-left-color: var(--neon-cyan);
+    }
+
+    .activity-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 25px rgba(255, 31, 138, 0.2);
+    }
+
+    .activity-card-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--neon-pink), var(--neon-cyan));
+      color: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      margin-bottom: 0.6rem;
+    }
+
+    .activity-card-title {
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: #000;
+      margin-bottom: 0.3rem;
+    }
+
+    body.dark-theme .activity-card-title {
+      color: var(--light);
+    }
+
+    .activity-card-desc {
+      font-size: 0.8rem;
+      color: #666;
+      margin-bottom: 0.4rem;
+    }
+
+    body.dark-theme .activity-card-desc {
+      color: var(--light-gray);
+    }
+
+    .activity-card-time {
+      font-size: 0.7rem;
+      color: #999;
+      font-weight: 600;
+    }
+
+    body.dark-theme .activity-card-time {
+      color: #aaa;
+    }
+
+    /* Modern Payment Cards */
+    .payment-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1rem;
+      margin-top: 0.5rem;
+    }
+
+    .payment-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 1.2rem;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+      border: 1px solid #eee;
+      transition: var(--transition);
+      position: relative;
+    }
+
+    body.dark-theme .payment-card {
+      background: var(--darker);
+      border-color: #444;
+    }
+
+    .payment-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 30px rgba(255, 31, 138, 0.15);
+    }
+
+    .payment-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.8rem;
+    }
+
+    .payment-card-date {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #555;
+    }
+
+    body.dark-theme .payment-card-date {
+      color: var(--light-gray);
+    }
+
+    .payment-status {
+      padding: 0.25rem 0.6rem;
+      border-radius: 20px;
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      background: #90EE90;
+      color: #006400;
+    }
+
+    .payment-card-body {
+      margin-bottom: 0.8rem;
+    }
+
+    .payment-card-title {
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: #000;
+      margin-bottom: 0.3rem;
+    }
+
+    body.dark-theme .payment-card-title {
+      color: var(--light);
+    }
+
+    .payment-card-amount {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--neon-pink);
+    }
+
+    body.dark-theme .payment-card-amount {
+      color: var(--neon-cyan);
+    }
+
+    .payment-card-ref {
+      font-size: 0.75rem;
+      color: #777;
+      font-family: monospace;
+    }
+
+    body.dark-theme .payment-card-ref {
+      color: #aaa;
+    }
+
+    /* Toast Alerts */
+    .toast-container {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      z-index: 10000;
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+      max-width: 90%;
+    }
+
+    .toast {
+      background: #fff;
+      color: #000;
+      padding: 1rem 1.2rem;
+      border-radius: 16px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      min-width: 280px;
+      transform: translateX(120%);
+      animation: toastIn 0.5s ease forwards, toastOut 0.5s ease 4.5s forwards;
+      border-left: 5px solid var(--neon-pink);
+      backdrop-filter: blur(10px);
+    }
+
+    .toast.success {
+      background: linear-gradient(135deg, #90EE90, #7CFC00);
+      color: #006400;
+      border-left-color: #228B22;
+    }
+
+    .toast.error {
+      background: linear-gradient(135deg, #FF6B6B, #FF4500);
+      color: #fff;
+      border-left-color: #DC143C;
+    }
+
+    .toast-icon {
+      font-size: 1.4rem;
+      animation: bounce 1s infinite;
+    }
+
+    .toast-content {
+      flex: 1;
+    }
+
+    .toast-title {
+      font-weight: 700;
+      font-size: 0.95rem;
+      margin-bottom: 0.2rem;
+    }
+
+    .toast-message {
+      font-size: 0.8rem;
+      opacity: 0.9;
+    }
+
+    .toast-close {
+      background: none;
+      border: none;
+      color: inherit;
+      font-size: 1.2rem;
+      cursor: pointer;
+      opacity: 0.7;
+    }
+
+    .toast-close:hover {
+      opacity: 1;
+    }
+
+    @keyframes toastIn {
+      to { transform: translateX(0); }
+    }
+
+    @keyframes toastOut {
+      to { transform: translateX(120%); opacity: 0; }
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
+
+    /* Field Edit Modal */
+    .field-edit-modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.75);
+      z-index: 9999;
+      justify-content: center;
+      align-items: center;
+      padding: 1rem;
+      backdrop-filter: blur(8px);
+    }
+
+    .field-modal-content {
+      background: #fff;
+      width: 100%;
+      max-width: 380px;
+      border-radius: 18px;
+      padding: 1.5rem;
+      box-shadow: 0 15px 40px rgba(255, 31, 138, 0.3);
+      border: 2px solid var(--neon-cyan);
+      position: relative;
+      animation: modalPop 0.4s ease;
+    }
+
+    body.dark-theme .field-modal-content {
+      background: var(--gray);
+      color: var(--light);
+      border-color: var(--neon-pink);
+    }
+
+    @keyframes modalPop {
+      from { transform: scale(0.8); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .field-modal-header {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin-bottom: 1rem;
+      color: var(--neon-pink);
+      font-weight: 700;
+      font-size: 1.1rem;
+    }
+
+    body.dark-theme .field-modal-header {
+      color: var(--neon-cyan);
+    }
+
+    .field-modal-icon {
+      font-size: 1.3rem;
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.15); }
+    }
+
+    .field-input {
+      width: 100%;
+      padding: 0.8rem 1rem;
+      border: 2px solid #ddd;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      background: #fff;
+      transition: var(--transition);
+    }
+
+    body.dark-theme .field-input {
+      background: var(--darker);
+      border-color: #444;
+      color: var(--light);
+    }
+
+    .field-input:focus {
+      border-color: var(--neon-cyan);
+      box-shadow: 0 0 12px rgba(0, 240, 255, 0.4);
+      outline: none;
+    }
+
+    .field-actions {
+      display: flex;
+      gap: 0.8rem;
+      margin-top: 1.2rem;
+    }
+
+    .btn-neon, .btn-cancel {
+      flex: 1;
+      padding: 0.75rem;
+      border: none;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .btn-neon {
+      background: linear-gradient(135deg, var(--neon-pink), var(--neon-cyan));
+      color: #000;
+      box-shadow: 0 0 15px rgba(255, 31, 138, 0.4);
+    }
+
+    .btn-neon:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 20px rgba(0, 240, 255, 0.6);
+    }
+
+    .btn-cancel {
+      background: #ccc;
+      color: #000;
+    }
+
+    .btn-cancel:hover {
+      background: #bbb;
+    }
+
+    .close-field-modal {
+      position: absolute;
+      top: 0.8rem;
+      right: 1rem;
+      background: none;
+      border: none;
+      font-size: 1.4rem;
+      color: var(--neon-pink);
+      cursor: pointer;
+    }
+
+    body.dark-theme .close-field-modal {
+      color: var(--neon-cyan);
+    }
+
+    .close-field-modal:hover {
+      transform: rotate(90deg);
+    }
+
+    /* Original Edit Modals */
+    .edit-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.75);
+      z-index: 1000;
+      overflow: auto;
+      padding: 1rem;
+    }
+
+    .edit-modal-content {
+      background: #fff;
+      margin: 10% auto;
+      padding: 1.5rem;
+      max-width: 90%;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      position: relative;
+      border: 2px solid var(--neon-cyan);
+    }
+
+    body.dark-theme .edit-modal-content {
+      background: var(--gray);
+      color: var(--light);
+    }
+
+    .modal-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--neon-pink);
+      text-align: center;
+      margin-bottom: 1.2rem;
+    }
+
+    body.dark-theme .modal-title {
+      color: var(--neon-cyan);
+    }
+
+    .form-group {
+      margin-bottom: 1rem;
+    }
+
+    .form-label {
+      font-weight: 600;
+      font-size: 0.85rem;
+      margin-bottom: 0.4rem;
+      display: block;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 0.7rem;
+      border: 2px solid #ddd;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      background: #fff;
+      transition: var(--transition);
+    }
+
+    body.dark-theme .form-input {
+      background: var(--darker);
+      border-color: #444;
+      color: var(--light);
+    }
+
+    .form-input:focus {
+      border-color: var(--neon-cyan);
+      box-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
+      outline: none;
+    }
+
+    .form-actions {
+      display: flex;
+      gap: 0.8rem;
+      margin-top: 1.5rem;
+    }
+
+    .btn-primary, .btn-secondary {
+      flex: 1;
+      padding: 0.7rem;
+      border: none;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .btn-primary {
+      background: var(--neon-pink);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: var(--neon-cyan);
+      transform: scale(1.03);
+    }
+
+    .btn-secondary {
+      background: #ccc;
+      color: #000;
+    }
+
+    .btn-secondary:hover {
+      background: #bbb;
+    }
+
+    .close-modal {
+      position: absolute;
+      top: 0.8rem;
+      right: 1rem;
+      font-size: 1.5rem;
+      color: var(--neon-pink);
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+
+    .close-modal:hover {
+      color: var(--neon-cyan);
+      transform: rotate(90deg);
+    }
+
+    /* Footer */
+    footer {
+      background: #f5f5f5;
+      color: #666;
+      text-align: center;
+      padding: 1.2rem;
+      font-size: 0.75rem;
+      margin-top: 2rem;
+      border-top: 2px solid var(--neon-pink);
+    }
+
+    body.dark-theme footer {
+      background: var(--darker);
+      color: var(--light-gray);
+    }
+
+    .social-links a {
+      color: #000;
+      font-size: 1.4rem;
+      margin: 0 10px;
+      transition: var(--transition);
+    }
+
+    body.dark-theme .social-links a {
+      color: var(--light);
+    }
+
+    .social-links a:hover {
+      color: var(--neon-cyan);
+      transform: scale(1.3);
+    }
+
+    .loading-spinner {
+      text-align: center;
+      padding: 2rem;
+    }
+
+    .spinner {
+      width: 32px;
+      height: 32px;
+      border: 3px solid rgba(0, 240, 255, 0.3);
+      border-top-color: var(--neon-pink);
+      border-radius: 50%;
+      animation: spin 1s ease-in-out infinite;
+      margin: 0 auto 0.6rem;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Theme Toggle Button */
+    .theme-toggle {
+      background: var(--neon-cyan);
+      color: #000;
+      border: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      font-size: 1.1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 10px rgba(0, 240, 255, 0.4);
+      transition: var(--transition);
+    }
+
+    .theme-toggle:hover {
+      background: var(--neon-pink);
+      color: #fff;
+      transform: scale(1.1);
+    }
+
+    body.dark-theme .theme-toggle {
+      background: var(--neon-pink);
+      color: #fff;
+    }
+
+    body.dark-theme .theme-toggle:hover {
+      background: var(--neon-cyan);
+      color: #000;
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=Inter:wght@400;600;700;800&family=Nunito+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Field Edit Modal -->
+  <div class="field-edit-modal" id="fieldEditModal">
+    <div class="field-modal-content">
+      <button class="close-field-modal" onclick="closeFieldModal()">×</button>
+      <div class="field-modal-header" id="fieldModalTitle">
+        <i class="field-modal-icon"></i>
+        <span>Hariri Taarifa</span>
+      </div>
+      <input type="text" class="field-input" id="fieldInputValue" placeholder="Ingiza thamani mpya...">
+      <div class="field-actions">
+        <button class="btn-cancel" onclick="closeFieldModal()">Ghairi</button>
+        <button class="btn-neon" onclick="saveFieldValue()">Hifadhi</button>
+      </div>
+    </div>
+  </div>
+
+  <header>
+    <div class="logo-container">
+      <img src="/Picsart_26-05-13_01-57-22-165.png" alt="SIMULIZI HOUSE Logo">
+      <div class="logo-text">SIMULIZI HOUSE</div>
+    </div>
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <a href="index.html" class="back-btn">
+        <i class="fas fa-arrow-left"></i> Nyumbani
+      </a>
+      <button class="theme-toggle" id="themeToggle" title="Badilisha Rangi">
+        <i class="fas fa-sun"></i>
+      </button>
+    </div>
+  </header>
+
+  <div class="main-container">
+    <!-- Profile Header -->
+    <div class="profile-header">
+      <div class="profile-avatar" id="profileAvatar">U</div>
+      <h1 class="profile-name" id="profileName">Mtumiaji</h1>
+      <p class="profile-email" id="profileEmail">hakuna@baruapepe.com</p>
+      <div class="profile-badge">Mwanachama</div>
+    </div>
+
+    <!-- Profile Content -->
+    <div class="profile-content">
+      <!-- Sidebar -->
+      <div class="profile-sidebar">
+        <h3 class="sidebar-title">Takwimu Zako</h3>
+        <div class="stats-grid">
+          <div class="stat-item">
+            <span class="stat-number" id="storiesRead">0</span>
+            <span class="stat-label">Hadithi</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number" id="paidStories">0</span>
+            <span class="stat-label">Zilizolipiwa</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number" id="totalLikes">0</span>
+            <span class="stat-label">Upendo</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number" id="totalComments">0</span>
+            <span class="stat-label">Maoni</span>
+          </div>
+        </div>
+
+        <h3 class="sidebar-title" style="margin-top: 1rem;">Vitendo Haraka</h3>
+        <div class="quick-actions">
+          <button class="action-btn" onclick="editProfile()">Hariri Profaili</button>
+          <button class="action-btn" onclick="changePassword()">Badilisha Nenosiri</button>
+          <button class="action-btn" onclick="viewPaymentHistory()">Historia Malipo</button>
+          <button class="action-btn" onclick="contactSupport()">Msaada</button>
+        </div>
+      </div>
+
+      <!-- Main Content -->
+      <div class="profile-main">
+        <div class="section-title">Taarifa Binafsi</div>
+        <div class="info-grid">
+          <div class="info-group">
+            <label class="info-label">Jina Kamili</label>
+            <div class="info-value" id="fullName">Hamna Taarifa <button class="edit-btn" onclick="editField('fullName', 'Jina Kamili', 'text', 'fas fa-user')"><i class="fas fa-edit"></i></button></div>
+          </div>
+          <div class="info-group">
+            <label class="info-label">Barua Pepe</label>
+            <div class="info-value" id="email">hakuna@baruapepe.com</div>
+          </div>
+          <div class="info-group">
+            <label class="info-label">Namba ya Simu</label>
+            <div class="info-value" id="phone">+255 --- --- --- <button class="edit-btn" onclick="editField('phone', 'Namba ya Simu', 'tel', 'fas fa-phone')"><i class="fas fa-edit"></i></button></div>
+          </div>
+          <div class="info-group">
+            <label class="info-label">Tarehe ya Kujiunga</label>
+            <div class="info-value" id="joinDate">--/--/----</div>
+          </div>
+          <div class="info-group">
+            <label class="info-label">Jinsia</label>
+            <div class="info-value" id="gender">Haijabainishwa <button class="edit-btn" onclick="editField('gender', 'Jinsia', 'select', 'fas fa-venus-mars')"><i class="fas fa-edit"></i></button></div>
+          </div>
+          <div class="info-group">
+            <label class="info-label">Umri</label>
+            <div class="info-value" id="age">-- <button class="edit-btn" onclick="editField('age', 'Umri', 'number', 'fas fa-calendar-alt')"><i class="fas fa-edit"></i></button></div>
+          </div>
+        </div>
+
+        <!-- Modern Activity Section -->
+        <div class="section-title" style="margin-top: 1.5rem;">Shughuli Zako</div>
+        <div class="activity-grid" id="recentActivity">
+          <div class="loading-spinner">
+            <div class="spinner"></div>
+            <p>Inapakia...</p>
+          </div>
+        </div>
+
+        <!-- Modern Payment Section -->
+        <div class="section-title" style="margin-top: 1.5rem;">Historia ya Malipo</div>
+        <div class="payment-grid" id="paymentHistory">
+          <div class="loading-spinner">
+            <div class="spinner"></div>
+            <p>Inapakia...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Original Modals -->
+  <div class="edit-modal" id="editProfileModal">
+    <div class="edit-modal-content">
+      <button class="close-modal" onclick="closeModal('editProfileModal')">×</button>
+      <h2 class="modal-title">Hariri Profaili</h2>
+      <form id="profileForm">
+        <div class="form-group">
+          <label class="form-label">Jina Kamili</label>
+          <input type="text" class="form-input" id="editFullName" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Namba ya Simu</label>
+          <input type="tel" class="form-input" id="editPhone" placeholder="+255123456789">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Jinsia</label>
+          <select class="form-input" id="editGender">
+            <option value="">Chagua</option>
+            <option value="Mwanaume">Mwanaume</option>
+            <option value="Mwanamke">Mwanamke</option>
+            <option value="Nyingine">Nyingine</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Umri</label>
+          <input type="number" class="form-input" id="editAge" min="13" max="120">
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn-secondary" onclick="closeModal('editProfileModal')">Ghairi</button>
+          <button type="submit" class="btn-primary">Hifadhi</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="edit-modal" id="changePasswordModal">
+    <div class="edit-modal-content">
+      <button class="close-modal" onclick="closeModal('changePasswordModal')">×</button>
+      <h2 class="modal-title">Badilisha Nenosiri</h2>
+      <form id="passwordForm">
+        <div class="form-group">
+          <label class="form-label">Nenosiri la Sasa</label>
+          <input type="password" class="form-input" id="currentPassword" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Nenosiri Jipya</label>
+          <input type="password" class="form-input" id="newPassword" required minlength="6">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Thibitisha</label>
+          <input type="password" class="form-input" id="confirmPassword" required minlength="6">
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn-secondary" onclick="closeModal('changePasswordModal')">Ghairi</button>
+          <button type="submit" class="btn-primary">Badilisha</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <footer>
+    <div class="social-links">
+      <a href="#"><i class="fab fa-facebook"></i></a>
+      <a href="#"><i class="fab fa-twitter"></i></a>
+      <a href="#"><i class="fab fa-instagram"></i></a>
+      <a href="#"><i class="fab fa-youtube"></i></a>
+    </div>
+    <p>© <span id="current-year"></span> SIMULIZI HOUSE</p>
+    <p>Haki Zote Zimehifadhiwa</p>
+  </footer>
+
+  <script>
+    const STORIES_ZONE_SUPABASE_URL = 'https://btnzevupmwsdubpgjpds.supabase.co';
+    const STORIES_ZONE_SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ0bnpldnVwbXdzZHVicGdqcGRzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAyNDEyMzAsImV4cCI6MjA2NTgxNzIzMH0.Cn36rmP6IeSI-LfTUgViCcpBzeqlpplDbSPH3pXrCg4';
+    const storiesZoneDB = window.supabase.createClient(STORIES_ZONE_SUPABASE_URL, STORIES_ZONE_SUPABASE_KEY);
+
+    let user = null;
+    let currentField = null;
+    let currentFieldType = null;
+
+    // Theme Toggle
+    const themeToggle = document.getElementById('themeToggle');
+    const body = document.body;
+
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+      body.classList.add('dark-theme');
+      themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+    }
+
+    themeToggle.addEventListener('click', () => {
+      body.classList.toggle('dark-theme');
+      const isDark = body.classList.contains('dark-theme');
+      themeToggle.innerHTML = isDark ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('current-year').textContent = new Date().getFullYear();
+      checkAuthAndLoadProfile();
+      initializeForms();
+    });
+
+    function showToast(type, title, message) {
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
+      toast.innerHTML = `
+        <div class="toast-icon">
+          ${type === 'success' ? '<i class="fas fa-check-circle"></i>' :
+            type === 'error' ? '<i class="fas fa-times-circle"></i>' :
+            type === 'warning' ? '<i class="fas fa-exclamation-triangle"></i>' :
+            '<i class="fas fa-info-circle"></i>'}
+        </div>
+        <div class="toast-content">
+          <div class="toast-title">${title}</div>
+          <div class="toast-message">${message}</div>
+        </div>
+        <button class="toast-close" onclick="this.parentElement.remove()">×</button>
+      `;
+      document.getElementById('toastContainer').appendChild(toast);
+      setTimeout(() => toast.remove(), 5000);
+    }
+
+    function openModal(id) {
+      document.getElementById(id).style.display = 'block';
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).style.display = 'none';
+      document.body.style.overflow = 'auto';
+    }
+
+    function openFieldModal(field, label, type, icon) {
+      currentField = field;
+      currentFieldType = type;
+      document.getElementById('fieldModalTitle').innerHTML = `<i class="field-modal-icon ${icon}"></i> <span>Hariri ${label}</span>`;
+      
+      const input = document.getElementById('fieldInputValue');
+      input.type = type === 'select' ? 'text' : type;
+      input.value = document.getElementById(field).textContent.trim().split(' ')[0];
+
+      if (type === 'select') {
+        input.placeholder = "Mwanaume, Mwanamke, Nyingine";
+      }
+
+      document.getElementById('fieldEditModal').style.display = 'flex';
+      setTimeout(() => input.focus(), 300);
+    }
+
+    function closeFieldModal() {
+      document.getElementById('fieldEditModal').style.display = 'none';
+      currentField = null;
+    }
+
+    function saveFieldValue() {
+      const input = document.getElementById('fieldInputValue');
+      let value = input.value.trim();
+
+      if (!value) {
+        showToast('error', 'Hitilafu', 'Tafadhali jaza taarifa.');
+        return;
+      }
+
+      if (currentFieldType === 'tel' && !/^\+255[0-9]{9}$/.test(value)) {
+        showToast('error', 'Hitilafu', 'Namba ya simu iwe +255XXXXXXXXX');
+        return;
+      }
+
+      if (currentFieldType === 'number' && (value < 13 || value > 120)) {
+        showToast('error', 'Hitilafu', 'Umri uwe kati ya 13 na 120.');
+        return;
+      }
+
+      updateFieldInDatabase(currentField, value);
+      closeFieldModal();
+    }
+
+    window.editField = openFieldModal;
+    window.closeFieldModal = closeFieldModal;
+    window.saveFieldValue = saveFieldValue;
+
+    function initializeForms() {
+      document.getElementById('profileForm').onsubmit = e => { e.preventDefault(); saveProfileChanges(); };
+      document.getElementById('passwordForm').onsubmit = e => { e.preventDefault(); changeUserPassword(); };
+    }
+
+    async function checkAuthAndLoadProfile() {
+      const { data: { user: currentUser } } = await storiesZoneDB.auth.getUser();
+      if (!currentUser) {
+        showToast('error', 'Hitilafu', 'Tafadhali ingia tena.');
+        setTimeout(() => location.href = 'login.html', 2000);
+        return;
+      }
+      user = currentUser;
+      await Promise.all([loadProfileData(), loadUserStats(), loadRecentActivity(), loadPaymentHistory()]);
+    }
+
+    async function loadProfileData() {
+      const meta = user.user_metadata || {};
+      document.getElementById('profileAvatar').textContent = (meta.username?.[0] || 'U').toUpperCase();
+      document.getElementById('profileName').textContent = meta.username || 'Mtumiaji';
+      document.getElementById('profileEmail').textContent = user.email;
+      document.getElementById('fullName').innerHTML = `${meta.username || 'Hamna'} <button class="edit-btn" onclick="editField('fullName', 'Jina Kamili', 'text', 'fas fa-user')"><i class="fas fa-edit"></i></button>`;
+      document.getElementById('email').textContent = user.email;
+      document.getElementById('phone').innerHTML = `${meta.phone || '+255 --- --- ---'} <button class="edit-btn" onclick="editField('phone', 'Namba ya Simu', 'tel', 'fas fa-phone')"><i class="fas fa-edit"></i></button>`;
+      document.getElementById('joinDate').textContent = new Date(user.created_at).toLocaleDateString('sw-TZ');
+      document.getElementById('gender').innerHTML = `${meta.gender || 'Haijabainishwa'} <button class="edit-btn" onclick="editField('gender', 'Jinsia', 'select', 'fas fa-venus-mars')"><i class="fas fa-edit"></i></button>`;
+      document.getElementById('age').innerHTML = `${meta.age || '--'} <button class="edit-btn" onclick="editField('age', 'Umri', 'number', 'fas fa-calendar-alt')"><i class="fas fa-edit"></i></button>`;
+
+      document.getElementById('editFullName').value = meta.username || '';
+      document.getElementById('editPhone').value = meta.phone || '';
+      document.getElementById('editGender').value = meta.gender || '';
+      document.getElementById('editAge').value = meta.age || '';
+    }
+
+    async function loadUserStats() {
+      try {
+        const [{ data: payments }, { data: likes }, { data: comments }] = await Promise.all([
+          storiesZoneDB.from('payments').select('id').eq('user_id', user.id).eq('status', 'paid'),
+          storiesZoneDB.from('user_likes').select('id').eq('user_id', user.id),
+          storiesZoneDB.from('comments').select('id').eq('user_id', user.id)
+        ]);
+        document.getElementById('paidStories').textContent = payments?.length || 0;
+        document.getElementById('storiesRead').textContent = payments?.length || 0;
+        document.getElementById('totalLikes').textContent = likes?.length || 0;
+        document.getElementById('totalComments').textContent = comments?.length || 0;
+      } catch (e) { console.error(e); }
+    }
+
+    async function loadRecentActivity() {
+      const container = document.getElementById('recentActivity');
+      try {
+        const { data } = await storiesZoneDB.from('payments').select('*, stories(title)').eq('user_id', user.id).order('created_at', { ascending: false }).limit(6);
+        if (!data?.length) {
+          container.innerHTML = `
+            <div class="activity-card" style="grid-column: 1/-1; text-align: center; padding: 2rem;">
+              <div class="activity-card-icon"><i class="fas fa-book-open"></i></div>
+              <div class="activity-card-title">Karibu!</div>
+              <div class="activity-card-desc">Hakuna shughuli bado.</div>
+            </div>`;
+          return;
+        }
+        container.innerHTML = data.map(p => `
+          <div class="activity-card">
+            <div class="activity-card-icon"><i class="fas fa-shopping-cart"></i></div>
+            <div class="activity-card-title">Umelipia</div>
+            <div class="activity-card-desc">${p.stories?.title || 'Hadithi'}</div>
+            <div class="activity-card-time">${new Date(p.created_at).toLocaleDateString('sw-TZ')}</div>
+          </div>
+        `).join('');
+      } catch (e) {
+        container.innerHTML = `<p style="text-align:center;color:#666;font-size:0.8rem;grid-column:1/-1;">Hitilafu</p>`;
+      }
+    }
+
+    async function loadPaymentHistory() {
+      const container = document.getElementById('paymentHistory');
+      try {
+        const { data } = await storiesZoneDB.from('payments').select('*, stories(title)').eq('user_id', user.id).order('created_at', { ascending: false }).limit(10);
+        if (!data?.length) {
+          container.innerHTML = `<p style="text-align:center;color:#666;font-size:0.8rem;grid-column:1/-1;">Hakuna malipo.</p>`;
+          return;
+        }
+        container.innerHTML = data.map(p => `
+          <div class="payment-card">
+            <div class="payment-card-header">
+              <div class="payment-card-date">${new Date(p.created_at).toLocaleDateString('sw-TZ')}</div>
+              <div class="payment-status">Imelipwa</div>
+            </div>
+            <div class="payment-card-body">
+              <div class="payment-card-title">${p.stories?.title || 'Hadithi'}</div>
+              <div class="payment-card-amount">TZS ${p.amount}</div>
+              <div class="payment-card-ref">${p.reference_code}</div>
+            </div>
+          </div>
+        `).join('');
+      } catch (e) {
+        container.innerHTML = `<p style="text-align:center;color:#666;font-size:0.8rm;grid-column:1/-1;">Hitilafu</p>`;
+      }
+    }
+
+    function editProfile() { openModal('editProfileModal'); }
+    function changePassword() { openModal('changePasswordModal'); }
+    function viewPaymentHistory() { document.getElementById('paymentHistory').scrollIntoView({ behavior: 'smooth' }); }
+    function contactSupport() { location.href = 'huduma.html'; }
+
+    async function saveProfileChanges() {
+      const updates = {
+        username: document.getElementById('editFullName').value.trim(),
+        phone: document.getElementById('editPhone').value.trim(),
+        gender: document.getElementById('editGender').value,
+        age: document.getElementById('editAge').value
+      };
+      if (!updates.username) return showToast('error', 'Hitilafu', 'Jina ni lazima.');
+      try {
+        const { error } = await storiesZoneDB.auth.updateUser({ data: updates });
+        if (error) throw error;
+        user.user_metadata = { ...user.user_metadata, ...updates };
+        loadProfileData();
+        closeModal('editProfileModal');
+        showToast('success', 'Imefanikiwa', 'Profaili imesasishwa!');
+      } catch (e) {
+        showToast('error', 'Hitilafu', 'Imeshindwa kuhifadhi.');
+      }
+    }
+
+    async function changeUserPassword() {
+      const newP = document.getElementById('newPassword').value;
+      const confirmP = document.getElementById('confirmPassword').value;
+      if (newP !== confirmP) return showToast('error', 'Hitilafu', 'Nenosiri hazilingani.');
+      if (newP.length < 6) return showToast('error', 'Hitilafu', 'Nenosiri lazima liwe na herufi 6+.');
+      try {
+        const { error } = await storiesZoneDB.auth.updateUser({ password: newP });
+        if (error) throw error;
+        document.getElementById('passwordForm').reset();
+        closeModal('changePasswordModal');
+        showToast('success', 'Imefanikiwa', 'Nenosiri limebadilishwa!');
+      } catch (e) {
+        showToast('error', 'Hitilafu', 'Imeshindwa kubadilisha nenosiri.');
+      }
+    }
+
+    async function updateFieldInDatabase(field, value) {
+      const map = { fullName: 'username', phone: 'phone', gender: 'gender', age: 'age' };
+      const key = map[field];
+      if (!key) return;
+      try {
+        const { error } = await storiesZoneDB.auth.updateUser({ data: { [key]: value } });
+        if (error) throw error;
+        user.user_metadata[key] = value;
+        loadProfileData();
+        showToast('success', 'Imefanikiwa', `Imesasishwa!`);
+      } catch (e) {
+        showToast('error', 'Hitilafu', 'Imeshindwa kuhifadhi.');
+      }
+    }
+
+    window.editProfile = editProfile;
+    window.changePassword = changePassword;
+    window.viewPaymentHistory = viewPaymentHistory;
+    window.contactSupport = contactSupport;
+    window.closeModal = closeModal;
+  </script>
+</body>
+</html>

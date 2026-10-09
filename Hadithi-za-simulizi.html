@@ -1,0 +1,1168 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hadithi za Simulizi - STORIES ZONE</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    :root {
+      --primary-color: #9b59b6;
+      --secondary-color: #3498db;
+      --dark-bg: #0d0d0d;
+      --card-bg: #1a1a1a;
+      --text-light: #f5f5f5;
+      --text-gray: #aaa;
+    }
+    
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--dark-bg);
+      color: var(--text-light);
+      line-height: 1.6;
+      user-select: none;
+    }
+    
+    header {
+      background: linear-gradient(135deg, var(--primary-color), #8e44ad);
+      color: white;
+      padding: 1.5rem;
+      text-align: center;
+      font-size: 1.8rem;
+      font-weight: bold;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    
+    .container {
+      padding: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .page-title {
+      font-size: 2.2rem;
+      margin-bottom: 1.5rem;
+      color: var(--primary-color);
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    
+    .page-title i {
+      font-size: 2.5rem;
+    }
+    
+    .page-description {
+      margin-bottom: 2rem;
+      line-height: 1.7;
+      max-width: 800px;
+      color: var(--text-gray);
+      font-size: 1.1rem;
+    }
+    
+    .search-filter {
+      display: flex;
+      gap: 1.5rem;
+      margin-bottom: 2.5rem;
+      flex-wrap: wrap;
+      background: rgba(255,255,255,0.05);
+      padding: 1.5rem;
+      border-radius: 10px;
+    }
+    
+    .search-box {
+      flex-grow: 1;
+      min-width: 300px;
+    }
+    
+    .search-box input {
+      width: 100%;
+      padding: 0.9rem 1.2rem;
+      border-radius: 8px;
+      border: none;
+      background-color: #2a2a2a;
+      color: var(--text-light);
+      font-size: 1rem;
+      transition: all 0.3s;
+    }
+    
+    .search-box input:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(155, 89, 182, 0.3);
+      background-color: #333;
+    }
+    
+    .filter-select {
+      min-width: 220px;
+    }
+    
+    .filter-select select {
+      width: 100%;
+      padding: 0.9rem 1.2rem;
+      border-radius: 8px;
+      border: none;
+      background-color: #2a2a2a;
+      color: var(--text-light);
+      font-size: 1rem;
+      transition: all 0.3s;
+    }
+    
+    .filter-select select:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(155, 89, 182, 0.3);
+      background-color: #333;
+    }
+    
+    .stories-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 2rem;
+    }
+    
+    .story-card {
+      background-color: var(--card-bg);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
+      border-left: 5px solid var(--primary-color);
+    }
+    
+    .story-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 12px 20px rgba(0,0,0,0.2);
+    }
+    
+    .story-image {
+      height: 200px;
+      overflow: hidden;
+      position: relative;
+    }
+    
+    .story-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+    
+    .story-card:hover .story-image img {
+      transform: scale(1.1);
+    }
+    
+    .play-icon {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: rgba(0,0,0,0.7);
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      color: white;
+      opacity: 0;
+      transition: all 0.3s;
+    }
+    
+    .story-card:hover .play-icon {
+      opacity: 1;
+    }
+    
+    .story-content {
+      padding: 1.8rem;
+    }
+    
+    .story-title {
+      font-size: 1.4rem;
+      margin: 0 0 0.8rem 0;
+      color: var(--text-light);
+      font-weight: 600;
+    }
+    
+    .story-meta {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 1.2rem;
+      font-size: 0.95rem;
+      color: var(--text-gray);
+    }
+    
+    .story-price {
+      font-weight: bold;
+      color: #2ecc71;
+      font-size: 1.1rem;
+    }
+    
+    .story-description {
+      margin-bottom: 1.8rem;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: #ccc;
+    }
+    
+    .story-stats {
+      display: flex;
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+      font-size: 0.9rem;
+    }
+    
+    .stat-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--text-gray);
+    }
+    
+    .stat-item i {
+      color: var(--primary-color);
+    }
+    
+    .story-actions {
+      display: flex;
+      gap: 1rem;
+    }
+    
+    .action-btn {
+      padding: 0.7rem 1.2rem;
+      border-radius: 6px;
+      font-size: 1rem;
+      cursor: pointer;
+      border: none;
+      transition: all 0.3s;
+      flex-grow: 1;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.7rem;
+      font-weight: 600;
+    }
+    
+    .action-btn.play {
+      background-color: var(--primary-color);
+      color: white;
+    }
+    
+    .action-btn.download {
+      background-color: var(--secondary-color);
+      color: white;
+    }
+    
+    .action-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+    
+    .category-tags {
+      display: flex;
+      gap: 0.7rem;
+      margin-bottom: 1.2rem;
+      flex-wrap: wrap;
+    }
+    
+    .category-tag {
+      padding: 0.4rem 0.8rem;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: bold;
+      background-color: #333;
+    }
+    
+    .category-tag.simulizi {
+      background-color: var(--primary-color);
+      color: white;
+    }
+    
+    .pagination {
+      display: flex;
+      justify-content: center;
+      gap: 0.8rem;
+      margin-top: 3rem;
+    }
+    
+    .page-btn {
+      padding: 0.7rem 1.2rem;
+      border-radius: 6px;
+      background-color: #2a2a2a;
+      color: var(--text-light);
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-weight: 600;
+      min-width: 40px;
+      text-align: center;
+    }
+    
+    .page-btn.active {
+      background-color: var(--primary-color);
+      color: white;
+    }
+    
+    .page-btn:hover:not(.active) {
+      background-color: #333;
+    }
+    
+    .empty-state {
+      text-align: center;
+      padding: 4rem 2rem;
+      grid-column: 1 / -1;
+      background-color: rgba(255,255,255,0.03);
+      border-radius: 12px;
+    }
+    
+    .empty-state i {
+      font-size: 4rem;
+      color: var(--primary-color);
+      margin-bottom: 1.5rem;
+    }
+    
+    .empty-state h3 {
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+      color: var(--text-light);
+    }
+    
+    .empty-state p {
+      color: var(--text-gray);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* Audio Player na Mfumo wa Malipo */
+    .audio-player-container {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.95);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .audio-player {
+      width: 95%;
+      max-width: 800px;
+      position: relative;
+      background: #1a1a1a;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+
+    .close-player {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      color: white;
+      font-size: 1.8rem;
+      cursor: pointer;
+      z-index: 1001;
+      background: rgba(0,0,0,0.7);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s;
+    }
+
+    .close-player:hover {
+      background: var(--primary-color);
+      transform: rotate(90deg);
+    }
+
+    #payment-prompt {
+      text-align: center;
+      padding: 30px;
+      background: #1a1a1a;
+      border-radius: 10px;
+      max-width: 500px;
+      margin: 0 auto;
+      border: 2px solid var(--primary-color);
+      box-shadow: 0 0 30px rgba(155, 89, 182, 0.4);
+    }
+
+    #payment-prompt h3 {
+      color: var(--primary-color);
+      margin-top: 0;
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+    }
+
+    #payment-prompt p {
+      margin-bottom: 20px;
+      color: #ddd;
+      font-size: 1.1rem;
+    }
+
+    .payment-methods {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin: 25px 0;
+    }
+
+    .payment-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 14px;
+      border-radius: 8px;
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-size: 1.1rem;
+    }
+
+    .payment-btn.tigo {
+      background-color: #ff6600;
+      color: white;
+    }
+
+    .payment-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+    }
+
+    .payment-instructions {
+      background-color: #222;
+      padding: 20px;
+      border-radius: 8px;
+      margin: 20px 0;
+      text-align: left;
+      border-left: 4px solid var(--primary-color);
+    }
+
+    .payment-number {
+      font-size: 1.4rem;
+      font-weight: bold;
+      color: #ff6600;
+      margin: 15px 0;
+      text-align: center;
+    }
+
+    .payment-steps {
+      padding-left: 25px;
+    }
+
+    .payment-steps li {
+      margin-bottom: 10px;
+      color: #ccc;
+      line-height: 1.6;
+    }
+
+    .payment-confirmation {
+      display: none;
+      margin-top: 20px;
+      background-color: rgba(46, 204, 113, 0.1);
+      padding: 20px;
+      border-radius: 8px;
+      border-left: 4px solid #2ecc71;
+    }
+
+    .payment-processing {
+      display: none;
+      text-align: center;
+      padding: 30px;
+    }
+
+    .payment-processing i {
+      font-size: 3rem;
+      color: var(--primary-color);
+      margin-bottom: 15px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    audio {
+      width: 100%;
+      display: none;
+    }
+
+    /* Modern Alerts */
+    .alert-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.8);
+      z-index: 2000;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .alert-box {
+      background-color: #1a1a1a;
+      border-radius: 12px;
+      padding: 2.5rem;
+      max-width: 450px;
+      width: 90%;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      border-top: 5px solid var(--primary-color);
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .alert-icon {
+      font-size: 3.5rem;
+      color: var(--primary-color);
+      margin-bottom: 1.5rem;
+    }
+
+    .alert-title {
+      font-size: 1.8rem;
+      margin-bottom: 1.2rem;
+      color: var(--primary-color);
+      font-weight: 600;
+    }
+
+    .alert-message {
+      margin-bottom: 2rem;
+      color: #ddd;
+      line-height: 1.7;
+      font-size: 1.1rem;
+    }
+
+    .alert-btn {
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 0.9rem 1.8rem;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-size: 1.1rem;
+    }
+
+    .alert-btn:hover {
+      background-color: #8e44ad;
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 992px) {
+      .stories-grid {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      }
+    }
+
+    @media (max-width: 768px) {
+      header {
+        font-size: 1.5rem;
+        padding: 1.2rem;
+      }
+      
+      .page-title {
+        font-size: 1.8rem;
+      }
+      
+      .search-filter {
+        flex-direction: column;
+        gap: 1rem;
+      }
+      
+      .search-box,
+      .filter-select {
+        width: 100%;
+      }
+      
+      .story-content {
+        padding: 1.5rem;
+      }
+      
+      .story-title {
+        font-size: 1.3rem;
+      }
+      
+      #payment-prompt {
+        padding: 20px;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .container {
+        padding: 1.5rem;
+      }
+      
+      .story-stats {
+        flex-direction: column;
+        gap: 0.8rem;
+      }
+      
+      .story-actions {
+        flex-direction: column;
+      }
+      
+      .alert-box {
+        padding: 2rem 1.5rem;
+      }
+      
+      .alert-title {
+        font-size: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <i class="fas fa-microphone-alt"></i> HADITHI ZA SIMULIZI - STORIES ZONE
+  </header>
+
+  <div class="container">
+    <h1 class="page-title">
+      <i class="fas fa-headphones"></i> Hadithi za Simulizi
+    </h1>
+    
+    <p class="page-description">
+      Sikiliza hadithi bora za simulizi kutoka kwa waandishi wetu wa kipekee. 
+      Hadithi hizi zimeandaliwa kwa uangalifu na zina sauti nzuri ya wasimulizi 
+      ambayo itakufanya ujisikie kama uko kwenye tukio lenyewe. Chagua kati ya aina mbalimbali
+      za simulizi kulingana na mlo wako wa kusikiliza.
+    </p>
+    
+    <div class="search-filter">
+      <div class="search-box">
+        <input type="text" placeholder="Tafuta hadithi za simulizi..." id="searchInput">
+      </div>
+      
+      <div class="filter-select">
+        <select id="categoryFilter">
+          <option value="">Aina zote za simulizi</option>
+          <option value="ujasusi-simulizi">Ujasusi Simulizi</option>
+          <option value="huzuni-simulizi">Huzuni Simulizi</option>
+          <option value="horror-simulizi">Horror Simulizi</option>
+          <option value="drama-simulizi">Drama Simulizi</option>
+          <option value="mapenzi-simulizi">Mapenzi Simulizi</option>
+          <option value="ya-kiafrika">Ya Kiafrika</option>
+        </select>
+      </div>
+    </div>
+    
+    <div class="stories-grid" id="storiesContainer">
+      <!-- Hadithi za simulizi zitaingizwa hapa kwa dynamically -->
+      <div class="loading">
+        <i class="fas fa-spinner fa-spin"></i> Inapakia hadithi za simulizi...
+      </div>
+    </div>
+    
+    <div class="pagination" id="pagination">
+      <!-- Vifungo vya ukurasa vitaingizwa hapa kwa dynamically -->
+    </div>
+  </div>
+
+  <!-- Audio Player na Mfumo wa Malipo -->
+  <div class="audio-player-container" id="audio-player">
+    <div class="audio-player">
+      <span class="close-player" onclick="closeVideo()"><i class="fas fa-times"></i></span>
+      
+      <div id="payment-prompt">
+        <h3>Malipo ya Simulizi</h3>
+        <p>Unahitaji kulipa TZS <span id="payment-amount"></span> kwa simulizi hii. Baada ya malipo, utaweza kuisikiliza mara nyingine bila kulipa tena.</p>
+        
+        <div class="payment-instructions">
+          <p>Tafadhali fanya malipo ya TZS <span id="payment-amount-instructions"></span> kwa:</p>
+          <div class="payment-number">22258408 (Tigo Pesa)</div>
+          <p>Jina la kupokea: <strong>OMARI SHOP10</strong></p>
+          
+          <ol class="payment-steps">
+            <li>Nenda kwenye Tigo Pesa yako</li>
+            <li>Chagua "Lipa kwa Namba"</li>
+            <li>Weka namba: <strong>22258408</strong></li>
+            <li>Weka kiasi: <strong><span id="payment-amount-step"></span></strong></li>
+            <li>Thibitisha jina "<strong>OMARI SHOP10</strong>"</li>
+            <li>Weka nenosiri lako</li>
+            <li>Bonyeza kutuma</li>
+          </ol>
+        </div>
+        
+        <div class="payment-methods">
+          <button class="payment-btn tigo" onclick="initiateTigoPayment()">
+            <i class="fas fa-mobile-alt" style="margin-right: 10px;"></i> Nimeshalipa
+          </button>
+        </div>
+        
+        <div class="payment-confirmation" id="payment-confirmation">
+          <p>Ukitumia malipo, tafadhali subiri mfumo kuthibitisha. Muda wa kuthibitisha ni hadi dakika 2.</p>
+          <button onclick="checkPaymentStatus()" style="background: var(--primary-color); color: white; border: none; padding: 12px; border-radius: 6px; margin-top: 15px; font-weight: bold; cursor: pointer; transition: all 0.3s;">
+            <i class="fas fa-sync-alt" style="margin-right: 8px;"></i> Angalia tena
+          </button>
+        </div>
+        
+        <div class="payment-processing" id="payment-processing">
+          <i class="fas fa-spinner"></i>
+          <p>Inathibitisha malipo yako...</p>
+        </div>
+        
+        <p style="font-size: 0.9rem; margin-top: 20px; color: #aaa;">
+          Kama una shida, wasiliana nasi kupitia huduma kwa wateja.
+        </p>
+      </div>
+      
+      <audio controls autoplay id="main-audio">
+        Your browser does not support the audio element.
+      </audio>
+    </div>
+  </div>
+
+  <!-- Modern Alert System -->
+  <div class="alert-overlay" id="alertOverlay">
+    <div class="alert-box">
+      <div class="alert-icon" id="alertIcon">
+        <i class="fas fa-info-circle"></i>
+      </div>
+      <h3 class="alert-title" id="alertTitle">Alert Title</h3>
+      <p class="alert-message" id="alertMessage">This is an alert message</p>
+      <button class="alert-btn" onclick="closeAlert()">Sawa</button>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script>
+    // Configuration
+    const TIGO_PESA_NUMBER = '22258408';
+    const RECIPIENT_NAME = 'OMARI SHOP10';
+    const CATEGORY = 'simulizi';
+    
+    // State
+    let allStories = [];
+    let currentAudioId = null;
+    let currentAudioUrl = null;
+    let currentAudioTitle = null;
+    let currentAudioPrice = 0;
+    
+    // DOM Elements
+    const paymentPrompt = document.getElementById('payment-prompt');
+    const audioElement = document.getElementById('main-audio');
+    const paymentConfirmation = document.getElementById('payment-confirmation');
+    const paymentProcessing = document.getElementById('payment-processing');
+    const paymentAmount = document.getElementById('payment-amount');
+    const paymentAmountInstructions = document.getElementById('payment-amount-instructions');
+    const paymentAmountStep = document.getElementById('payment-amount-step');
+    const storiesContainer = document.getElementById('storiesContainer');
+    const pagination = document.getElementById('pagination');
+
+    // Initialize Supabase
+    const supabaseUrl = 'https://vknaovalrilbpfgveqnj.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZrbmFvdmFscmlsYnBmZ3ZlcW5qIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkwMzQ2NjAsImV4cCI6MjA2NDYxMDY2MH0.uIKjFXMbKg0l0bIxTZpMF0QRh1BsDdPWsWK0G2kzqT8';
+    const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+    // Check user session
+    async function checkUserSession() {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        Swal.fire({
+          title: 'Tafadhali Ingia!',
+          text: 'Unahitaji kuwa umeingia kwenye akaunti yako ili kusikiliza simulizi.',
+          icon: 'warning',
+          confirmButtonText: 'Ingia',
+          showCancelButton: true,
+          cancelButtonText: 'Ghairi',
+          confirmButtonColor: '#FF6B00',
+          background: '#121212',
+          color: '#F5F5F5',
+        }).then((result) => {
+          if (result.isConfirmed) {
+            window.location.href = 'login.html';
+          }
+        });
+        return false;
+      }
+      return true;
+    }
+
+    // Show custom alert
+    function showAlert(title, message, type = 'info') {
+      let iconClass = 'fas fa-info-circle';
+      switch(type) {
+        case 'success':
+          iconClass = 'fas fa-check-circle';
+          break;
+        case 'error':
+          iconClass = 'fas fa-exclamation-circle';
+          break;
+        case 'warning':
+          iconClass = 'fas fa-exclamation-triangle';
+          break;
+      }
+      
+      alertIcon.innerHTML = `<i class="${iconClass}"></i>`;
+      alertTitle.textContent = title;
+      alertMessage.textContent = message;
+      alertOverlay.style.display = 'flex';
+    }
+    
+    // Close custom alert
+    function closeAlert() {
+      alertOverlay.style.display = 'none';
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', async () => {
+      if (await checkUserSession()) {
+        loadStories();
+      }
+    });
+    
+    // Function to load stories from Supabase
+    async function loadStories(page = 1, category = '', searchQuery = '') {
+      const itemsPerPage = 9;
+      const start = (page - 1) * itemsPerPage;
+      const end = start + itemsPerPage - 1;
+
+      storiesContainer.innerHTML = '<div class="loading"><i class="fas fa-spinner fa-spin"></i> Inapakia hadithi za simulizi...</div>';
+      pagination.innerHTML = '';
+
+      try {
+        let query = supabase
+          .from('videos')
+          .select('*')
+          .eq('type', 'audio')
+          .order('created_at', { ascending: false })
+          .range(start, end);
+
+        if (category) query = query.eq('category', category);
+        if (searchQuery) query = query.ilike('title', `%${searchQuery}%`);
+
+        const { data: stories, error } = await query;
+
+        if (error) throw error;
+
+        allStories = stories.map(story => ({
+          id: story.id,
+          title: story.title,
+          thumbnailUrl: story.thumbnail_url || 'https://via.placeholder.com/320x200?text=No+Thumbnail',
+          audioUrl: story.video_url, // Assuming video_url is used for audio
+          duration: story.duration || 0,
+          price: story.price || 0,
+          category: story.category || 'simulizi'
+        }));
+
+        if (allStories.length === 0) {
+          storiesContainer.innerHTML = `
+            <div class="empty-state">
+              <i class="fas fa-microphone-slash"></i>
+              <h3>Hakuna Hadithi za Simulizi Zilizopatikana</h3>
+              <p>Tafadhali badilisha utaftaji wako au angalia baadaye.</p>
+            </div>
+          `;
+        } else {
+          displayStories(allStories);
+          setupPagination(page, allStories.length, itemsPerPage, category, searchQuery);
+        }
+      } catch (error) {
+        console.error('Error fetching stories:', error);
+        storiesContainer.innerHTML = `
+          <div class="empty-state">
+            <i class="fas fa-exclamation-triangle"></i>
+            <h3>Hitilafu Katika Kupakia Hadithi</h3>
+            <p>Kuna tatizo katika kupakia hadithi za simulizi. Tafadhali jaribu tena baadaye.</p>
+          </div>
+        `;
+      }
+    }
+
+    // Display stories in grid
+    function displayStories(stories) {
+      storiesContainer.innerHTML = '';
+      stories.forEach(story => {
+        const card = document.createElement('div');
+        card.className = 'story-card';
+        card.innerHTML = `
+          <div class="story-image">
+            <img src="${story.thumbnailUrl}" alt="${story.title}" onerror="this.src='https://via.placeholder.com/320x200?text=No+Thumbnail'">
+            <div class="play-icon"><i class="fas fa-play"></i></div>
+          </div>
+          <div class="story-content">
+            <h3 class="story-title">${story.title}</h3>
+            <div class="category-tags">
+              <span class="category-tag simulizi">${getCategoryName(story.category)}</span>
+            </div>
+            <p class="story-description">Simulizi yenye sauti nzuri inayokufanya ujisikie kama uko ndani ya hadithi.</p>
+            <div class="story-meta">
+              <span>${formatDuration(story.duration)}</span>
+              ${story.price > 0 ? `<span class="story-price">TZS ${story.price.toLocaleString()}</span>` : ''}
+            </div>
+            <div class="story-actions">
+              <button class="action-btn play" onclick="playStory('${story.id}', '${story.audioUrl}', '${story.title.replace(/'/g, "\\'")}', ${story.price})">
+                <i class="fas fa-play"></i> Sikiliza
+              </button>
+              <button class="action-btn download" onclick="downloadStory('${story.id}')">
+                <i class="fas fa-download"></i> Pakua
+              </button>
+            </div>
+          </div>
+        `;
+        storiesContainer.appendChild(card);
+      });
+    }
+
+    // Format duration (seconds to MM:SS)
+    function formatDuration(seconds) {
+      const mins = Math.floor(seconds / 60);
+      const secs = Math.floor(seconds % 60);
+      return `${mins}:${secs.toString().padStart(2, '0')}`;
+    }
+
+    // Setup pagination
+    function setupPagination(currentPage, totalItems, itemsPerPage, category, searchQuery) {
+      const totalPages = Math.ceil(totalItems / itemsPerPage);
+      pagination.innerHTML = '';
+
+      for (let i = 1; i <= totalPages; i++) {
+        const btn = document.createElement('button');
+        btn.className = `page-btn ${i === currentPage ? 'active' : ''}`;
+        btn.textContent = i;
+        btn.onclick = () => loadStories(i, category, searchQuery);
+        pagination.appendChild(btn);
+      }
+    }
+
+    // Helper function ya kupata jina la category
+    function getCategoryName(category) {
+      switch(category) {
+        case 'ujasusi-simulizi': return 'Ujasusi Simulizi';
+        case 'huzuni-simulizi': return 'Huzuni Simulizi';
+        case 'horror-simulizi': return 'Horror Simulizi';
+        case 'drama-simulizi': return 'Drama Simulizi';
+        case 'mapenzi-simulizi': return 'Mapenzi Simulizi';
+        case 'ya-kiafrika': return 'Ya Kiafrika';
+        default: return 'Simulizi';
+      }
+    }
+
+    // Check if audio is paid for
+    async function hasPaidForAudio(audioId) {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return false;
+
+      const { data, error } = await supabase
+        .from('payments')
+        .select('*')
+        .eq('user_id', user.id)
+        .eq('video_id', audioId)
+        .eq('status', 'paid')
+        .single();
+
+      return !error && data;
+    }
+    
+    // Mark audio as paid
+    async function markAudioAsPaid(audioId, userId) {
+      const { error } = await supabase
+        .from('payments')
+        .insert({
+          user_id: userId,
+          video_id: audioId,
+          amount: currentAudioPrice,
+          status: 'paid',
+          created_at: new Date().toISOString()
+        });
+
+      if (!error) {
+        loadStories(); // Refresh to show updated payment status
+      }
+    }
+    
+    // Initiate Tigo Pesa payment
+    async function initiateTigoPayment() {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        showAlert('Tafadhali Ingia', 'Tafadhali ingia kwanza ili uweze kulipa.', 'error');
+        setTimeout(() => {
+          window.location.href = 'login.html';
+        }, 2000);
+        return;
+      }
+
+      paymentConfirmation.style.display = 'block';
+      paymentProcessing.style.display = 'none';
+    }
+    
+    // Check payment status
+    async function checkPaymentStatus() {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        showAlert('Tafadhali Ingia', 'Tafadhali ingia kwanza ili uweze kuthibitisha malipo.', 'error');
+        setTimeout(() => {
+          window.location.href = 'login.html';
+        }, 2000);
+        return;
+      }
+
+      paymentConfirmation.style.display = 'none';
+      paymentProcessing.style.display = 'block';
+
+      try {
+        const { data, error } = await supabase
+          .from('payments')
+          .select('*')
+          .eq('user_id', user.id)
+          .eq('video_id', currentAudioId)
+          .eq('status', 'paid')
+          .single();
+
+        if (error || !data) {
+          throw new Error('Malipo bado hayajathibitishwa.');
+        }
+
+        await markAudioAsPaid(currentAudioId, user.id);
+        completePayment();
+      } catch (error) {
+        paymentProcessing.style.display = 'none';
+        paymentConfirmation.style.display = 'block';
+        showAlert('Malipo Hayajaingia', 'Malipo bado hayajaingia. Hakikisha umeisha malipo na subiri dakika 2 kabla ya kujaribu tena.', 'error');
+      }
+    }
+    
+    // Complete payment process
+    async function completePayment() {
+      paymentPrompt.style.display = 'none';
+      paymentProcessing.style.display = 'none';
+      
+      audioElement.style.display = 'block';
+      audioElement.src = currentAudioUrl;
+      audioElement.play().catch(e => console.error('Audio play failed:', e));
+
+      showAlert('Malipo Yamefanikiwa', 'Malipo yako yamethibitishwa! Sasa unaweza kusikiliza simulizi.', 'success');
+    }
+    
+    // Play audio function
+    async function playAudio(audioId, audioUrl, audioTitle, price) {
+      if (!await checkUserSession()) return;
+      
+      currentAudioId = audioId;
+      currentAudioUrl = audioUrl;
+      currentAudioTitle = audioTitle;
+      currentAudioPrice = price;
+      const playerContainer = document.getElementById('audio-player');
+
+      paymentAmount.textContent = price.toLocaleString();
+      paymentAmountInstructions.textContent = price.toLocaleString();
+      paymentAmountStep.textContent = price.toLocaleString();
+
+      const isPaid = await hasPaidForAudio(audioId);
+
+      if (isPaid) {
+        paymentPrompt.style.display = 'none';
+        audioElement.style.display = 'block';
+        audioElement.src = audioUrl;
+        playerContainer.style.display = 'flex';
+        audioElement.play().catch(e => console.error('Audio play failed:', e));
+      } else if (price > 0) {
+        paymentPrompt.style.display = 'block';
+        paymentConfirmation.style.display = 'none';
+        paymentProcessing.style.display = 'none';
+        audioElement.style.display = 'none';
+        playerContainer.style.display = 'flex';
+      } else {
+        paymentPrompt.style.display = 'none';
+        audioElement.style.display = 'block';
+        audioElement.src = audioUrl;
+        playerContainer.style.display = 'flex';
+        audioElement.play().catch(e => console.error('Audio play failed:', e));
+      }
+    }
+    
+    // Close audio player
+    function closeVideo() {
+      const playerContainer = document.getElementById('audio-player');
+      
+      audioElement.pause();
+      audioElement.src = '';
+      playerContainer.style.display = 'none';
+      
+      paymentConfirmation.style.display = 'none';
+      paymentProcessing.style.display = 'none';
+    }
+    
+    // Function ya kucheza hadithi
+    function playStory(storyId, mediaUrl, storyTitle, price) {
+      playAudio(storyId, mediaUrl, storyTitle, price);
+    }
+    
+    // Function ya kupakua hadithi
+    function downloadStory(storyId) {
+      showAlert('Pakua Simulizi', `Inahitaji kukamilika: Kupakua hadithi ${storyId}`, 'info');
+    }
+
+    // Event listeners kwa ajili ya utafutaji na kuchagua kategoria
+    document.getElementById('searchInput').addEventListener('input', function() {
+      const category = document.getElementById('categoryFilter').value;
+      loadStories(1, category, this.value);
+    });
+    
+    document.getElementById('categoryFilter').addEventListener('change', function() {
+      const searchQuery = document.getElementById('searchInput').value;
+      loadStories(1, this.value, searchQuery);
+    });
+
+    // Content protection
+    document.addEventListener('contextmenu', e => {
+      e.preventDefault();
+      showAlert('Hakuna Ruhusa', 'Hakuna kuruhusiwa kunakili au kuchukua picha za skrini kwenye tovuti hii.', 'error');
+    });
+
+    document.addEventListener('keydown', e => {
+      if (
+        e.key === 'PrintScreen' ||
+        (e.ctrlKey && ['c', 'u', 'v', 's', 'p'].includes(e.key.toLowerCase())) ||
+        (e.metaKey && ['c', 'u', 'v', 's', 'p'].includes(e.key.toLowerCase())) ||
+        e.key === 'F12' ||
+        (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key.toUpperCase()))
+      ) {
+        e.preventDefault();
+        showAlert('Hakuna Ruhusa', 'Hakuna kuruhusiwa kunakili, kuchukua picha za skrini, au kufungua zana za msanidi.', 'error');
+      }
+    });
+
+    document.addEventListener('keyup', e => {
+      if (e.key === 'PrintScreen') {
+        navigator.clipboard.writeText('').then(() => {
+          showAlert('Hakuna Ruhusa', 'Kuchukua picha za skrini hakuruhusiwi kwenye tovuti hii.', 'error');
+        });
+      }
+    });
+
+    // Make functions available globally
+    window.playStory = playStory;
+    window.downloadStory = downloadStory;
+    window.playAudio = playAudio;
+    window.closeVideo = closeVideo;
+    window.initiateTigoPayment = initiateTigoPayment;
+    window.checkPaymentStatus = checkPaymentStatus;
+    window.closeAlert = closeAlert;
+  </script>
+
+</body>
+</html>

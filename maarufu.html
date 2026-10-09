@@ -1,0 +1,1076 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Waandishi Maarufu - SIMULIZI HOUSE</title>
+  <style>
+    :root {
+      --primary: #FF3D81;
+      --secondary: #00F0FF;
+      --dark: #0A0A12;
+      --darker: #05050A;
+      --light: #E6E6FA;
+      --gray: #1F1F2E;
+      --light-gray: #A0A0C0;
+      --whatsapp-green: #25D366;
+      --neon-pink: #FF1F8A;
+      --neon-cyan: #00F0FF;
+      --header-bg-start: #1B0034;
+      --header-bg-end: #3A006F;
+      --accent-purple: #8A2BE2;
+      --accent-blue: #1E90FF;
+      --transition: all 0.4s ease;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+      overflow-x: hidden;
+      font-family: 'Poppins', 'Inter', 'Nunito Sans', sans-serif;
+      background: linear-gradient(180deg, #FFFFFF 0%, #F5F5F5 100%);
+      color: #000000;
+      scroll-behavior: smooth;
+      user-select: none;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+    }
+
+    body.dark-theme {
+      background: linear-gradient(180deg, var(--dark) 0%, var(--darker) 100%);
+      color: var(--light);
+    }
+
+    /* Header Styles */
+    header {
+      background: linear-gradient(135deg, #FFFFFF, #F0F0F0);
+      padding: 0.5rem 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    body.dark-theme header {
+      background: linear-gradient(135deg, var(--header-bg-start), var(--header-bg-end));
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-container img {
+      height: 60px;
+      border-radius: 50%;
+      border: 2px solid var(--neon-cyan);
+      box-shadow: 0 0 10px var(--neon-pink);
+      animation: spinGlow 3s linear infinite;
+      transition: var(--transition);
+    }
+
+    .logo-container img:hover {
+      transform: scale(1.1);
+    }
+
+    @keyframes spinGlow {
+      0% { box-shadow: 0 0 10px var(--neon-pink); }
+      50% { box-shadow: 0 0 15px var(--neon-cyan); }
+      100% { box-shadow: 0 0 10px var(--neon-pink); }
+    }
+
+    .logo-text {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--neon-pink);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      text-shadow: 0 0 5px rgba(255, 31, 138, 0.3);
+      line-height: 1;
+    }
+
+    body.dark-theme .logo-text {
+      color: var(--secondary);
+    }
+
+    .nav-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .nav-btn {
+      background: var(--neon-pink);
+      color: #FFFFFF;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      box-shadow: 0 0 10px rgba(255, 31, 138, 0.3);
+      animation: pulse 2s infinite ease-in-out;
+    }
+
+    .nav-btn:hover {
+      background: var(--neon-cyan);
+      box-shadow: 0 0 15px rgba(0, 240, 255, 0.5);
+      transform: scale(1.1);
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 0 10px rgba(255, 31, 138, 0.3);
+      }
+      50% {
+        transform: scale(1.05);
+        box-shadow: 0 0 15px rgba(0, 240, 255, 0.5);
+      }
+    }
+
+    .back-btn {
+      background: var(--neon-cyan);
+      color: #000000;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      box-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
+    }
+
+    .back-btn:hover {
+      background: var(--neon-pink);
+      color: #FFFFFF;
+      box-shadow: 0 0 15px rgba(255, 31, 138, 0.5);
+      transform: scale(1.1);
+    }
+
+    /* Page Header */
+    .page-header {
+      background: linear-gradient(135deg, var(--neon-pink), var(--neon-cyan));
+      color: #000000;
+      text-align: center;
+      padding: 3rem 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .page-title {
+      font-size: 3rem;
+      font-weight: 800;
+      margin-bottom: 1rem;
+      text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+    }
+
+    .page-subtitle {
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+
+    /* Main Container */
+    .main-container {
+      padding: 2rem;
+      max-width: 1600px;
+      margin: 0 auto;
+    }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .tab-btn {
+      background: #F5F5F5;
+      color: #000000;
+      padding: 0.8rem 1.5rem;
+      border-radius: 25px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      border: 2px solid transparent;
+    }
+
+    body.dark-theme .tab-btn {
+      background: var(--gray);
+      color: var(--light);
+    }
+
+    .tab-btn.active, .tab-btn:hover {
+      background: var(--neon-cyan);
+      color: #000000;
+      box-shadow: 0 0 15px rgba(0, 240, 255, 0.5);
+      border-color: var(--neon-pink);
+    }
+
+    .tab-content {
+      display: none;
+      animation: fadeIn 0.6s ease;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Writers Grid */
+    .writers-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .writer-card {
+      background: #FFFFFF;
+      border-radius: 15px;
+      padding: 2rem;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      transition: var(--transition);
+      text-align: center;
+      border: 2px solid transparent;
+    }
+
+    body.dark-theme .writer-card {
+      background: linear-gradient(135deg, rgba(31, 31, 46, 0.9), rgba(10, 10, 18, 0.95));
+      border-color: rgba(0, 240, 255, 0.3);
+    }
+
+    .writer-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 12px 30px rgba(255, 31, 138, 0.4), 0 0 20px rgba(0, 240, 255, 0.3);
+      border-color: var(--neon-pink);
+    }
+
+    .writer-avatar {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--neon-pink), var(--neon-cyan));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #000000;
+      margin: 0 auto 1rem;
+      border: 3px solid var(--neon-pink);
+    }
+
+    .writer-name {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--neon-pink);
+      margin-bottom: 0.5rem;
+    }
+
+    body.dark-theme .writer-name {
+      color: var(--neon-cyan);
+    }
+
+    .writer-bio {
+      font-size: 0.9rem;
+      color: #666666;
+      margin-bottom: 1.5rem;
+      line-height: 1.5;
+    }
+
+    body.dark-theme .writer-bio {
+      color: var(--light-gray);
+    }
+
+    .writer-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .writer-stat {
+      text-align: center;
+    }
+
+    .stat-number {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--neon-pink);
+      display: block;
+    }
+
+    body.dark-theme .stat-number {
+      color: var(--neon-cyan);
+    }
+
+    .stat-label {
+      font-size: 0.8rem;
+      color: #666666;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    body.dark-theme .stat-label {
+      color: var(--light-gray);
+    }
+
+    .view-profile-btn {
+      background: linear-gradient(135deg, var(--neon-pink), var(--accent-purple));
+      color: #FFFFFF;
+      border: none;
+      padding: 0.8rem 1.5rem;
+      border-radius: 25px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: var(--transition);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      box-shadow: 0 4px 12px rgba(255, 31, 138, 0.4);
+      width: 100%;
+    }
+
+    .view-profile-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 18px rgba(0, 240, 255, 0.6);
+      background: linear-gradient(135deg, var(--neon-cyan), var(--neon-pink));
+    }
+
+    /* Popular Stories Grid */
+    .stories-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 0.8rem;
+      margin-bottom: 2rem;
+    }
+
+    .story-card {
+      background: #FFFFFF;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+      transition: var(--transition);
+      cursor: pointer;
+      position: relative;
+      border: 1px solid #E0E0E0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    body.dark-theme .story-card {
+      background: linear-gradient(135deg, rgba(31, 31, 46, 0.9), rgba(10, 10, 18, 0.95));
+      border-color: rgba(0, 240, 255, 0.3);
+    }
+
+    .story-card:hover {
+      transform: translateY(-5px) scale(1.03);
+      box-shadow: 0 8px 25px rgba(255, 31, 138, 0.4), 0 0 15px rgba(0, 240, 255, 0.3);
+      border-color: var(--neon-pink);
+    }
+
+    .story-image {
+      width: 100%;
+      position: relative;
+      overflow: hidden;
+      background: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 140px;
+    }
+
+    .story-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      transition: transform 0.4s ease;
+    }
+
+    .story-card:hover .story-image img {
+      transform: scale(1.08) rotate(1deg);
+      filter: brightness(1.1);
+    }
+
+    .story-badge {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      background: linear-gradient(135deg, var(--neon-pink), var(--neon-cyan));
+      color: #000;
+      padding: 2px 6px;
+      border-radius: 10px;
+      font-size: 0.6rem;
+      font-weight: 800;
+      z-index: 10;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+      text-transform: uppercase;
+    }
+
+    .popular-badge {
+      position: absolute;
+      top: 5px;
+      left: 5px;
+      background: #FFD700;
+      color: #000000;
+      padding: 2px 6px;
+      border-radius: 10px;
+      font-size: 0.6rem;
+      font-weight: 800;
+      z-index: 10;
+    }
+
+    .story-content {
+      padding: 0.6rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .story-title {
+      font-size: 0.75rem;
+      margin: 0;
+      color: #000000;
+      font-weight: 700;
+      line-height: 1.2;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    body.dark-theme .story-title {
+      color: var(--neon-cyan);
+      text-shadow: 0 0 5px rgba(0, 240, 255, 0.3);
+    }
+
+    .story-read-more {
+      background: linear-gradient(135deg, var(--neon-pink), var(--accent-purple));
+      color: #FFF;
+      border: none;
+      padding: 0.3rem 0.6rem;
+      border-radius: 5px;
+      font-size: 0.65rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: var(--transition);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      box-shadow: 0 2px 8px rgba(255, 31, 138, 0.4);
+      margin-top: 0.3rem;
+    }
+
+    .story-read-more:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 12px rgba(0, 240, 255, 0.6);
+      background: linear-gradient(135deg, var(--neon-cyan), var(--neon-pink));
+    }
+
+    .story-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.3rem;
+      flex-wrap: wrap;
+    }
+
+    .story-price {
+      font-weight: 800;
+      font-size: 0.65rem;
+      background: linear-gradient(135deg, var(--neon-pink), var(--neon-cyan));
+      color: #000;
+      padding: 2px 6px;
+      border-radius: 8px;
+      transition: var(--transition);
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    }
+
+    .story-price:hover {
+      transform: scale(1.08);
+    }
+
+    .story-category {
+      padding: 0.2rem 0.4rem;
+      border-radius: 8px;
+      font-size: 0.6rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .category-ujasusi { background: #FF6347; color: #000; }
+    .category-huzuni { background: #4682B4; color: #000; }
+    .category-horror { background: #DC143C; color: #FFF; }
+    .category-drama { background: #FFD700; color: #000; }
+    .category-simulizi { background: var(--accent-purple); color: #FFF; }
+    .category-chombezo { background: #FF4500; color: #FFF; }
+    .category-ujasusi-simulizi,
+    .category-huzuni-simulizi,
+    .category-horror-simulizi,
+    .category-drama-simulizi { background: var(--accent-purple); color: #FFF; }
+    .category-video { background: var(--accent-blue); color: #FFF; }
+
+    .story-stats {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      padding: 0.3rem 0;
+    }
+
+    .story-stat {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      font-size: 0.6rem;
+      color: #666666;
+    }
+
+    body.dark-theme .story-stat {
+      color: var(--light-gray);
+    }
+
+    /* Loading Spinner */
+    .loading-spinner {
+      text-align: center;
+      padding: 3rem;
+      grid-column: 1 / -1;
+    }
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid rgba(0, 240, 255, 0.3);
+      border-top-color: var(--neon-pink);
+      border-radius: 50%;
+      animation: spin 1s ease-in-out infinite;
+      margin: 0 auto 1rem;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Footer */
+    footer {
+      background: #F5F5F5;
+      color: #666666;
+      text-align: center;
+      padding: 1.5rem;
+      font-size: 0.8rem;
+      border-top: 2px solid var(--neon-pink);
+      margin-top: 3rem;
+    }
+
+    body.dark-theme footer {
+      background: var(--darker);
+      color: var(--light-gray);
+    }
+
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .social-links {
+      color: #000000;
+      font-size: 1.5rem;
+      transition: var(--transition);
+      margin: 0 15px;
+    }
+
+    body.dark-theme .social-links {
+      color: var(--light);
+    }
+
+    .social-links a:hover {
+      color: var(--neon-cyan);
+      transform: scale(1.2);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .page-title {
+        font-size: 2rem;
+      }
+
+      .page-subtitle {
+        font-size: 1rem;
+      }
+
+      .writers-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 1.5rem;
+      }
+
+      .stories-grid {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 0.7rem;
+      }
+
+      .main-container {
+        padding: 1rem;
+      }
+
+      .tabs {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .tab-btn {
+        width: 100%;
+        max-width: 300px;
+        text-align: center;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .writers-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .stories-grid {
+        grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+        gap: 0.6rem;
+      }
+
+      .page-header {
+        padding: 2rem 1rem;
+      }
+
+      .page-title {
+        font-size: 1.8rem;
+      }
+
+      .writer-stats {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.5rem;
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=Inter:wght@400;600;700;800&family=Nunito+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+  <header>
+    <div class="logo-container">
+      <img src="/Picsart_26-05-13_01-57-22-165.png" alt="SIMULIZI HOUSE Logo">
+      <div class="logo-text">SIMULIZI HOUSE</div>
+    </div>
+    <div class="nav-container">
+      <a href="index.html" class="back-btn">
+        <i class="fas fa-arrow-left"></i> Nyumbani
+      </a>
+    </div>
+  </header>
+
+  <div class="page-header">
+    <h1 class="page-title">Waandishi Maarufu</h1>
+    <p class="page-subtitle">Waandishi Bora na Hadithi Zenye Alama Nyingi</p>
+  </div>
+
+  <div class="main-container">
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="writers">Waandishi Maarufu</button>
+      <button class="tab-btn" data-tab="stories">Hadithi Zenye Alama</button>
+    </div>
+
+    <!-- Writers Tab -->
+    <div class="tab-content active" id="writersTab">
+      <div class="writers-grid" id="writersGrid">
+        <div class="loading-spinner">
+          <div class="spinner"></div>
+          <p>Inapakia waandishi...</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Popular Stories Tab -->
+    <div class="tab-content" id="storiesTab">
+      <div class="stories-grid" id="popularStoriesGrid">
+        <div class="loading-spinner">
+          <div class="spinner"></div>
+          <p>Inapakia hadithi zenye alama...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-content">
+      <div class="social-links">
+        <a href="https://www.facebook.com/profile.php?id=100079473949932" target="_blank"><i class="fab fa-facebook"></i></a>
+        <a href="https://x.com/storieszone" target="_blank"><i class="fab fa-twitter"></i></a>
+        <a href="https://instagram.com/storieszone" target="_blank"><i class="fab fa-instagram"></i></a>
+        <a href="https://youtube.com/@storieszone" target="_blank"><i class="fab fa-youtube"></i></a>
+      </div>
+      <p>© <span id="current-year"></span> SIMULIZI HOUSE- Hadithi za Kisasa</p>
+      <p>Haki Zote Zimehifadhiwa</p>
+    </div>
+  </footer>
+
+  <script>
+    // Initialize Supabase with unique client name to avoid CDN global conflicts
+    const STORIES_ZONE_SUPABASE_URL = 'https://btnzevupmwsdubpgjpds.supabase.co';
+    const STORIES_ZONE_SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ0bnpldnVwbXdzZHVicGdqcGRzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAyNDEyMzAsImV4cCI6MjA2NTgxNzIzMH0.Cn36rmP6IeSI-LfTUgViCcpBzeqlpplDbSPH3pXrCg4';
+    const storiesZoneDB = window.supabase.createClient(STORIES_ZONE_SUPABASE_URL, STORIES_ZONE_SUPABASE_KEY);
+
+    let user = null;
+    let userPaidStories = new Set();
+    let commentsCountCache = new Map();
+
+    document.addEventListener('DOMContentLoaded', function() {
+      document.getElementById('current-year').textContent = new Date().getFullYear();
+      initializeTabs();
+      checkAuthAndLoadContent();
+    });
+
+    function initializeTabs() {
+      const tabBtns = document.querySelectorAll('.tab-btn');
+      const tabContents = document.querySelectorAll('.tab-content');
+
+      tabBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const tabId = btn.getAttribute('data-tab');
+          
+          // Update active tab button
+          tabBtns.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          
+          // Show active tab content
+          tabContents.forEach(content => content.classList.remove('active'));
+          document.getElementById(`${tabId}Tab`).classList.add('active');
+
+          // Load content if not already loaded
+          if (tabId === 'writers' && !document.getElementById('writersGrid').dataset.loaded) {
+            loadPopularWriters();
+          } else if (tabId === 'stories' && !document.getElementById('popularStoriesGrid').dataset.loaded) {
+            loadPopularStories();
+          }
+        });
+      });
+    }
+
+    async function checkAuthAndLoadContent() {
+      const { data: { user: currentUser } } = await storiesZoneDB.auth.getUser();
+      user = currentUser;
+      
+      if (!user) {
+        showCustomAlert('error', 'Tafadhali ingia kwanza ili uweze kuona maudhui.');
+        setTimeout(() => window.location.href = 'login.html', 2000);
+        return;
+      }
+
+      await loadUserPaidStories();
+      await loadCommentsCount();
+      await loadPopularWriters();
+    }
+
+    async function loadUserPaidStories() {
+      if (!user) return;
+      
+      try {
+        const { data: payments, error } = await storiesZoneDB
+          .from('payments')
+          .select('story_id')
+          .eq('user_id', user.id)
+          .eq('status', 'paid');
+
+        if (!error && payments) {
+          userPaidStories = new Set(payments.map(p => p.story_id));
+        }
+      } catch (error) {
+        console.error('Error loading paid stories:', error);
+      }
+    }
+
+    async function loadCommentsCount() {
+      try {
+        const { data: allComments, error } = await storiesZoneDB
+          .from('comments')
+          .select('story_id');
+
+        if (error) {
+          console.error('Error loading comments count:', error);
+          return;
+        }
+
+        commentsCountCache.clear();
+
+        if (allComments && allComments.length > 0) {
+          allComments.forEach(comment => {
+            const currentCount = commentsCountCache.get(comment.story_id) || 0;
+            commentsCountCache.set(comment.story_id, currentCount + 1);
+          });
+        }
+      } catch (error) {
+        console.error('Error in loadCommentsCount:', error);
+      }
+    }
+
+    async function loadPopularWriters() {
+      const grid = document.getElementById('writersGrid');
+      
+      try {
+        // In a real app, you would have a writers table
+        // For now, we'll simulate popular writers based on story data
+        const { data: stories, error } = await storiesZoneDB
+          .from('stories')
+          .select('*')
+          .order('likes', { ascending: false })
+          .limit(100);
+
+        if (error) {
+          grid.innerHTML = `<p style="text-align: center; padding: 1.5rem; grid-column: 1 / -1;">Hitilafu: ${error.message}</p>`;
+          return;
+        }
+
+        if (!stories || stories.length === 0) {
+          grid.innerHTML = '<p style="text-align: center; padding: 1.5rem; grid-column: 1 / -1;">Hakuna waandishi waliopatikana.</p>';
+          return;
+        }
+
+        // Group stories by author (simulated)
+        const authors = {};
+        stories.forEach(story => {
+          const authorName = story.author || 'Mwandishi wa SIMULIZI HOUSE';
+          if (!authors[authorName]) {
+            authors[authorName] = {
+              name: authorName,
+              stories: 0,
+              totalLikes: 0,
+              totalViews: 0,
+              categories: new Set()
+            };
+          }
+          authors[authorName].stories++;
+          authors[authorName].totalLikes += story.likes || 0;
+          authors[authorName].totalViews += story.views || 0;
+          authors[authorName].categories.add(story.category);
+        });
+
+        // Convert to array and sort by total likes
+        const popularWriters = Object.values(authors)
+          .sort((a, b) => b.totalLikes - a.totalLikes)
+          .slice(0, 6); // Top 6 writers
+
+        grid.innerHTML = popularWriters.map(writer => createWriterCard(writer)).join('');
+        grid.dataset.loaded = 'true';
+        
+      } catch (error) {
+        grid.innerHTML = `<p style="text-align: center; padding: 1.5rem; grid-column: 1 / -1;">Hitilafu ya mtandao: ${error.message}</p>`;
+      }
+    }
+
+    function createWriterCard(writer) {
+      const initial = writer.name.charAt(0).toUpperCase();
+      const categories = Array.from(writer.categories).slice(0, 3).join(', ');
+      
+      return `
+        <div class="writer-card">
+          <div class="writer-avatar">${initial}</div>
+          <h3 class="writer-name">${writer.name}</h3>
+          <p class="writer-bio">Anaandika hadithi za ${categories}. Ameshiriki hadithi ${writer.stories} na kupata upendo kutoka kwa watazamaji.</p>
+          
+          <div class="writer-stats">
+            <div class="writer-stat">
+              <span class="stat-number">${writer.stories}</span>
+              <span class="stat-label">Hadithi</span>
+            </div>
+            <div class="writer-stat">
+              <span class="stat-number">${writer.totalLikes}</span>
+              <span class="stat-label">Upendo</span>
+            </div>
+            <div class="writer-stat">
+              <span class="stat-number">${writer.totalViews}</span>
+              <span class="stat-label">Tazama</span>
+            </div>
+          </div>
+          
+          <button class="view-profile-btn" onclick="viewWriterStories('${writer.name}')">
+            <i class="fas fa-user"></i> Tazama Hadithi
+          </button>
+        </div>
+      `;
+    }
+
+    async function loadPopularStories() {
+      const grid = document.getElementById('popularStoriesGrid');
+      
+      try {
+        const { data: stories, error } = await storiesZoneDB
+          .from('stories')
+          .select('*')
+          .order('likes', { ascending: false })
+          .limit(50);
+
+        if (error) {
+          grid.innerHTML = `<p style="text-align: center; padding: 1.5rem; grid-column: 1 / -1;">Hitilafu: ${error.message}</p>`;
+          return;
+        }
+
+        if (!stories || stories.length === 0) {
+          grid.innerHTML = '<p style="text-align: center; padding: 1.5rem; grid-column: 1 / -1;">Hakuna hadithi zenye alama kwa sasa.</p>';
+          return;
+        }
+
+        grid.innerHTML = stories.map(story => createPopularStoryCard(story)).join('');
+        grid.dataset.loaded = 'true';
+        
+      } catch (error) {
+        grid.innerHTML = `<p style="text-align: center; padding: 1.5rem; grid-column: 1 / -1;">Hitilafu ya mtandao: ${error.message}</p>`;
+      }
+    }
+
+    function createPopularStoryCard(story) {
+      const imageUrl = story.thumbnail_url || 'https://via.placeholder.com/300x200';
+      const shareUrl = `https://storieszone.site/story.html?id=${story.id}`;
+      const price = story.price || 0;
+      const views = story.views || 0;
+      const likes = story.likes || 0;
+      const comments = commentsCountCache.get(story.id) || 0;
+      const isPaid = price === 0 || userPaidStories.has(story.id);
+      
+      return `
+        <div class="story-card" onclick="handleReadMore('${story.id}', ${price}, ${isPaid})">
+          <div class="story-image">
+            <img src="${imageUrl}" alt="${story.title}" loading="lazy">
+            ${price > 0 ? `<div class="story-badge">${isPaid ? 'IMEFUNGULIWA' : `TZS ${price}`}</div>` : '<div class="story-badge">BURE</div>'}
+            <div class="popular-badge">
+              <i class="fas fa-fire"></i> POPULAR
+            </div>
+          </div>
+          <div class="story-content">
+            <h3 class="story-title">${story.title}</h3>
+            <button class="story-read-more" onclick="event.stopPropagation(); handleReadMore('${story.id}', ${price}, ${isPaid})">
+              Soma Zaidi
+            </button>
+            <div class="story-meta">
+              <span class="story-category category-${story.category}">${story.category}</span>
+              <span class="story-price">${price > 0 ? (isPaid ? 'Imefunguliwa' : `TZS ${price}`) : 'BURE'}</span>
+            </div>
+            <div class="story-stats">
+              <div class="story-stat">
+                <i class="fas fa-eye"></i>
+                <span>${views}</span>
+              </div>
+              <div class="story-stat">
+                <i class="fas fa-heart"></i>
+                <span>${likes}</span>
+              </div>
+              <div class="story-stat">
+                <i class="fas fa-comments"></i>
+                <span>${comments}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function viewWriterStories(writerName) {
+      showCustomAlert('info', `Inapakia hadithi za ${writerName}...`);
+      // In a real app, this would filter and show stories by this writer
+      // For now, switch to stories tab
+      document.querySelector('[data-tab="stories"]').click();
+    }
+
+    async function handleReadMore(storyId, price, isPaid) {
+      if (!user) {
+        showCustomAlert('warning', 'Tafadhali ingia kwanza ili uweze kusoma hadithi.');
+        return;
+      }
+
+      await incrementStoryView(storyId);
+      
+      if (price === 0) {
+        window.location.href = `story.html?id=${storyId}`;
+      } else if (isPaid) {
+        window.location.href = `story.html?id=${storyId}`;
+      } else {
+        openPaymentModal(storyId, price);
+      }
+    }
+
+    async function incrementStoryView(storyId) {
+      try {
+        const { data: story, error: fetchError } = await storiesZoneDB
+          .from('stories')
+          .select('views')
+          .eq('id', storyId)
+          .single();
+
+        if (fetchError) return;
+
+        const currentViews = story.views || 0;
+        
+        await storiesZoneDB
+          .from('stories')
+          .update({ views: currentViews + 1 })
+          .eq('id', storyId);
+
+      } catch (error) {
+        console.error('Error in incrementStoryView:', error);
+      }
+    }
+
+    function openPaymentModal(storyId, price) {
+      showCustomAlert('info', `Malipo yanahitajika: TZS ${price}. Nenda kwenye ukurasa kuu kwa maelekezo ya malipo.`);
+    }
+
+    function showCustomAlert(type, message) {
+      const alertDiv = document.createElement('div');
+      alertDiv.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: ${type === 'error' ? '#FF3F3F' : type === 'warning' ? '#FFA500' : '#00F0FF'};
+        color: ${type === 'warning' ? '#000' : '#FFF'};
+        padding: 1rem 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        z-index: 1000;
+        max-width: 300px;
+        word-wrap: break-word;
+      `;
+      alertDiv.textContent = message;
+      document.body.appendChild(alertDiv);
+      
+      setTimeout(() => {
+        alertDiv.remove();
+      }, 5000);
+    }
+
+    window.handleReadMore = handleReadMore;
+    window.viewWriterStories = viewWriterStories;
+  </script>
+</body>
+</html>

@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SIMULIZI HOUSE- Hadithi za Bure</title>
+  <style>
+    :root {
+      --primary: #FF3D81;
+      --secondary: #00F0FF;
+      --dark: #0A0A12;
+      --darker: #05050A;
+      --light: #E6E6FA;
+      --gray: #1F1F2E;
+      --light-gray: #A0A0C0;
+      --whatsapp-green: #25D366;
+      --neon-pink: #FF1F8A;
+      --neon-cyan: #00F0FF;
+      --header-bg-start: #1B0034;
+      --header-bg-end: #3A006F;
+      --accent-purple: #8A2BE2;
+      --accent-blue: #1E90FF;
+      --transition: all 0.4s ease;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+      overflow-x: hidden;
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(180deg, var(--dark) 0%, var(--darker) 100%);
+      color: var(--light);
+      scroll-behavior: smooth;
+      user-select: none;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+    }
+
+    body.light-theme {
+      background: linear-gradient(180deg, #FFFFFF 0%, #F0F0F0 100%);
+      color: #000000;
+    }
+
+    body.light-theme header {
+      background: linear-gradient(135deg, #FFFFFF, #E0E0E0);
+    }
+
+    body.light-theme .story-card {
+      background: #F5F5F5;
+      color: #000000;
+    }
+
+    body.light-theme .story-title,
+    body.light-theme .category-title {
+      color: #000000;
+    }
+
+    .hero-section {
+      position: relative;
+      height: 30vh;
+      background: url('https://images.unsplash.com/photo-1516321318423-f06f85e504b3') no-repeat center center/cover;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: var(--light);
+      text-shadow: 0 0 15px var(--neon-pink);
+      padding: 1.5rem;
+      z-index: 1;
+    }
+
+    .hero-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(10, 10, 18, 0.7);
+      z-index: -1;
+    }
+
+    .hero-title {
+      font-size: 2.5rem;
+      font-weight: 800;
+      margin-bottom: 0.8rem;
+      animation: glow 2s ease-in-out infinite;
+    }
+
+    .hero-subtitle {
+      font-size: 1.2rem;
+      font-weight: 400;
+      max-width: 600px;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-btn {
+      background: linear-gradient(135deg, var(--neon-pink), var(--neon-cyan));
+      color: var(--dark);
+      padding: 0.8rem 2rem;
+      border-radius: 30px;
+      font-size: 1rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: var(--transition);
+      box-shadow: 0 0 20px var(--neon-cyan);
+    }
+
+    .hero-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 30px var(--neon-pink);
+    }
+
+    @keyframes glow {
+      0%, 100% { text-shadow: 0 0 15px var(--neon-pink); }
+      50% { text-shadow: 0 0 25px var(--neon-cyan); }
+    }
+
+    header {
+      background: linear-gradient(135deg, var(--header-bg-start), var(--header-bg-end));
+      padding: 1rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-container img {
+      height: 40px;
+      border-radius: 50%;
+      border: 2px solid var(--neon-cyan);
+      box-shadow: 0 0 15px var(--neon-pink);
+      animation: spinGlow 3s linear infinite;
+      transition: var(--transition);
+    }
+
+    .logo-container img:hover {
+      transform: scale(1.1);
+    }
+
+    @keyframes spinGlow {
+      0% { box-shadow: 0 0 15px var(--neon-pink); }
+      50% { box-shadow: 0 0 25px var(--neon-cyan); }
+      100% { box-shadow: 0 0 15px var(--neon-pink); }
+    }
+
+    .logo-text {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--secondary);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      text-shadow: 0 0 10px var(--neon-cyan);
+    }
+
+    .user-menu {
+      position: relative;
+    }
+
+    .user-btn {
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--light);
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .user-btn:hover {
+      background: var(--neon-pink);
+      color: var(--dark);
+      box-shadow: 0 0 15px var(--neon-pink);
+    }
+
+    .user-dropdown {
+      display: none;
+      position: absolute;
+      top: 100%;
+      right: 0;
+      background: var(--gray);
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+      padding: 1rem;
+      width: 250px;
+      z-index: 100;
+    }
+
+    .user-dropdown.active {
+      display: block;
+    }
+
+    .user-info {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      color: var(--light);
+      font-size: 0.9rem;
+    }
+
+    .user-info label {
+      font-weight: bold;
+    }
+
+    .user-info input {
+      background: var(--darker);
+      border: 1px solid var(--light-gray);
+      border-radius: 5px;
+      padding: 5px;
+      color: var(--light);
+    }
+
+    .user-info input[readonly] {
+      background: var(--gray);
+    }
+
+    .password-toggle {
+      cursor: pointer;
+      color: var(--neon-cyan);
+      margin-left: 5px;
+    }
+
+    .auth-btn {
+      background: var(--neon-pink);
+      color: var(--dark);
+      padding: 8px;
+      border-radius: 5px;
+      text-align: center;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      margin-top: 10px;
+    }
+
+    .auth-btn:hover {
+      background: var(--neon-cyan);
+      transform: scale(1.05);
+    }
+
+    .theme-toggle {
+      background: none;
+      border: none;
+      color: var(--light);
+      font-size: 1.3rem;
+      cursor: pointer;
+      transition: var(--transition);
+      margin-left: 10px;
+    }
+
+    .theme-toggle:hover {
+      color: var(--neon-cyan);
+      transform: rotate(180deg);
+    }
+
+    .hamburger {
+      display: none;
+      font-size: 1.6rem;
+      color: var(--light);
+      cursor: pointer;
+    }
+
+    .main-container {
+      padding: 3rem;
+      max-width: 1600px;
+      margin: 0 auto;
+    }
+
+    .category-title {
+      color: var(--secondary);
+      font-size: 2rem;
+      margin: 2rem 0;
+      padding-bottom: 0.5rem;
+      border-bottom: 3px solid var(--neon-pink);
+      text-shadow: 0 0 10px var(--neon-cyan);
+    }
+
+    .stories-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 2rem;
+      margin-bottom: 3rem;
+      animation: fadeIn 0.6s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* === STORY CARD - ILIYOREKEBISHWA === */
+    .story-card {
+      background: var(--gray);
+      border-radius: 15px;
+      overflow: visible !important; /* Hakuna kukata */
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+      transition: var(--transition);
+      cursor: pointer;
+      position: relative;
+      border: none !important; /* Hakuna frame */
+    }
+
+    .story-card:hover {
+      transform: translateY(-10px) scale(1.03);
+      box-shadow: 0 12px 30px rgba(0, 240, 255, 0.4);
+    }
+
+    .story-image {
+      height: auto; /* Hakuna fixed height */
+      overflow: visible;
+      position: relative;
+      padding: 1rem; /* Naweka nafasi kidogo */
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 12px 12px 0 0;
+    }
+
+    .story-image img {
+      width: 100%;
+      height: auto; /* Picha inaonyeshwa kwa ukubwa wake */
+      max-height: 400px; /* Max height ili isizidi sana */
+      object-fit: contain; /* Inafit bila kukata */
+      display: block;
+      margin: 0 auto;
+      border-radius: 10px;
+      transition: transform 0.5s ease;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .story-card:hover .story-image img {
+      transform: scale(1.05);
+    }
+
+    .story-badge {
+      position: absolute;
+      top: 1.5rem;
+      right: 1.5rem;
+      background: #2ecc71;
+      color: var(--dark);
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: bold;
+      z-index: 10;
+    }
+
+    .story-content {
+      padding: 1.5rem;
+    }
+
+    .story-title {
+      font-size: 1.4rem;
+      margin: 0 0 1rem 0;
+      color: var(--secondary);
+      font-weight: 600;
+    }
+
+    .story-description {
+      font-size: 0.95rem;
+      color: var(--light-gray);
+      margin-bottom: 1rem;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      line-height: 1.5;
+    }
+
+    .story-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .story-price {
+      font-weight: bold;
+      font-size: 1.1rem;
+      background: linear-gradient(135deg, var(--neon-pink), var(--neon-cyan));
+      color: var(--dark);
+      padding: 6px 12px;
+      border-radius: 20px;
+      transition: var(--transition);
+    }
+
+    .story-price:hover {
+      transform: scale(1.05);
+    }
+
+    .story-category {
+      padding: 0.4rem 0.9rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+
+    .category-ujasusi { background: #FF6347; color: #000; }
+    .category-huzuni { background: #4682B4; color: #000; }
+    .category-horror { background: #DC143C; color: #FFF; }
+    .category-drama { background: #FFD700; color: #000; }
+    .category-simulizi { background: var(--accent-purple); color: #FFF; }
+    .category-ujasusi-simulizi,
+    .category-huzuni-simulizi,
+    .category-horror-simulizi,
+    .category-drama-simulizi { background: var(--accent-purple); color: #FFF; }
+    .category-video { background: var(--accent-blue); color: #FFF; }
+
+    .service-btn, .whatsapp-btn {
+      position: fixed;
+      right: 20px;
+      background: var(--neon-pink);
+      color: var(--dark);
+      border: none;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      font-size: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      z-index: 100;
+      transition: var(--transition);
+    }
+
+    .service-btn {
+      bottom: 20px;
+    }
+
+    .whatsapp-btn {
+      bottom: 80px;
+      background: var(--whatsapp-green);
+    }
+
+    .service-btn:hover, .whatsapp-btn:hover {
+      transform: scale(1.2) rotate(360deg);
+      box-shadow: 0 10px 20px var(--neon-cyan);
+    }
+
+    footer {
+      background: var(--darker);
+      color: var(--light-gray);
+      text-align: center;
+      padding: 2rem;
+      font-size: 0.9rem;
+      border-top: 3px solid var(--neon-pink);
+    }
+
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .social-links {
+      color: var(--light);
+      font-size: 1.8rem;
+      transition: var(--transition);
+      margin-left: 20px;
+      margin-right: 20px;
+    }
+
+    .social-links a:hover {
+      color: var(--neon-cyan);
+      transform: scale(1.3);
+    }
+
+    @media (max-width: 992px) {
+      .main-container { padding: 2rem; }
+      .hero-title { font-size: 2rem; }
+      .hero-subtitle { font-size: 1rem; }
+    }
+
+    @media (max-width: 768px) {
+      header { padding: 1rem; flex-wrap: wrap; }
+      .hamburger { display: block; }
+      .user-menu { display: none; }
+      .user-menu.active { display: block; width: 100%; position: absolute; top: 100%; left: 0; background: var(--header-bg-start); padding: 1rem; box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3); }
+      .user-dropdown { width: 100%; }
+      .logo-container img { height: 35px; }
+      .logo-text { font-size: 1.5rem; }
+      .stories-grid { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+    }
+
+    @media (max-width: 576px) {
+      .main-container { padding: 1rem; }
+      .category-title { font-size: 1.7rem; }
+      .stories-grid { grid-template-columns: 1fr; }
+      .hero-title { font-size: 1.8rem; }
+      .hero-subtitle { font-size: 0.9rem; }
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+  <div class="hero-section">
+    <h1 class="hero-title">SIMULIZI HOUSE- Hadithi za Bure</h1>
+    <p class="hero-subtitle">Soma Hadithi za Bure Zisizosahaulika - Simulizi, Drama, Ujasusi na Zaidi!</p>
+    <a href="#bure-stories" class="hero-btn">Anza Kusoma Sasa</a>
+  </div>
+
+  <header>
+    <div class="logo-container">
+      <img src="/Picsart_26-05-13_01-57-22-165.png" alt="SIMULIZI HOUSE Logo">
+      <div class="logo-text">SIMULIZI HOUSE</div>
+    </div>
+    <div class="hamburger" id="hamburger">
+      <i class="fas fa-bars"></i>
+    </div>
+    <div class="user-menu" id="userMenu">
+      <button class="user-btn" id="userBtn"><i class="fas fa-user"></i> Akaunti</button>
+      <div class="user-dropdown" id="userDropdown">
+        <div class="user-info" id="userInfo">
+          <div><label>Jina la Mtumiaji:</label><input type="text" id="username" readonly></div>
+          <div><label>Nenosiri:</label><input type="password" id="password" readonly><span class="password-toggle" id="passwordToggle"><i class="fas fa-eye"></i></span></div>
+          <div><label>Barua Pepe:</label><input type="email" id="email" readonly></div>
+          <div><label>Namba ya Simu:</label><input type="text" id="phone" readonly></div>
+          <div class="auth-btn" id="authBtn">Login</div>
+        </div>
+      </div>
+    </div>
+    <button class="theme-toggle" id="themeToggle" title="Badilisha Moduli">
+      <i class="fas fa-moon"></i>
+    </button>
+  </header>
+
+  <div class="main-container">
+    <h2 class="category-title" id="bure-stories">
+      <span><i class="fas fa-gift"></i> Hadithi za Bure</span>
+    </h2>
+    <div class="stories-grid" id="bure-stories-grid">
+      <div class="loading-spinner" style="text-align: center; padding: 2rem;">
+        <div class="spinner" style="border: 8px solid #f3f3f3; border-top: 8px solid var(--neon-cyan); border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin: 0 auto;"></div>
+        <p>Inapakia hadithi...</p>
+      </div>
+    </div>
+  </div>
+
+  <button class="service-btn" onclick="location.href='huduma.html'" title="Huduma kwa Wateja">
+    <i class="fas fa-headset"></i>
+  </button>
+  <a href="https://chat.whatsapp.com/BxPl7HYjyhkGKZPvuxhp4Y" target="_blank" class="whatsapp-btn" title="Jiunge na WhatsApp Group">
+    <i class="fab fa-whatsapp"></i>
+  </a>
+
+  <footer>
+    <div class="footer-content">
+      <div class="social-links">
+        <a href="https://facebook.com/storieszone" target="_blank"><i class="fab fa-facebook"></i></a>
+        <a href="https://x.com/storieszone" target="_blank"><i class="fab fa-twitter"></i></a>
+        <a href="https://instagram.com/storieszone" target="_blank"><i class="fab fa-instagram"></i></a>
+        <a href="https://youtube.com/@storieszone" target="_blank"><i class="fab fa-youtube"></i></a>
+      </div>
+      <p>© <span id="current-year"></span> SIMULIZI HOUSE- Hadithi za Kisasa</p>
+      <p>Haki Zote Zimehifadhiwa</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script>
+    // Initialize Supabase with different variable name to avoid CDN conflict
+    const supabaseUrl = 'https://btnzevupmwsdubpgjpds.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ0bnpldnVwbXdzZHVicGdqcGRzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAyNDEyMzAsImV4cCI6MjA2NTgxNzIzMH0.Cn36rmP6IeSI-LfTUgViCcpBzeqlpplDbSPH3pXrCg4';
+    const _supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+    // Hamburger menu toggle
+    const hamburger = document.getElementById('hamburger');
+    const userMenu = document.getElementById('userMenu');
+
+    hamburger.addEventListener('click', () => {
+      userMenu.classList.toggle('active');
+      hamburger.querySelector('i').classList.toggle('fa-bars');
+      hamburger.querySelector('i').classList.toggle('fa-times');
+    });
+
+    // User menu toggle
+    const userBtn = document.getElementById('userBtn');
+    const userDropdown = document.getElementById('userDropdown');
+    userBtn.addEventListener('click', () => {
+      userDropdown.classList.toggle('active');
+    });
+
+    // Password toggle
+    const passwordInput = document.getElementById('password');
+    const passwordToggle = document.getElementById('passwordToggle');
+    passwordToggle.addEventListener('click', () => {
+      if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        passwordToggle.innerHTML = '<i class="fas fa-eye-slash"></i>';
+      } else {
+        passwordInput.type = 'password';
+        passwordToggle.innerHTML = '<i class="fas fa-eye"></i>';
+      }
+    });
+
+    // Theme toggle
+    const themeToggle = document.getElementById('themeToggle');
+    themeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('light-theme');
+      themeToggle.querySelector('i').classList.toggle('fa-moon');
+      themeToggle.querySelector('i').classList.toggle('fa-sun');
+      localStorage.setItem('theme', document.body.classList.contains('light-theme') ? 'light' : 'dark');
+    });
+
+    // Load theme preference
+    window.addEventListener('load', () => {
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme === 'light') {
+        document.body.classList.add('light-theme');
+        themeToggle.querySelector('i').classList.replace('fa-moon', 'fa-sun');
+      }
+    });
+
+    // Set current year in footer
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+
+    // User authentication and info with synchronization
+    async function updateUserInfo() {
+      const { data: { user } } = await _supabaseClient.auth.getUser();
+      const authBtn = document.getElementById('authBtn');
+      const usernameInput = document.getElementById('username');
+      const passwordInput = document.getElementById('password');
+      const emailInput = document.getElementById('email');
+      const phoneInput = document.getElementById('phone');
+
+      if (user) {
+        usernameInput.value = user.user_metadata?.name || user.user_metadata?.username || 'Mtumiaji';
+        passwordInput.value = '********';
+        emailInput.value = user.email || '';
+        phoneInput.value = user.user_metadata?.phone || '';
+        authBtn.textContent = 'Ondoka';
+        authBtn.onclick = async () => {
+          await _supabaseClient.auth.signOut();
+          showCustomAlert('success', 'Umetoka kwenye akaunti.');
+          setTimeout(() => window.location.href = 'login.html', 1000);
+        };
+      } else {
+        usernameInput.value = '';
+        passwordInput.value = '';
+        emailInput.value = '';
+        phoneInput.value = '';
+        authBtn.textContent = 'Login';
+        authBtn.onclick = () => window.location.href = 'login.html';
+      }
+    }
+
+    // Check user authentication
+    async function checkAuthAndLoad() {
+      const { data: { user } } = await _supabaseClient.auth.getUser();
+      updateUserInfo();
+      if (!user) {
+        showCustomAlert('error', 'Tafadhali ingia kwanza.');
+        setTimeout(() => window.location.href = 'login.html', 2000);
+      } else {
+        await loadStories();
+      }
+    }
+
+    async function loadStories() {
+      const grid = document.getElementById('bure-stories-grid');
+      try {
+        const { data: stories, error } = await _supabaseClient
+          .from('stories')
+          .select('*')
+          .eq('price', 0)
+          .order('created_at', { ascending: false });
+
+        if (error) {
+          grid.innerHTML = `<p style="text-align: center; padding: 2rem;">Hitilafu: ${error.message}</p>`;
+        } else if (!stories || stories.length === 0) {
+          grid.innerHTML = '<p style="text-align: center; padding: 2rem;">Hakuna hadithi za bure kwa sasa.</p>';
+        } else {
+          grid.innerHTML = stories.map(story => `
+            <div class="story-card" onclick="handleStoryClick('${story.id}')">
+              <div class="story-image">
+                <img src="${story.thumbnail_url || 'https://via.placeholder.com/600x800/cccccc/999999?text=No+Image'}" alt="${story.title}">
+                <div class="story-badge">Bure</div>
+              </div>
+              <div class="story-content">
+                <h3 class="story-title">${story.title}</h3>
+                <p class="story-description">${story.summary || 'Hakuna maelezo'}</p>
+                <div class="story-meta">
+                  <span class="story-price">0 TZS</span>
+                  <span class="story-category category-${story.category.toLowerCase()}">${story.category.charAt(0).toUpperCase() + story.category.slice(1)}</span>
+                </div>
+              </div>
+            </div>
+          `).join('');
+        }
+      } catch (error) {
+        grid.innerHTML = `<p style="text-align: center; padding: 2rem;">Hitilafu ya mtandao: ${error.message}</p>`;
+      }
+    }
+
+    function showCustomAlert(type, message) {
+      const alertDiv = document.createElement('div');
+      alertDiv.className = `custom-alert ${type}`;
+      alertDiv.innerHTML = `
+        <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i>
+        <span>${message}</span>
+        <span class="close-btn" onclick="this.parentElement.remove()">×</span>
+      `;
+      document.body.appendChild(alertDiv);
+      setTimeout(() => alertDiv.classList.add('show'), 10);
+      setTimeout(() => {
+        alertDiv.classList.remove('show');
+        setTimeout(() => alertDiv.remove(), 300);
+      }, 5000);
+    }
+
+    async function handleStoryClick(storyId) {
+      const user = await checkUserAuth();
+      if (!user) return;
+
+      const { data: story, error } = await _supabaseClient
+        .from('stories')
+        .select('*')
+        .eq('id', storyId)
+        .single();
+
+      if (error) {
+        showCustomAlert('error', 'Hitilafu: Imeshindwa kupakia hadithi.');
+        return;
+      }
+      window.location.href = `story.html?id=${storyId}`;
+    }
+
+    async function checkUserAuth() {
+      const { data: { user } } = await _supabaseClient.auth.getUser();
+      if (!user) {
+        showCustomAlert('error', 'Tafadhali ingia kwanza ili uweze kuona hadithi.');
+        setTimeout(() => window.location.href = 'login.html', 2000);
+        return false;
+      }
+      return user;
+    }
+
+    document.addEventListener('contextmenu', e => e.preventDefault());
+    document.addEventListener('keydown', e => {
+      if (e.key === 'PrintScreen' || (e.ctrlKey && ['c','u','v','s','p'].includes(e.key.toLowerCase())) || e.key === 'F12') {
+        e.preventDefault();
+        showCustomAlert('error', 'Hakuna kuruhusiwa kunakili au kufungua zana za msanidi.');
+      }
+    });
+
+    window.handleStoryClick = handleStoryClick;
+    window.addEventListener('load', checkAuthAndLoad);
+  </script>
+</body>
+</html>

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Thibitisha Malipo ya Hadithi</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 400px;
+      margin: 40px auto;
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      background-color: #f5f5f5;
+    }
+    label, input, button {
+      display: block;
+      width: 100%;
+      margin-bottom: 15px;
+    }
+    label {
+      font-weight: bold;
+      color: #333;
+    }
+    input {
+      padding: 10px;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      transition: border-color 0.3s ease;
+    }
+    input:focus {
+      border-color: #007bff;
+      outline: none;
+      box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+    }
+    button {
+      background-color: #007bff;
+      color: white;
+      padding: 12px;
+      border: none;
+      cursor: pointer;
+      font-size: 1rem;
+      border-radius: 5px;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+    button:hover:not(:disabled) {
+      background-color: #0056b3;
+      transform: translateY(-2px);
+    }
+    button:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+    .message {
+      margin-top: 15px;
+      font-weight: bold;
+    }
+
+    /* Custom Alert Styles */
+    .custom-alert {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background-color: #2ecc71;
+      color: white;
+      padding: 15px 25px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      z-index: 1000;
+      transform: translateX(120%);
+      transition: transform 0.3s ease-out, opacity 0.3s ease;
+      opacity: 0;
+    }
+
+    .custom-alert.show {
+      transform: translateX(0);
+      opacity: 1;
+    }
+
+    .custom-alert.error {
+      background-color: #e74c3c;
+    }
+
+    .custom-alert i {
+      font-size: 1.5rem;
+    }
+
+    .custom-alert .close-btn {
+      margin-left: 15px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 1.2rem;
+    }
+
+    /* Loading Spinner */
+    .spinner {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: #fff;
+      animation: spin 1s ease-in-out infinite;
+      margin-right: 10px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+  <h2>Thibitisha Malipo ya Hadithi</h2>
+  <form id="paymentForm">
+    <label for="referenceCode">Ingiza Reference Code ya Malipo</label>
+    <input type="text" id="referenceCode" name="referenceCode" required placeholder="Mfano: REF22258408OK" />
+    <button type="submit">Thibitisha Malipo</button>
+  </form>
+  <div class="message" id="message"></div>
+
+  <script>
+    const form = document.getElementById('paymentForm');
+    const messageDiv = document.getElementById('message');
+
+    // Function to show custom alert
+    function showCustomAlert(type, message) {
+      const alertDiv = document.createElement('div');
+      alertDiv.className = `custom-alert ${type}`;
+      alertDiv.innerHTML = `
+        <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i>
+        <span>${message}</span>
+        <span class="close-btn" onclick="this.parentElement.remove()">×</span>
+      `;
+      
+      document.body.appendChild(alertDiv);
+      
+      setTimeout(() => {
+        alertDiv.classList.add('show');
+      }, 10);
+      
+      setTimeout(() => {
+        alertDiv.classList.remove('show');
+        setTimeout(() => {
+          alertDiv.remove();
+        }, 300);
+      }, 5000);
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const referenceCode = document.getElementById('referenceCode').value.trim();
+      if (!referenceCode) {
+        showCustomAlert('error', 'Tafadhali ingiza reference code.');
+        return;
+      }
+
+      messageDiv.innerHTML = '<span class="spinner"></span> Tunasubiri uthibitisho...';
+      form.querySelector('button').disabled = true;
+
+      try {
+        // Badilisha URL hapa kwa API yako halisi
+        const hadithiId = 'YOUR_HADITHI_ID_HERE'; // Badilisha na ID halisi ya hadithi
+        const response = await fetch(`/api/v1/hadithi/${hadithiId}/verify-payment`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            // Ikiwa unatumia JWT authentication, ongeza header hapa:
+            // 'Authorization': 'Bearer YOUR_JWT_TOKEN'
+          },
+          body: JSON.stringify({ referenceCode })
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+          showCustomAlert('success', data.message || '🎉 Malipo yamethibitishwa! Sasa unaweza kufurahia hadithi.');
+          messageDiv.textContent = '';
+          // Hapa unaweza kuongeza action kama kuanzisha kusikiliza hadithi, redirect n.k.
+        } else {
+          showCustomAlert('error', data.message || 'Malipo hayajathibitishwa. Tafadhali jaribu tena.');
+          messageDiv.textContent = '';
+        }
+      } catch (error) {
+        showCustomAlert('error', 'Kuna tatizo la mtandao. Tafadhali jaribu tena baadaye.');
+        messageDiv.textContent = '';
+      } finally {
+        form.querySelector('button').disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>

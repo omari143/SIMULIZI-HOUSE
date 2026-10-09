@@ -1,0 +1,2313 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIMULIZI HOUSE- Series</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root {
+            --primary: #FF3D81;
+            --secondary: #00F0FF;
+            --neon-pink: #FF1F8A;
+            --neon-cyan: #00F0FF;
+            --accent-purple: #8A2BE2;
+            --dark: #ffffff;
+            --darker: #f5f5f5;
+            --light: #000000;
+            --gray: #f9f9f9;
+            --light-gray: #666666;
+            --whatsapp-green: #25D366;
+            --header-bg-start: #ffffff;
+            --header-bg-end: #e0e0e0;
+            --accent-blue: #000000;
+            --transition: all 0.4s ease;
+        }
+
+        body.dark-theme {
+            --primary: #FF3D81;
+            --secondary: #00F0FF;
+            --dark: #0A0A12;
+            --darker: #05050A;
+            --light: #FFFFFF;
+            --gray: #1F1F2E;
+            --light-gray: #E0E0E0;
+            --neon-pink: #FF1F8A;
+            --neon-cyan: #00F0FF;
+            --header-bg-start: #1B0034;
+            --header-bg-end: #3A006F;
+            --accent-purple: #8A2BE2;
+            --accent-blue: #1E90FF;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Added html overflow-x hidden to prevent horizontal scroll */
+        html {
+            overflow-x: hidden;
+        }
+        /* </CHANGE> */
+
+        body {
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--dark);
+            color: var(--light);
+            transition: var(--transition);
+            padding-bottom: 80px;
+            overflow-x: hidden;
+            /* Added max-width to prevent body overflow */
+            max-width: 100vw;
+            /* </CHANGE> */
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, var(--header-bg-start), var(--header-bg-end));
+            padding: 0.8rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border-bottom: 2px solid #000000;
+            border-radius: 0 0 20px 20px;
+            /* Prevent header from causing overflow */
+            max-width: 100vw;
+            /* </CHANGE> */
+        }
+
+        body.dark-theme header {
+            border-bottom: 2px solid var(--secondary);
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-container img {
+            height: 60px;
+            width: 60px;
+            border-radius: 50%;
+            border: 3px solid #000000;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+            animation: spinGlow 3s linear infinite;
+            transition: var(--transition);
+            object-fit: cover;
+        }
+
+        body.dark-theme .logo-container img {
+            border-color: var(--secondary);
+            box-shadow: 0 0 15px var(--neon-cyan);
+        }
+
+        @keyframes spinGlow {
+            0% { box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); transform: rotate(0deg); }
+            50% { box-shadow: 0 0 20px rgba(0, 0, 0, 0.5); }
+            100% { box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); transform: rotate(360deg); }
+        }
+
+        body.dark-theme .logo-container img {
+            animation: spinGlowDark 3s linear infinite;
+        }
+
+        @keyframes spinGlowDark {
+            0% { box-shadow: 0 0 15px var(--neon-cyan); transform: rotate(0deg); }
+            50% { box-shadow: 0 0 25px var(--neon-pink); }
+            100% { box-shadow: 0 0 15px var(--neon-cyan); transform: rotate(360deg); }
+        }
+
+        .logo-text {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: #000000;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            text-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+            line-height: 1;
+            /* Make logo text wrap on very small screens */
+            word-break: break-word;
+            /* </CHANGE> */
+        }
+
+        body.dark-theme .logo-text {
+            color: var(--primary);
+            text-shadow: 0 0 8px var(--neon-pink);
+        }
+
+        .nav-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .nav-btn {
+            background: #000000;
+            color: #ffffff;
+            padding: 8px 16px;
+            border-radius: 25px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            border: 2px solid transparent;
+            cursor: pointer;
+        }
+
+        body.dark-theme .nav-btn {
+            background: var(--primary);
+            color: #FFFFFF;
+            box-shadow: 0 4px 12px var(--neon-pink);
+        }
+
+        .nav-btn:hover {
+            background: #333333;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+            transform: translateY(-2px);
+            border-color: #000000;
+        }
+
+        body.dark-theme .nav-btn:hover {
+            background: var(--secondary);
+            color: #000000;
+            border-color: var(--accent-blue);
+            box-shadow: 0 6px 20px var(--neon-cyan);
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            color: #000000;
+            font-size: 1.3rem;
+            cursor: pointer;
+            transition: var(--transition);
+            padding: 5px 10px;
+            border-radius: 10px;
+        }
+
+        body.dark-theme .theme-toggle {
+            color: var(--primary);
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.2) rotate(15deg);
+            color: #333333;
+        }
+
+        body.dark-theme .theme-toggle:hover {
+            color: var(--neon-cyan);
+        }
+
+        /* Main Container */
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1.5rem;
+            /* Ensure main container doesn't overflow */
+            width: 100%;
+            overflow-x: hidden;
+            /* </CHANGE> */
+        }
+
+        /* Search Container */
+        .search-container {
+            position: relative;
+            margin-bottom: 2rem;
+            /* Ensure search container stays within bounds */
+            width: 100%;
+            /* </CHANGE> */
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 18px 25px;
+            font-size: 1.1rem;
+            border: 3px solid #000000;
+            border-radius: 50px;
+            background: #FFFFFF;
+            color: #000000;
+            outline: none;
+            transition: var(--transition);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+            font-weight: 500;
+            /* Ensure search box doesn't overflow */
+            max-width: 100%;
+            box-sizing: border-box;
+            /* </CHANGE> */
+        }
+
+        body.dark-theme .search-box {
+            background: var(--gray);
+            color: #FFFFFF;
+            border-color: var(--secondary);
+            box-shadow: 0 6px 20px rgba(0, 240, 255, 0.3);
+        }
+
+        .search-box:focus {
+            transform: scale(1.02);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+            border-color: #333333;
+        }
+
+        body.dark-theme .search-box:focus {
+            box-shadow: 0 8px 25px var(--neon-cyan);
+            border-color: var(--neon-pink);
+        }
+
+        /* Series Grid */
+        .series-grid {
+            display: grid;
+            /* Changed minmax to use smaller minimum for mobile screens */
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            /* </CHANGE> */
+            gap: 0.8rem;
+            margin-bottom: 2rem;
+        }
+
+        .series-card {
+            background: #FFFFFF;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            transition: var(--transition);
+            cursor: pointer;
+            position: relative;
+            border: 1px solid #E0E0E0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        body.dark-theme .series-card {
+            background: linear-gradient(135deg, rgba(31,31,46,0.9), rgba(10,10,18,0.95));
+            border-color: rgba(0,240,255,0.3);
+            color: #FFFFFF;
+        }
+
+        .series-card:hover {
+            transform: translateY(-5px) scale(1.03);
+            box-shadow: 0 8px 25px rgba(255,31,138,0.4), 0 0 15px rgba(0,240,255,0.3);
+            border-color: var(--neon-pink);
+        }
+
+        .series-image {
+            width: 100%;
+            height: 140px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .series-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+
+        .series-card:hover .series-image img {
+            transform: scale(1.08) rotate(1deg);
+            filter: brightness(1.1);
+        }
+
+        .series-content {
+            padding: 0.6rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+        .series-title {
+            font-size: 0.75rem;
+            margin: 0;
+            color: #000;
+            font-weight: 700;
+            line-height: 1.2;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        body.dark-theme .series-title {
+            color: #FFFFFF;
+        }
+
+        .series-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 0.3rem;
+            flex-wrap: wrap;
+        }
+
+        .series-episodes {
+            padding: 0.2rem 0.4rem;
+            border-radius: 8px;
+            font-size: 0.6rem;
+            font-weight: 800;
+            background: var(--accent-purple);
+            color: #FFF;
+        }
+
+        .series-status {
+            padding: 0.2rem 0.4rem;
+            border-radius: 8px;
+            font-size: 0.6rem;
+            font-weight: 800;
+        }
+
+        .status-active { background: #32CD32; color: #000; }
+        .status-completed { background: #FFD700; color: #000; }
+
+        .series-share {
+            display: flex;
+            justify-content: center;
+            gap: 3px;
+            margin-top: 0.3rem;
+            padding-top: 0.3rem;
+            border-top: 1px solid rgba(160,160,192,0.2);
+        }
+
+        .share-btn {
+            padding: 2px 5px;
+            border-radius: 6px;
+            font-size: 0.55rem;
+            font-weight: 700;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .share-whatsapp { background: #25D366; color: #FFF; }
+        .share-facebook { background: #1877F2; color: #FFF; }
+        .share-twitter { background: #1DA1F2; color: #FFF; }
+        .share-telegram { background: #0088CC; color: #FFF; }
+
+        .share-btn:hover { transform: scale(1.1); }
+
+        /* Series Detail View */
+        .series-detail-view {
+            display: none;
+        }
+
+        .series-detail-view.active {
+            display: block;
+        }
+
+        .series-list-view.hidden {
+            display: none;
+        }
+
+        .back-btn {
+            background: linear-gradient(135deg, var(--primary), var(--accent-purple));
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 1.5rem;
+            transition: var(--transition);
+        }
+
+        .back-btn:hover {
+            transform: translateX(-5px);
+            box-shadow: 0 5px 20px var(--neon-pink);
+        }
+
+        .series-header {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            background: #FFFFFF;
+            border-radius: 20px;
+            padding: 1.5rem;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            /* Ensure series header wraps properly */
+            flex-wrap: wrap;
+            width: 100%;
+            /* </CHANGE> */
+        }
+
+        body.dark-theme .series-header {
+            background: var(--gray);
+            border: 2px solid var(--secondary);
+        }
+
+        .series-cover {
+            width: 150px;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .series-info {
+            flex: 1;
+        }
+
+        .series-title-big {
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin: 0 0 10px 0;
+            color: var(--primary);
+        }
+
+        .series-meta-big {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .meta-tag {
+            background: rgba(255, 61, 129, 0.2);
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .series-description {
+            color: var(--light-gray);
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        .season-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            /* Ensure season selector doesn't overflow */
+            width: 100%;
+            /* </CHANGE> */
+        }
+
+        .season-btn {
+            padding: 10px 20px;
+            border-radius: 25px;
+            border: 2px solid var(--secondary);
+            background: transparent;
+            color: var(--secondary);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .season-btn.active,
+        .season-btn:hover {
+            background: var(--secondary);
+            color: #000;
+        }
+
+        .episodes-grid {
+            display: grid;
+            /* Changed minmax to use 280px instead of 300px for better mobile fit */
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            /* </CHANGE> */
+            gap: 1rem;
+        }
+
+        .episode-card {
+            background: #FFFFFF;
+            border-radius: 15px;
+            padding: 1rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        body.dark-theme .episode-card {
+            background: var(--gray);
+            border: 1px solid rgba(0,240,255,0.3);
+        }
+
+        .episode-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px var(--neon-cyan);
+        }
+
+        .episode-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .episode-number {
+            background: linear-gradient(135deg, var(--neon-pink), var(--accent-purple));
+            color: #fff;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+        }
+
+        .episode-price {
+            font-weight: 800;
+            font-size: 0.65rem;
+            background: linear-gradient(135deg, var(--neon-pink), var(--neon-cyan));
+            color: #000;
+            padding: 2px 6px;
+            border-radius: 8px;
+        }
+
+        .episode-free { background: #32CD32; }
+
+        .episode-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin: 0 0 8px 0;
+        }
+
+        .episode-meta {
+            display: flex;
+            gap: 15px;
+            font-size: 0.85rem;
+            color: var(--light-gray);
+            margin-bottom: 10px;
+        }
+
+        .episode-description {
+            color: var(--light-gray);
+            font-size: 0.9rem;
+            line-height: 1.5;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        /* Added styles for episode stats (views, likes, comments) */
+        .episode-stats {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            gap: 0.8rem;
+            margin-top: 0.8rem;
+            padding-top: 0.8rem;
+            border-top: 1px solid rgba(160,160,192,0.2);
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .episode-stat-item {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            color: var(--light-gray);
+        }
+
+        .episode-stat-item i {
+            font-size: 0.9rem;
+        }
+
+        .stat-views i {
+            color: #1E90FF;
+        }
+
+        .stat-likes i {
+            color: #FF3D81;
+        }
+
+        .stat-comments i {
+            color: #FFD700;
+        }
+        /* </CHANGE> */
+
+        .episode-share {
+            display: flex;
+            justify-content: center;
+            gap: 3px;
+            margin-top: 0.3rem;
+            padding-top: 0.3rem;
+            border-top: 1px solid rgba(160,160,192,0.2);
+        }
+
+        /* Intro Modal */
+        .intro-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+        }
+
+        .intro-modal.show {
+            display: flex;
+        }
+
+        .intro-modal-content {
+            background: #FFFFFF;
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            border: 3px solid #000000;
+            /* Ensure modal content doesn't overflow horizontally */
+            overflow-x: hidden;
+            word-wrap: break-word;
+            /* </CHANGE> */
+        }
+
+        body.dark-theme .intro-modal-content {
+            background: var(--gray);
+            border-color: var(--secondary);
+            box-shadow: 0 10px 40px rgba(0, 240, 255, 0.5);
+        }
+
+        .intro-close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 2rem;
+            font-weight: bold;
+            color: #000000;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        body.dark-theme .intro-close-btn {
+            color: #FFFFFF;
+        }
+
+        .intro-close-btn:hover {
+            transform: scale(1.2) rotate(90deg);
+            color: #FF0000;
+        }
+
+        .intro-title {
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            color: #000000;
+            text-align: center;
+            border-bottom: 3px solid #000000;
+            padding-bottom: 1rem;
+        }
+
+        body.dark-theme .intro-title {
+            color: #FFFFFF;
+            border-bottom-color: var(--secondary);
+        }
+
+        /* Added likes and views stats section */
+        .intro-stats {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 15px;
+        }
+
+        body.dark-theme .intro-stats {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .stat-item i {
+            font-size: 1.5rem;
+        }
+
+        .views-count {
+            color: #1E90FF;
+        }
+
+        .views-count i {
+            color: #1E90FF;
+        }
+
+        .likes-count {
+            color: #FF3D81;
+        }
+
+        .like-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 1.5rem;
+            color: #999;
+            padding: 0.5rem;
+        }
+
+        .like-btn.liked {
+            color: #FF3D81;
+            animation: likeAnimation 0.4s ease;
+        }
+
+        .like-btn:hover {
+            transform: scale(1.2);
+        }
+
+        @keyframes likeAnimation {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.3); }
+            100% { transform: scale(1); }
+        }
+        /* </CHANGE> */
+
+        .intro-body {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #333333;
+            margin-bottom: 2rem;
+            white-space: pre-wrap;
+            /* Ensure text wraps properly in modal */
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            /* </CHANGE> */
+        }
+
+        #introMediaType {
+            text-align: center;
+            padding: 0.5rem 0;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--primary);
+            display: none;
+        }
+
+        .intro-actions {
+            display: flex;
+            justify-content: center;
+        }
+
+        .intro-read-more-btn {
+            width: 100%;
+            background: #000000;
+            color: #FFFFFF;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        body.dark-theme .intro-read-more-btn {
+            background: var(--primary);
+            color: #FFFFFF;
+            box-shadow: 0 6px 20px var(--neon-pink);
+        }
+
+        .intro-read-more-btn:hover {
+            background: #333333;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+        }
+
+        body.dark-theme .intro-read-more-btn:hover {
+            background: var(--secondary);
+            color: #000000;
+            box-shadow: 0 8px 25px var(--neon-cyan);
+        }
+
+        /* NEW Payment Modal Styles - KUTOKA FAILI YA KWANZA */
+        .payment-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+        }
+
+        .payment-modal.show {
+            display: flex;
+        }
+
+        .payment-modal-content {
+            background: #FFFFFF;
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            border: 3px solid #000000;
+        }
+
+        body.dark-theme .payment-modal-content {
+            background: var(--gray);
+            border-color: var(--secondary);
+            box-shadow: 0 10px 40px rgba(0, 240, 255, 0.5);
+        }
+
+        .payment-modal-content .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 2rem;
+            font-weight: bold;
+            color: #000000;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        body.dark-theme .payment-modal-content .close-btn {
+            color: #FFFFFF;
+        }
+
+        .payment-modal-content .close-btn:hover {
+            transform: scale(1.2) rotate(90deg);
+            color: #FF0000;
+        }
+
+        .payment-prompt h3 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #000000;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        body.dark-theme .payment-prompt h3 {
+            color: #FFFFFF;
+        }
+
+        .payment-prompt p {
+            text-align: center;
+            margin-bottom: 1rem;
+            color: #333333;
+        }
+
+        body.dark-theme .payment-prompt p {
+            color: #E0E0E0;
+        }
+
+        .payment-methods {
+            margin-bottom: 1.5rem;
+        }
+
+        .payment-methods .payment-btn {
+            width: 100%;
+            background: linear-gradient(135deg, var(--neon-pink), var(--accent-purple));
+            color: #FFFFFF;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 15px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 4px 12px rgba(255, 31, 138, 0.4);
+        }
+
+        .payment-methods .payment-btn:hover {
+            background: linear-gradient(135deg, var(--neon-cyan), var(--neon-pink));
+            transform: scale(1.02);
+        }
+
+        .payment-confirmation {
+            background: #f9f9f9;
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-bottom: 1rem;
+        }
+
+        body.dark-theme .payment-confirmation {
+            background: var(--darker);
+        }
+
+        .payment-number {
+            font-size: 1.8rem;
+            font-weight: 800;
+            text-align: center;
+            color: var(--neon-pink);
+            background: #000000;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 1rem 0;
+        }
+
+        body.dark-theme .payment-number {
+            background: var(--gray);
+        }
+
+        .payment-steps {
+            padding-left: 1.5rem;
+            line-height: 1.8;
+            color: #333333;
+        }
+
+        body.dark-theme .payment-steps {
+            color: #E0E0E0;
+        }
+
+        .payment-verification {
+            margin-top: 1.5rem;
+        }
+
+        .payment-verification h3 {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: #000000;
+        }
+
+        body.dark-theme .payment-verification h3 {
+            color: #FFFFFF;
+        }
+
+        .payment-verification form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .payment-verification label {
+            font-weight: 600;
+            color: #333333;
+        }
+
+        body.dark-theme .payment-verification label {
+            color: #E0E0E0;
+        }
+
+        .payment-verification input {
+            width: 100%;
+            padding: 15px 20px;
+            font-size: 1rem;
+            border: 2px solid #000000;
+            border-radius: 10px;
+            background: #FFFFFF;
+            color: #000000;
+            outline: none;
+            transition: var(--transition);
+        }
+
+        body.dark-theme .payment-verification input {
+            background: var(--darker);
+            color: #FFFFFF;
+            border-color: var(--secondary);
+        }
+
+        .payment-verification input:focus {
+            border-color: var(--neon-pink);
+            box-shadow: 0 0 10px rgba(255, 31, 138, 0.3);
+        }
+
+        .payment-verification button[type="submit"] {
+            width: 100%;
+            background: #000000;
+            color: #FFFFFF;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        body.dark-theme .payment-verification button[type="submit"] {
+            background: var(--primary);
+            box-shadow: 0 6px 20px var(--neon-pink);
+        }
+
+        .payment-verification button[type="submit"]:hover {
+            background: #333333;
+            transform: translateY(-3px);
+        }
+
+        body.dark-theme .payment-verification button[type="submit"]:hover {
+            background: var(--secondary);
+            color: #000000;
+        }
+
+        .countdown {
+            text-align: center;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, var(--neon-pink), var(--accent-purple));
+            color: #FFFFFF;
+            border-radius: 15px;
+            margin-top: 1rem;
+            font-weight: 700;
+        }
+
+        .countdown-number {
+            font-size: 3rem;
+            font-weight: 800;
+            display: block;
+            margin: 0.5rem 0;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .payment-processing {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .payment-processing i {
+            font-size: 3rem;
+            color: var(--neon-pink);
+            margin-bottom: 1rem;
+        }
+
+        .message {
+            margin-top: 1rem;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .message.success {
+            background: #28a745;
+            color: #FFFFFF;
+        }
+
+        .message.error {
+            background: #dc3545;
+            color: #FFFFFF;
+        }
+
+        /* Loading Spinner */
+        .loading-spinner {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem;
+            gap: 1rem;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(0, 0, 0, 0.1);
+            border-top-color: #000000;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        body.dark-theme .spinner {
+            border-color: rgba(255, 255, 255, 0.1);
+            border-top-color: var(--secondary);
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Alert System */
+        .alert-container {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            z-index: 3000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-width: 400px;
+        }
+
+        .alert {
+            background: #FFFFFF;
+            color: #000000;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+            border-left: 5px solid #000000;
+            animation: slideInRight 0.4s ease-out;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 600;
+        }
+
+        body.dark-theme .alert {
+            background: var(--gray);
+            color: #FFFFFF;
+            border-left-color: var(--secondary);
+            box-shadow: 0 6px 20px rgba(0, 240, 255, 0.4);
+        }
+
+        .alert.success { border-left-color: #28a745; }
+        .alert.error { border-left-color: #dc3545; }
+        .alert.info { border-left-color: #17a2b8; }
+
+        @keyframes slideInRight {
+            from { transform: translateX(400px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(135deg, #FFFFFF, #E0E0E0);
+            border-top: 2px solid #000000;
+            border-radius: 25px 25px 0 0;
+            padding: 12px 0;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.15);
+            z-index: 999;
+        }
+
+        body.dark-theme .bottom-nav {
+            background: linear-gradient(135deg, var(--header-bg-start), var(--header-bg-end));
+            border-top: 2px solid var(--secondary);
+        }
+
+        .bottom-nav-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: #000000;
+            text-decoration: none;
+            font-size: 0.75rem;
+            font-weight: 600;
+            transition: var(--transition);
+            padding: 8px 15px;
+            border-radius: 15px;
+            cursor: pointer;
+        }
+
+        body.dark-theme .bottom-nav-btn {
+            color: #FFFFFF;
+        }
+
+        .bottom-nav-btn i {
+            font-size: 1.5rem;
+        }
+
+        .bottom-nav-btn:hover,
+        .bottom-nav-btn.active {
+            background: #000000;
+            color: #ffffff;
+            transform: scale(1.1);
+        }
+
+        body.dark-theme .bottom-nav-btn:hover,
+        body.dark-theme .bottom-nav-btn.active {
+            background: var(--secondary);
+            color: #000000;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            /* Enhanced mobile responsive styles */
+            header {
+                padding: 0.6rem 1rem;
+            }
+
+            .logo-text {
+                font-size: 1rem;
+                letter-spacing: 1px;
+            }
+
+            .logo-container img {
+                height: 45px;
+                width: 45px;
+            }
+
+            .nav-btn {
+                padding: 6px 12px;
+                font-size: 0.85rem;
+            }
+
+            .main-container {
+                padding: 1rem;
+            }
+
+            .search-box {
+                padding: 14px 20px;
+                font-size: 1rem;
+            }
+
+            .series-grid {
+                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+                gap: 0.6rem;
+            }
+            /* </CHANGE> */
+
+            .series-header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .series-cover {
+                width: 120px;
+                height: 160px;
+                margin: 0 auto;
+            }
+
+            .episodes-grid {
+                /* Single column on mobile for better readability */
+                grid-template-columns: 1fr;
+                /* </CHANGE> */
+            }
+
+            /* Added modal responsive styles */
+            .intro-modal {
+                padding: 0.5rem;
+            }
+
+            .intro-modal-content {
+                padding: 1.5rem;
+                max-width: 95%;
+            }
+
+            .intro-title {
+                font-size: 1.4rem;
+            }
+
+            .intro-body {
+                font-size: 1rem;
+            }
+
+            .payment-modal-content {
+                width: 95%;
+                padding: 1.5rem;
+                margin: 10% auto;
+            }
+            /* </CHANGE> */
+        }
+
+        /* Added extra small screen breakpoint */
+        @media (max-width: 480px) {
+            .nav-container {
+                gap: 6px;
+            }
+
+            .nav-btn span {
+                display: none;
+            }
+
+            .series-title-big {
+                font-size: 1.4rem;
+            }
+
+            .episode-title {
+                font-size: 1rem;
+            }
+
+            .bottom-nav {
+                padding: 8px 0;
+            }
+
+            .bottom-nav-btn {
+                padding: 6px 10px;
+                font-size: 0.7rem;
+            }
+
+            .bottom-nav-btn i {
+                font-size: 1.2rem;
+            }
+        }
+        /* </CHANGE> */
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="logo-container">
+            <img src="/Picsart_26-05-13_01-57-22-165.png" alt="SIMULIZI HOUSE Logo">
+            <div class="logo-text">SIMULIZI HOUSE</div>
+        </div>
+        <div class="nav-container">
+            <a href="index.html" class="nav-btn"><i class="fas fa-home"></i> Nyumbani</a>
+            <a href="login.html" class="nav-btn" id="loginBtn"><i class="fas fa-sign-in-alt"></i> Ingia</a>
+            <button class="theme-toggle" id="themeToggle" title="Badilisha Moduli">
+                <i class="fas fa-sun"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Alert Container -->
+    <div class="alert-container" id="alertContainer"></div>
+
+    <!-- Introduction Modal -->
+    <div class="intro-modal" id="introModal">
+        <div class="intro-modal-content">
+            <span class="intro-close-btn" onclick="closeIntroModal()">×</span>
+            <h2 class="intro-title" id="introTitle">Kichwa cha Episode</h2>
+            
+            <!-- Added likes and views stats section -->
+            <div class="intro-stats">
+                <div class="stat-item views-count">
+                    <i class="fas fa-eye"></i>
+                    <span id="viewsCount">0</span>
+                </div>
+                <div class="stat-item likes-count">
+                    <button class="like-btn" id="likeBtn" onclick="toggleLike()">
+                        <i class="fas fa-heart"></i>
+                    </button>
+                    <span id="likesCount">0</span>
+                </div>
+            </div>
+            <!-- </CHANGE> -->
+            
+            <div class="intro-body" id="introBody"></div>
+            <div id="introMediaType"></div>
+            <div class="intro-actions">
+                <button class="intro-read-more-btn" id="introReadMoreBtn">Soma Zaidi</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- NEW PAYMENT MODAL - KUTOKA FAILI YA KWANZA -->
+    <div class="payment-modal" id="paymentModal">
+        <div class="payment-modal-content">
+            <span class="close-btn" id="closePaymentModal">×</span>
+            <div class="payment-prompt">
+                <h3>Malipo ya Episode</h3>
+                <p>Unahitaji kulipa TZS <span id="modalPaymentAmount"></span> kwa episode hii. Baada ya malipo, utaweza kuisoma mara nyingine bila kulipa tena.</p>
+                <div class="payment-methods">
+                    <button class="payment-btn tigo" id="tigoPaymentBtn">
+                        <i class="fas fa-mobile-alt"></i> LIPIA KWA TIGO PESA / MIXX BY YAS
+                    </button>
+                </div>
+                <div class="payment-confirmation" id="paymentConfirmation" style="display: none;">
+                    <p>Tuma TZS <span id="confirmationAmount"></span> kwa nambari ifuatayo:</p>
+                    <div class="payment-number">22258408</div>
+                    <p>Jina: OMARI SHOP10</p>
+                    <ol class="payment-steps">
+                        <li>Nenda kwenye menyu ya Mixx by yas / Airtel Money / Halopesa Au M-PESA kwenye simu yako</li>
+                        <li>Chagua "Lipa kwa simu Kama unatumia Mixx by yas. kwa mitandao mingine chagua lipa kwa simu halafu chagua Lipa kwa mixx by yas"</li>
+                        <li>Weka nambari: <strong>22258408</strong></li>
+                        <li>Weka kiasi: <strong><span id="confirmationAmountRepeat"></span></strong></li>
+                        <li>Nenosiri na kuthibitisha</li>
+                        <li>Ingiza reference code kwenye fomu ya uthibitisho hapa chini</li>
+                    </ol>
+                </div>
+                <div class="payment-verification" id="paymentVerification" style="display: none;">
+                    <h3>Thibitisha Malipo</h3>
+                    <form id="paymentForm">
+                        <label for="referenceCode">Ingiza Reference Code ya Malipo</label>
+                        <input type="text" id="referenceCode" name="referenceCode" required placeholder="Mfano: REF22258408OK">
+                        <button type="submit">Thibitisha Malipo</button>
+                        <div class="message" id="verificationMessage"></div>
+                    </form>
+                    <div class="countdown" id="countdownTimer" style="display: none; text-align: center; padding: 30px; background: linear-gradient(135deg, #FF3D81, #00F0FF); border-radius: 20px; margin-top: 20px;">
+                        <p style="font-size: 1.2rem; color: white; margin-bottom: 15px; font-weight: 600;">🎉 Malipo yamekamilika! Hadithi inafunguka kwa:</p>
+                        <span class="countdown-number" id="countdownSeconds" style="font-size: 4rem; font-weight: 800; color: white; display: block; text-shadow: 0 0 20px rgba(255,255,255,0.8); animation: pulse 1s infinite;">15</span>
+                        <p style="font-size: 1.1rem; color: white; margin-top: 15px;">sekunde...</p>
+                    </div>
+                </div>
+                <div class="payment-processing" id="paymentProcessing" style="display: none;">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <p>Inathibitisha malipo yako...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Search -->
+        <div class="search-container">
+            <input type="text" class="search-box" id="searchBox" placeholder="Tafuta series yoyote hapa...">
+        </div>
+
+        <!-- Series List View -->
+        <div class="series-list-view" id="seriesListView">
+            <div class="series-grid" id="seriesGrid">
+                <div class="loading-spinner">
+                    <div class="spinner"></div>
+                    <p>Inapakia series...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Series Detail View -->
+        <div class="series-detail-view" id="seriesDetailView">
+            <button class="back-btn" onclick="showSeriesList()">
+                <i class="fas fa-arrow-left"></i> Rudi Series Zote
+            </button>
+
+            <div class="series-header" id="seriesHeader"></div>
+
+            <div class="season-selector" id="seasonSelector"></div>
+
+            <h3 class="section-title" id="seasonTitle">Episodes za Season 1</h3>
+            <div class="episodes-grid" id="episodesGrid">
+                <div class="loading-spinner">
+                    <div class="spinner"></div>
+                    <p>Inapakia episodes...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <a href="index.html" class="bottom-nav-btn">
+            <i class="fas fa-home"></i>
+            <span>Nyumbani</span>
+        </a>
+        <a href="#" class="bottom-nav-btn active">
+            <i class="fas fa-book"></i>
+            <span>Series</span>
+        </a>
+        <a href="new_stories.html" class="bottom-nav-btn">
+            <i class="fas fa-star"></i>
+            <span>Mpya</span>
+        </a>
+        <a href="trending_videos.html" class="bottom-nav-btn">
+            <i class="fas fa-fire"></i>
+            <span>Trending</span>
+        </a>
+        <a href="profile.html" class="bottom-nav-btn">
+            <i class="fas fa-user"></i>
+            <span>Profaili</span>
+        </a>
+    </nav>
+
+    <script>
+        const SUPABASE_URL = 'https://btnzevupmwsdubpgjpds.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ0bnpldnVwbXdzZHVicGdqcGRzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAyNDEyMzAsImV4cCI6MjA2NTgxNzIzMH0.Cn36rmP6IeSI-LfTUgViCcpBzeqlpplDbSPH3pXrCg4';
+        const dbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        let allSeries = [];
+        let currentSeriesId = null;
+        let currentSeries = null;
+        let currentSeason = 1;
+        let userPaidEpisodes = new Set();
+        let currentEpisodeId = null;
+        let currentEpisodePrice = 0;
+        let currentEpisodeLiked = false;
+        let currentUserId = null;
+
+        // =============== GET USER STORAGE KEY - KUTOKA FAILI YA KWANZA ===============
+        function getUserStorageKey() {
+            if (currentUserId) {
+                return `paidEpisodes_${currentUserId}`;
+            }
+            return null;
+        }
+
+        // =============== LOAD USER PAID EPISODES FROM DATABASE - KUTOKA FAILI YA KWANZA ===============
+        async function loadUserPaidContent() {
+            userPaidEpisodes.clear();
+            
+            try {
+                const { data: { user } } = await dbClient.auth.getUser();
+                if (!user) {
+                    console.log('[v0] User not logged in, skipping paid content load');
+                    currentUserId = null;
+                    return;
+                }
+
+                currentUserId = user.id;
+                console.log('[v0] Loading paid content for user:', user.id);
+
+                const { data: payments, error } = await dbClient
+                    .from('payments')
+                    .select('*')
+                    .eq('user_id', user.id)
+                    .eq('status', 'paid');
+
+                if (error) {
+                    console.error('[v0] Error loading user payments:', error);
+                    return;
+                }
+
+                console.log('[v0] Found payments for this user:', payments);
+
+                if (payments && payments.length > 0) {
+                    payments.forEach(payment => {
+                        // TUMIA story_id (text) kwanza
+                        if (payment.story_id) {
+                            // Add both string and number version for compatibility
+                            userPaidEpisodes.add(String(payment.story_id));
+                            userPaidEpisodes.add(Number(payment.story_id));
+                            console.log('[v0] Added paid story for user:', payment.story_id);
+                        }
+                        if (payment.episode_id) {
+                            userPaidEpisodes.add(payment.episode_id);
+                            userPaidEpisodes.add(String(payment.episode_id));
+                            console.log('[v0] Added paid episode for user:', payment.episode_id);
+                        }
+                    });
+                    console.log('[v0] Total paid episodes for this user:', userPaidEpisodes.size);
+                }
+
+                const storageKey = getUserStorageKey();
+                if (storageKey) {
+                    localStorage.setItem(storageKey, JSON.stringify([...userPaidEpisodes]));
+                }
+                
+            } catch (error) {
+                console.error('[v0] Error in loadUserPaidContent:', error);
+            }
+        }
+
+        // PAKIA KUTOKA LOCALSTORAGE KWA MTUMIAJI HUYU TU
+        function loadPaidEpisodesFromLocalStorage() {
+            try {
+                const storageKey = getUserStorageKey();
+                if (!storageKey) {
+                    console.log('[v0] No user logged in, skipping localStorage load');
+                    return;
+                }
+                
+                const saved = localStorage.getItem(storageKey);
+                if (saved) {
+                    const episodes = JSON.parse(saved);
+                    episodes.forEach(id => {
+                        userPaidEpisodes.add(id);
+                    });
+                    console.log('[v0] Loaded from localStorage for this user:', episodes.length);
+                }
+            } catch (e) {
+                console.error('[v0] Error loading from localStorage:', e);
+            }
+        }
+
+        // =============== CHECK IF EPISODE IS PAID - KUTOKA FAILI YA KWANZA ===============
+        function isEpisodePaid(episodeId, price) {
+            if (price === 0) return true;
+            
+            if (!currentUserId) {
+                console.log('[v0] User not logged in, episode not unlocked');
+                return false;
+            }
+            
+            // Check both string and number versions
+            const paid = userPaidEpisodes.has(episodeId) || 
+                        userPaidEpisodes.has(String(episodeId)) || 
+                        userPaidEpisodes.has(Number(episodeId));
+            console.log('[v0] Checking if episode is paid for user:', episodeId, 'Result:', paid);
+            return paid;
+        }
+
+        // Theme Toggle
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            body.classList.add('dark-theme');
+            themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+        }
+        themeToggle.addEventListener('click', () => {
+            body.classList.toggle('dark-theme');
+            const isDark = body.classList.contains('dark-theme');
+            themeToggle.innerHTML = isDark ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        });
+
+        // Alert System
+        function showAlert(message, type = 'info') {
+            const alertContainer = document.getElementById('alertContainer');
+            const alert = document.createElement('div');
+            alert.className = `alert ${type}`;
+            alert.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i><span>${message}</span>`;
+            alertContainer.appendChild(alert);
+            setTimeout(() => {
+                alert.style.animation = 'slideInRight 0.4s ease-out reverse';
+                setTimeout(() => alert.remove(), 400);
+            }, 3000);
+        }
+
+        async function incrementViews(episodeId) {
+            try {
+                // JARIBU KWENYE EPISODES KWANZA
+                let { data: episode, error: fetchError } = await dbClient
+                    .from('episodes')
+                    .select('views')
+                    .eq('id', episodeId)
+                    .maybeSingle();
+
+                if (episode) {
+                    const currentViews = episode.views || 0;
+                    await dbClient
+                        .from('episodes')
+                        .update({ views: currentViews + 1 })
+                        .eq('id', episodeId);
+                    document.getElementById('viewsCount').textContent = currentViews + 1;
+                } else {
+                    // JARIBU KWENYE SERIES
+                    let { data: series, error: seriesErr } = await dbClient
+                        .from('series')
+                        .select('views')
+                        .eq('id', episodeId)
+                        .maybeSingle();
+                    
+                    if (series) {
+                        const currentViews = series.views || 0;
+                        await dbClient
+                            .from('series')
+                            .update({ views: currentViews + 1 })
+                            .eq('id', episodeId);
+                        document.getElementById('viewsCount').textContent = currentViews + 1;
+                    }
+                }
+            } catch (error) {
+                console.error('Error incrementing views:', error);
+            }
+        }
+
+        async function loadLikesData(episodeId) {
+            try {
+                const { count, error: countError } = await dbClient
+                    .from('likes')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('episode_id', episodeId);
+
+                if (!countError) {
+                    document.getElementById('likesCount').textContent = count || 0;
+                }
+
+                if (currentUserId) {
+                    const { data: userLike, error: likeError } = await dbClient
+                        .from('likes')
+                        .select('*')
+                        .eq('episode_id', episodeId)
+                        .eq('user_id', currentUserId)
+                        .maybeSingle();
+
+                    if (!likeError && userLike) {
+                        currentEpisodeLiked = true;
+                        document.getElementById('likeBtn').classList.add('liked');
+                    } else {
+                        currentEpisodeLiked = false;
+                        document.getElementById('likeBtn').classList.remove('liked');
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading likes:', error);
+                document.getElementById('likesCount').textContent = '0';
+            }
+        }
+
+        async function toggleLike() {
+            if (!currentEpisodeId) {
+                showAlert('Fungua episode kwanza', 'error');
+                return;
+            }
+
+            if (!currentUserId) {
+                showAlert('Ingia kwanza ili kupenda episode hii', 'error');
+                return;
+            }
+
+            try {
+                if (currentEpisodeLiked) {
+                    const { error } = await dbClient
+                        .from('likes')
+                        .delete()
+                        .eq('episode_id', currentEpisodeId)
+                        .eq('user_id', currentUserId);
+
+                    if (error) {
+                        console.error('Delete error:', error);
+                        throw error;
+                    }
+
+                    currentEpisodeLiked = false;
+                    document.getElementById('likeBtn').classList.remove('liked');
+                    
+                    const currentCount = parseInt(document.getElementById('likesCount').textContent);
+                    document.getElementById('likesCount').textContent = Math.max(0, currentCount - 1);
+                    
+                    showAlert('Umefuta upendo', 'info');
+                } else {
+                    const { error } = await dbClient
+                        .from('likes')
+                        .insert({
+                            episode_id: currentEpisodeId,
+                            user_id: currentUserId,
+                            created_at: new Date().toISOString()
+                        });
+
+                    if (error) {
+                        console.error('Insert error:', error);
+                        throw error;
+                    }
+
+                    currentEpisodeLiked = true;
+                    document.getElementById('likeBtn').classList.add('liked');
+                    
+                    const currentCount = parseInt(document.getElementById('likesCount').textContent);
+                    document.getElementById('likesCount').textContent = currentCount + 1;
+                    
+                    showAlert('Umependa episode hii!', 'success');
+                }
+            } catch (error) {
+                console.error('Error toggling like:', error);
+                showAlert(`Hitilafu: ${error.message || 'Jaribu tena'}`, 'error');
+            }
+        }
+
+        function createSeriesCard(series) {
+            const shareUrl = `https://storieszone.site/series.html?id=${series.id}`;
+            const status = series.status || 'active';
+            const statusClass = status === 'completed' ? 'status-completed' : 'status-active';
+            const statusText = status === 'completed' ? 'Imekamilika' : 'Inaendelea';
+
+            return `
+                <div class="series-card" onclick="showSeriesDetail(${series.id})">
+                    <div class="series-image">
+                        <img src="${series.cover_image || 'https://via.placeholder.com/300x200?text=Series'}" alt="${series.title}" loading="lazy">
+                    </div>
+                    <div class="series-content">
+                        <h3 class="series-title">${series.title}</h3>
+                        <div class="series-meta">
+                            <span class="series-episodes">${series.episode_count || 0} Ep</span>
+                            <span class="series-status ${statusClass}">${statusText}</span>
+                        </div>
+                        <div class="series-share">
+                            <a href="https://api.whatsapp.com/send?text=${encodeURIComponent(series.title + ' - ' + shareUrl)}" target="_blank" class="share-btn share-whatsapp" onclick="event.stopPropagation()">
+                                <i class="fab fa-whatsapp"></i>
+                            </a>
+                            <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}" target="_blank" class="share-btn share-facebook" onclick="event.stopPropagation()">
+                                <i class="fab fa-facebook"></i>
+                            </a>
+                            <a href="https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(series.title)}" target="_blank" class="share-btn share-twitter" onclick="event.stopPropagation()">
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                            <a href="https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(series.title)}" target="_blank" class="share-btn share-telegram" onclick="event.stopPropagation()">
+                                <i class="fab fa-telegram"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        async function getEpisodeStats(episodeId) {
+            try {
+                const [likesResult, commentsResult] = await Promise.all([
+                    dbClient.from('likes').select('*', { count: 'exact', head: true }).eq('episode_id', episodeId),
+                    dbClient.from('comments').select('*', { count: 'exact', head: true }).eq('episode_id', episodeId)
+                ]);
+
+                return {
+                    likes: likesResult.count || 0,
+                    comments: commentsResult.count || 0
+                };
+            } catch (error) {
+                console.error('Error fetching episode stats:', error);
+                return { likes: 0, comments: 0 };
+            }
+        }
+
+        function createEpisodeCard(episode) {
+            const price = episode.price || 0;
+            const isPaid = isEpisodePaid(episode.id, price);
+            const shareUrl = `https://storieszone.site/story.html?id=${episode.id}`;
+
+            return `
+                <div class="episode-card" onclick="handleEpisodeClick(${episode.id}, ${price}, ${isPaid})">
+                    <div class="episode-header">
+                        <span class="episode-number">${episode.episode_number}</span>
+                        <span class="episode-price ${price === 0 ? 'episode-free' : ''}">${price > 0 ? (isPaid ? 'IMEFUNGULIWA' : 'TZS ' + price) : 'BURE'}</span>
+                    </div>
+                    <h4 class="episode-title">${episode.title}</h4>
+                    <div class="episode-meta">
+                        <span><i class="fas fa-clock"></i> ${episode.duration || 'N/A'}</span>
+                    </div>
+                    <p class="episode-description">${episode.introduction || episode.description || 'Hakuna maelezo...'}</p>
+                    <div class="episode-stats">
+                        <div class="episode-stat-item stat-views">
+                            <i class="fas fa-eye"></i>
+                            <span>${episode.views || 0}</span>
+                        </div>
+                        <div class="episode-stat-item stat-likes">
+                            <i class="fas fa-heart"></i>
+                            <span id="likes-${episode.id}">${episode.likes_count || 0}</span>
+                        </div>
+                        <div class="episode-stat-item stat-comments">
+                            <i class="fas fa-comment"></i>
+                            <span id="comments-${episode.id}">${episode.comments_count || 0}</span>
+                        </div>
+                    </div>
+                    <div class="episode-share">
+                        <a href="https://api.whatsapp.com/send?text=${encodeURIComponent(episode.title + ' - ' + shareUrl)}" target="_blank" class="share-btn share-whatsapp" onclick="event.stopPropagation()">
+                            <i class="fab fa-whatsapp"></i>
+                        </a>
+                        <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}" target="_blank" class="share-btn share-facebook" onclick="event.stopPropagation()">
+                            <i class="fab fa-facebook"></i>
+                        </a>
+                        <a href="https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(episode.title)}" target="_blank" class="share-btn share-twitter" onclick="event.stopPropagation()">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(episode.title)}" target="_blank" class="share-btn share-telegram" onclick="event.stopPropagation()">
+                            <i class="fab fa-telegram"></i>
+                        </a>
+                    </div>
+                </div>
+            `;
+        }
+
+        async function loadAllSeries() {
+            const seriesGrid = document.getElementById('seriesGrid');
+            try {
+                const { data: series, error } = await dbClient.from('series').select('*').order('created_at', { ascending: false });
+                if (error) throw error;
+                allSeries = series || [];
+                seriesGrid.innerHTML = allSeries.map(s => createSeriesCard(s)).join('');
+            } catch (error) {
+                seriesGrid.innerHTML = '<p style="text-align:center;color:red;">Hitilafu: ' + error.message + '</p>';
+            }
+        }
+
+        async function showSeriesDetail(seriesId) {
+            currentSeriesId = seriesId;
+            document.getElementById('seriesListView').classList.add('hidden');
+            document.getElementById('seriesDetailView').classList.add('active');
+
+            try {
+                const { data: series, error } = await dbClient.from('series').select('*').eq('id', seriesId).single();
+                if (error) throw error;
+                currentSeries = series;
+
+                document.getElementById('seriesHeader').innerHTML = `
+                    <img src="${series.cover_image || 'https://via.placeholder.com/150x200'}" class="series-cover" alt="${series.title}">
+                    <div class="series-info">
+                        <h1 class="series-title-big">${series.title}</h1>
+                        <div class="series-meta-big">
+                            <span class="meta-tag"><i class="fas fa-film"></i> ${series.genre || 'Hadithi'}</span>
+                            <span class="meta-tag"><i class="fas fa-list"></i> ${series.episode_count || 0} Episodes</span>
+                        </div>
+                        <p class="series-description">${series.description || 'Hakuna maelezo.'}</p>
+                    </div>
+                `;
+
+                const totalSeasons = series.total_seasons || 1;
+                const seasonSelector = document.getElementById('seasonSelector');
+                seasonSelector.innerHTML = '';
+                for (let i = 1; i <= totalSeasons; i++) {
+                    const btn = document.createElement('button');
+                    btn.className = 'season-btn' + (i === 1 ? ' active' : '');
+                    btn.textContent = 'Season ' + i;
+                    btn.onclick = () => { currentSeason = i; loadEpisodes(i); document.querySelectorAll('.season-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); };
+                    seasonSelector.appendChild(btn);
+                }
+
+                loadEpisodes(1);
+            } catch (error) {
+                showAlert('Hitilafu katika kupakia series.', 'error');
+            }
+        }
+
+        function showSeriesList() {
+            document.getElementById('seriesDetailView').classList.remove('active');
+            document.getElementById('seriesListView').classList.remove('hidden');
+        }
+
+        async function loadEpisodes(season) {
+            const grid = document.getElementById('episodesGrid');
+            grid.innerHTML = '<div class="loading-spinner"><div class="spinner"></div><p>Inapakia...</p></div>';
+            try {
+                const { data: episodes, error } = await dbClient.from('episodes')
+                    .select('*')
+                    .eq('series_id', currentSeriesId)
+                    .eq('season', season)
+                    .order('episode_number', { ascending: true });
+                if (error) throw error;
+                
+                const episodesWithStats = await Promise.all(
+                    episodes.map(async (ep) => {
+                        const stats = await getEpisodeStats(ep.id);
+                        return { ...ep, likes_count: stats.likes, comments_count: stats.comments };
+                    })
+                );
+                
+                grid.innerHTML = episodesWithStats.map(ep => createEpisodeCard(ep)).join('');
+            } catch (error) {
+                grid.innerHTML = '<p style="text-align:center;color:red;">Hitilafu</p>';
+            }
+        }
+
+        function handleEpisodeClick(episodeId, price, isPaid) {
+            // KUTOKA FAILI YA KWANZA: Kama amelipa au bure, elekeza moja kwa moja
+            if (isPaid || price === 0) {
+                window.location.href = `story.html?id=${episodeId}&type=episode`;
+            } else {
+                handleReadMore(episodeId, price, isPaid);
+            }
+        }
+
+        async function handleReadMore(episodeId, price, isPaid) {
+            currentEpisodeId = episodeId;
+            currentEpisodePrice = price;
+
+            try {
+                // KWANZA JARIBU KUPATA KUTOKA EPISODES TABLE
+                let episode = null;
+                let error = null;
+                
+                const { data: episodeData, error: episodeError } = await dbClient
+                    .from('episodes')
+                    .select('*')
+                    .eq('id', episodeId)
+                    .maybeSingle();
+                
+                if (episodeData) {
+                    episode = episodeData;
+                } else {
+                    // KAMA HAKUPATIKANA KWENYE EPISODES, JARIBU SERIES TABLE
+                    const { data: seriesData, error: seriesError } = await dbClient
+                        .from('series')
+                        .select('*')
+                        .eq('id', episodeId)
+                        .maybeSingle();
+                    
+                    if (seriesData) {
+                        episode = seriesData;
+                    } else {
+                        throw new Error('Hadithi haipatikani');
+                    }
+                }
+
+                document.getElementById('introTitle').textContent = episode.title || 'Hadithi';
+                document.getElementById('introBody').textContent = episode.introduction || episode.description || episode.content?.substring(0, 500) || 'Hakuna utangulizi.';
+
+                const mediaTypeDiv = document.getElementById('introMediaType');
+                mediaTypeDiv.style.display = 'none';
+
+                // KUTOKA FAILI YA KWANZA: Angalia tena kama MTUMIAJI HUYU amelipa
+                const actuallyPaid = isEpisodePaid(episodeId, price);
+
+                const btn = document.getElementById('introReadMoreBtn');
+                if (actuallyPaid || price === 0) {
+                    btn.textContent = 'Soma Kamili';
+                    btn.onclick = () => { closeIntroModal(); window.location.href = `story.html?id=${episodeId}&type=episode`; };
+                } else {
+                    btn.textContent = `Lipia TZS ${price} ili Soma`;
+                    btn.onclick = () => { closeIntroModal(); openPaymentModal(episodeId, price); };
+                }
+
+                // INCREMENT VIEWS - TRY CATCH NDANI
+                try {
+                    await incrementViews(episodeId);
+                } catch (viewErr) {
+                    console.log('[v0] Could not increment views:', viewErr);
+                }
+                
+                // LOAD LIKES - TRY CATCH NDANI
+                try {
+                    await loadLikesData(episodeId);
+                } catch (likeErr) {
+                    console.log('[v0] Could not load likes:', likeErr);
+                }
+
+                document.getElementById('introModal').classList.add('show');
+            } catch (error) {
+                console.error('[v0] Error in handleReadMore:', error);
+                showAlert('Hitilafu: ' + (error.message || 'Jaribu tena'), 'error');
+            }
+        }
+
+        function closeIntroModal() {
+            document.getElementById('introModal').classList.remove('show');
+            currentEpisodeLiked = false;
+            document.getElementById('likeBtn').classList.remove('liked');
+        }
+
+        // =============== NEW PAYMENT SYSTEM FUNCTIONS - KUTOKA FAILI YA KWANZA ===============
+        
+        function openPaymentModal(episodeId, price) {
+            currentEpisodeId = episodeId;
+            currentEpisodePrice = price;
+            document.getElementById('modalPaymentAmount').textContent = price;
+            document.getElementById('confirmationAmount').textContent = price;
+            document.getElementById('confirmationAmountRepeat').textContent = price;
+            document.getElementById('paymentModal').classList.add('show');
+            document.getElementById('paymentConfirmation').style.display = 'none';
+            document.getElementById('paymentVerification').style.display = 'none';
+            document.getElementById('paymentProcessing').style.display = 'none';
+            document.getElementById('countdownTimer').style.display = 'none';
+            document.getElementById('referenceCode').value = '';
+            document.getElementById('verificationMessage').innerHTML = '';
+        }
+
+        function closePaymentModal() {
+            document.getElementById('paymentModal').classList.remove('show');
+            currentEpisodeId = null;
+            currentEpisodePrice = 0;
+        }
+
+        document.getElementById('tigoPaymentBtn').addEventListener('click', () => {
+            document.getElementById('paymentConfirmation').style.display = 'block';
+            document.getElementById('paymentVerification').style.display = 'block';
+        });
+
+        document.getElementById('closePaymentModal').addEventListener('click', closePaymentModal);
+
+        // FUNCTION YA COUNTDOWN YA SEKUNDE 15 - KUTOKA FAILI YA KWANZA
+        function startCountdown(episodeId) {
+            const countdownTimer = document.getElementById('countdownTimer');
+            const countdownSeconds = document.getElementById('countdownSeconds');
+            const paymentForm = document.getElementById('paymentForm');
+            const paymentConfirmation = document.getElementById('paymentConfirmation');
+            const paymentVerification = document.getElementById('paymentVerification');
+            
+            if (paymentForm) paymentForm.style.display = 'none';
+            if (paymentConfirmation) paymentConfirmation.style.display = 'none';
+            
+            if (paymentVerification) paymentVerification.style.display = 'block';
+            if (countdownTimer) countdownTimer.style.display = 'block';
+            
+            const paymentMethods = document.querySelector('.payment-methods');
+            if (paymentMethods) paymentMethods.style.display = 'none';
+            
+            let seconds = 15;
+            if (countdownSeconds) countdownSeconds.textContent = seconds;
+            
+            console.log('[v0] COUNTDOWN STARTED: 15 seconds for episode:', episodeId);
+            
+            const interval = setInterval(() => {
+                seconds--;
+                if (countdownSeconds) countdownSeconds.textContent = seconds;
+                console.log('[v0] Countdown:', seconds);
+                
+                if (seconds <= 0) {
+                    clearInterval(interval);
+                    console.log('[v0] COUNTDOWN FINISHED! Redirecting to episode:', episodeId);
+                    closePaymentModal();
+                    window.location.href = `story.html?id=${episodeId}`;
+                }
+            }, 1000);
+        }
+
+        // THIBITISHA MALIPO - KUTOKA FAILI YA KWANZA (IMEREKIBISHWA)
+        const paymentFormElement = document.getElementById('paymentForm');
+        if (paymentFormElement) {
+            paymentFormElement.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const referenceCode = document.getElementById('referenceCode').value.trim();
+                if (!referenceCode) {
+                    showAlert('Ingiza reference code', 'error');
+                    return;
+                }
+
+                try {
+                    const { data: { user }, error: userError } = await dbClient.auth.getUser();
+                    if (userError || !user) {
+                        showAlert('Ingia kwanza kabla ya kulipa', 'error');
+                        return;
+                    }
+
+                    const episodeId = currentEpisodeId;
+                    const amount = currentEpisodePrice;
+
+                    if (!episodeId) {
+                        showAlert('Hakuna episode iliyochaguliwa', 'error');
+                        return;
+                    }
+
+                    console.log('[v0] Processing payment for episode:', episodeId, 'Amount:', amount, 'User:', user.id);
+
+                    // CONVERT TO STRING FOR STORAGE (kwa sababu episode_id inaweza kuwa integer au UUID)
+                    const episodeIdStr = String(episodeId);
+                    
+                    // ANGALIA KWANZA KAMA MTUMIAJI HUYU TAYARI ANA RECORD YA MALIPO
+                    // Tumia story_id (text) badala ya episode_id (uuid) kwa compatibility
+                    const { data: existingPayments, error: checkError } = await dbClient
+                        .from('payments')
+                        .select('id, status, story_id, user_id')
+                        .eq('user_id', user.id)
+                        .eq('story_id', episodeIdStr);
+
+                    if (checkError) {
+                        console.warn('[v0] Warning checking existing payment:', checkError.message);
+                    }
+
+                    console.log('[v0] Existing payments found for this user:', existingPayments);
+
+                    // ANGALIA KAMA MTUMIAJI HUYU TAYARI AMELIPA
+                    const alreadyPaid = existingPayments && existingPayments.some(p => p.status === 'paid');
+                    if (alreadyPaid) {
+                        showAlert('Umeshalipa episode hii! Inasubiri sekunde 15...', 'success');
+                        userPaidEpisodes.add(episodeId);
+                        
+                        const storageKey = getUserStorageKey();
+                        if (storageKey) {
+                            localStorage.setItem(storageKey, JSON.stringify([...userPaidEpisodes]));
+                        }
+                        
+                        startCountdown(episodeId);
+                        return;
+                    }
+
+                    const existingPayment = existingPayments && existingPayments.length > 0 ? existingPayments[0] : null;
+
+                    if (existingPayment) {
+                        // MTUMIAJI HUYU TAYARI ANA RECORD - UPDATE TU
+                        const { error: updateErr } = await dbClient
+                            .from('payments')
+                            .update({
+                                reference_code: referenceCode,
+                                amount: amount,
+                                status: 'paid',
+                                updated_at: new Date().toISOString()
+                            })
+                            .eq('id', existingPayment.id);
+
+                        if (updateErr) {
+                            console.error('[v0] Error updating payment:', updateErr);
+                            throw new Error('Imeshindwa kusasisha malipo: ' + updateErr.message);
+                        }
+                        console.log('[v0] Updated existing payment record to PAID');
+                    } else {
+                        // MTUMIAJI HUYU HANA RECORD - UNDA MPYA
+                        // TUMIA story_id (text) TU, NA ACHA episode_id (uuid) BILA KUWEKA
+                        const { error: insertErr } = await dbClient.from('payments').insert({
+                            story_id: episodeIdStr,
+                            user_id: user.id,
+                            reference_code: referenceCode,
+                            amount: amount,
+                            status: 'paid'
+                        });
+
+                        if (insertErr) {
+                            console.error('[v0] Error inserting payment:', insertErr);
+                            throw new Error('Imeshindwa kuhifadhi malipo: ' + insertErr.message);
+                        }
+                        console.log('[v0] Created new payment record with PAID status for user:', user.id);
+                    }
+
+                    // MARA MOJA: ONGEZA EPISODE KWENYE SET YA ZILIZO PAID
+                    userPaidEpisodes.add(episodeId);
+                    
+                    // HIFADHI KWENYE LOCALSTORAGE KWA MTUMIAJI HUYU TU
+                    const storageKey = getUserStorageKey();
+                    if (storageKey) {
+                        localStorage.setItem(storageKey, JSON.stringify([...userPaidEpisodes]));
+                    }
+
+                    console.log('[v0] Payment completed successfully for episode:', episodeId, 'User:', user.id);
+
+                    showAlert('Malipo yamekamilika! Inasubiri sekunde 15...', 'success');
+                    
+                    // ANZA COUNTDOWN YA SEKUNDE 15
+                    startCountdown(episodeId);
+
+                } catch (err) {
+                    console.error('[v0] Payment error:', err);
+                    showAlert('Hitilafu ya malipo: ' + (err.message || 'Jaribu tena'), 'error');
+                }
+            });
+        }
+
+        // =============== END NEW PAYMENT SYSTEM ===============
+
+        // Search functionality
+        const searchBox = document.getElementById('searchBox');
+        searchBox.addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase().trim();
+            const seriesGrid = document.getElementById('seriesGrid');
+            
+            if (query.length < 2) {
+                seriesGrid.innerHTML = allSeries.map(s => createSeriesCard(s)).join('');
+                return;
+            }
+
+            const filtered = allSeries.filter(s => 
+                s.title.toLowerCase().includes(query) ||
+                (s.description && s.description.toLowerCase().includes(query))
+            );
+
+            if (filtered.length > 0) {
+                seriesGrid.innerHTML = filtered.map(s => createSeriesCard(s)).join('');
+            } else {
+                seriesGrid.innerHTML = '<p style="text-align:center;padding:2rem;">Hakuna matokeo yaliyopatikana.</p>';
+            }
+        });
+
+        // =============== INITIALIZE APP - KUTOKA FAILI YA KWANZA ===============
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                // KWANZA PATA MTUMIAJI
+                const { data: { user } } = await dbClient.auth.getUser();
+                if (user) {
+                    currentUserId = user.id;
+                    console.log('[v0] User logged in:', user.id);
+                } else {
+                    currentUserId = null;
+                    console.log('[v0] No user logged in');
+                }
+                
+                // PILI: PAKIA KUTOKA LOCALSTORAGE KWA MTUMIAJI HUYU TU
+                loadPaidEpisodesFromLocalStorage();
+                
+                // TATU: PAKIA MALIPO YA MTUMIAJI KUTOKA DATABASE
+                await loadUserPaidContent();
+                
+                // LOAD ALL SERIES
+                await loadAllSeries();
+                
+                console.log('[v0] App initialized. Current user:', currentUserId, 'Paid episodes for this user:', [...userPaidEpisodes]);
+                
+            } catch (error) {
+                console.error('[v0] Error during initialization:', error);
+                showAlert('Hakuna series zinazopatikana. Hakikisha umeunganishwa na mtandao.', 'error');
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Huduma kwa Wateja | SIMULIZI HOUSE</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #0d0d0d;
+      color: #f5f5f5;
+      user-select: none;
+      overflow-x: hidden;
+    }
+
+    header {
+      background-color: #ffd700;
+      padding: 0.8rem 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+    }
+
+    .nav {
+      display: flex;
+      gap: 15px;
+    }
+
+    .logo-container img {
+      height: 40px;
+      width: auto;
+    }
+
+    .logo-text {
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: #000;
+      letter-spacing: 1px;
+    }
+
+    nav {
+      display: flex;
+      gap: 15px;
+    }
+
+    nav a {
+      color: #000;
+      text-decoration: none;
+      font-weight: 600;
+      padding: 5px 10px;
+      border-radius: 5px;
+      transition: background-color 0.3s;
+    }
+
+    nav a:hover {
+      background-color: rgba(0,0,0,0.1);
+    }
+
+    .service-container {
+      max-width: 800px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+
+    .report-section {
+      background-color: #1a1a1a;
+      border: 1px solid #ffd700;
+      border-radius: 10px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    h2 {
+      color: #ffd700;
+      border-bottom: 2px solid #ffd700;
+      padding-bottom: 0.5rem;
+      margin-top: 0;
+    }
+
+    .report-method {
+      margin-bottom: 1.5rem;
+    }
+
+    .report-method h3 {
+      color: #ffd700;
+      margin-bottom: 0.5rem;
+    }
+
+    .contact-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 0.5rem 0;
+    }
+
+    .contact-info i {
+      color: #ffd700;
+      font-size: 1.2rem;
+    }
+
+    footer {
+      background-color: #000;
+      color: #999;
+      text-align: center;
+      padding: 1rem;
+      font-size: 0.9rem;
+      border-top: 1px solid #ffd700;
+    }
+
+    /* Icons from Font Awesome */
+    .fas {
+      font-family: 'Font Awesome';
+    }
+    
+    /* Custom form styles */
+    .form-input {
+      width: 100%;
+      padding: 0.8rem;
+      border-radius: 5px;
+      border: 1px solid #ffd700;
+      background-color: #0d0d0d;
+      color: white;
+      margin-bottom: 1rem;
+      font-family: inherit;
+    }
+    
+    .form-input:focus {
+      outline: none;
+      box-shadow: 0 0 0 2px #ffd70080;
+    }
+    
+    .submit-btn {
+      background-color: #ffd700;
+      color: black;
+      border: none;
+      padding: 0.8rem 1.8rem;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: all 0.3s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .submit-btn:hover {
+      background-color: #ffc600;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(255, 214, 0, 0.3);
+    }
+
+    /* Loading spinner */
+    .spinner {
+      display: none;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(0,0,0,0.3);
+      border-radius: 50%;
+      border-top-color: #000;
+      animation: spin 1s ease-in-out infinite;
+      margin-left: 10px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Custom Alert Styles */
+    .custom-alert {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background-color: #2ecc71;
+      color: white;
+      padding: 15px 25px;
+      border-radius: 5px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      z-index: 1000;
+      transform: translateX(120%);
+      transition: transform 0.3s ease-out;
+    }
+
+    .custom-alert.show {
+      transform: translateX(0);
+    }
+
+    .custom-alert.error {
+      background-color: #ff0000;
+    }
+
+    .custom-alert i {
+      font-size: 1.5rem;
+    }
+
+    .custom-alert .close-btn {
+      margin-left: 15px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+  <header>
+    <div class="logo-container">
+      <img src="/Picsart_26-05-13_01-57-22-165.png" alt="SIMULIZI HOUSE Logo">
+      <div class="logo-text">SIMULIZI HOUSE</div>
+    </div>
+    <nav>
+      <a href="index.html"><i class="fas fa-home"></i></a>
+      <a href="video.html"><i class="fas fa-video"></i></a>
+      <a href="video_zote.html"><i class="fas fa-info-circle"></i></a>
+    </nav>
+  </header>
+
+  <div class="service-container">
+    <div class="report-section">
+      <h2><i class="fas fa-headset"></i> Huduma kwa Wateja</h2>
+      
+      <div class="report-method">
+        <h3><i class="fas fa-envelope"></i> Tuma Barua Pepe</h3>
+        <p>Unaweza kututumia barua pepe kwa maelezo ya changamoto yako:</p>
+        <div class="contact-info">
+          <i class="fas fa-at"></i>
+          <span>support@storieszone.co.tz</span>
+        </div>
+      </div>
+      
+      <div class="report-method">
+        <h3><i class="fas fa-phone-alt"></i> Wasiliana Nasi Moja kwa Moja</h3>
+        <p>WhatsApp kwa nambari zifuatazo:</p>
+        <div class="contact-info">
+          <i class="fab fa-whatsapp"></i>
+          <span>+255 716 332 371</span>
+        </div>
+        <div class="contact-info">
+          <i class="fas fa-phone"></i>
+          <span>+255 716 332 371</span>
+        </div>
+        <p>Masaa ya utumishi: Jumatatu - Jumapili (08:00 asubuhi - 05:00 jioni)</p>
+      </div>
+      
+      <div class="report-method">
+        <h3><i class="fas fa-comment-alt"></i> Fomu ya Mawasiliano</h3>
+        <p>Jaza fomu hii na tutakujibu kwa haraka:</p>
+        <form id="contactForm">
+          <div>
+            <label for="name">Jina Kamili:</label><br>
+            <input type="text" id="name" class="form-input" required>
+          </div>
+          <div>
+            <label for="email">Barua Pepe:</label><br>
+            <input type="email" id="email" class="form-input" required>
+          </div>
+          <div>
+            <label for="phone">Namba ya Simu:</label><br>
+            <input type="tel" id="phone" class="form-input">
+          </div>
+          <div>
+            <label for="issue">Aina ya Tatizo/Changamoto:</label><br>
+            <select id="issue" class="form-input" required>
+              <option value="" disabled selected>Chagua aina ya changamoto</option>
+              <option value="technical">Tatizo la Kiufundi</option>
+              <option value="payment">Malipo</option>
+              <option value="content">Maudhui</option>
+              <option value="account">Akaunti</option>
+              <option value="suggestion">Mapendekezo</option>
+              <option value="other">Nyingine</option>
+            </select>
+          </div>
+          <div>
+            <label for="message">Maelezo:</label><br>
+            <textarea id="message" rows="5" class="form-input" required></textarea>
+          </div>
+          <button type="submit" class="submit-btn" id="submitBtn">
+            <i class="fas fa-paper-plane"></i> Tuma
+            <div class="spinner" id="spinner"></div>
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    © <span id="current-year"></span> SIMULIZI HOUSE- Haki zote zimehifadhiwa
+  </footer>
+
+  <script>
+    // Initialize Supabase with different variable name to avoid CDN conflict
+    const supabaseUrl = 'https://btnzevupmwsdubpgjpds.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ0bnpldnVwbXdzZHVicGdqcGRzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAyNDEyMzAsImV4cCI6MjA2NTgxNzIzMH0.Cn36rmP6IeSI-LfTUgViCcpBzeqlpplDbSPH3pXrCg4';
+    const _supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+    // Initialize current year
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+
+    // Function to show custom alert
+    function showCustomAlert(type, message) {
+      const alertDiv = document.createElement('div');
+      alertDiv.className = `custom-alert ${type}`;
+      alertDiv.innerHTML = `
+        <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i>
+        <span>${message}</span>
+        <span class="close-btn" onclick="this.parentElement.remove()">×</span>
+      `;
+      
+      document.body.appendChild(alertDiv);
+      
+      setTimeout(() => {
+        alertDiv.classList.add('show');
+      }, 10);
+      
+      setTimeout(() => {
+        alertDiv.classList.remove('show');
+        setTimeout(() => {
+          alertDiv.remove();
+        }, 300);
+      }, 5000);
+    }
+
+    // Form submission to Supabase
+    document.getElementById('contactForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const submitBtn = document.getElementById('submitBtn');
+      const spinner = document.getElementById('spinner');
+      
+      // Get form values
+      const name = document.getElementById('name').value;
+      const email = document.getElementById('email').value;
+      const phone = document.getElementById('phone').value;
+      const issue = document.getElementById('issue').value;
+      const message = document.getElementById('message').value;
+      
+      // Show loading spinner
+      submitBtn.disabled = true;
+      spinner.style.display = 'inline-block';
+      
+      try {
+        // Check if user is logged in
+        const { data: { user } } = await _supabaseClient.auth.getUser();
+        
+        // Insert support request into Supabase
+        const { data, error } = await _supabaseClient
+          .from('support_requests')
+          .insert({
+            user_id: user ? user.id : null, // If user is logged in, use their ID; otherwise, null
+            name: name,
+            email: email,
+            phone: phone,
+            issue_type: issue,
+            message: message,
+            created_at: new Date().toISOString(),
+            status: 'pending' // Default status
+          });
+        
+        if (error) throw error;
+        
+        // Show success message
+        showCustomAlert('success', '🎉 Asante! Ujumbe wako umetumwa kikamilifu. Tutakujibu kwa haraka iwezekanavyo.');
+        
+        this.reset();
+      } catch (error) {
+        console.error("Error submitting form:", error);
+        
+        // Show error message
+        showCustomAlert('error', '⚠️ Kumetokea hitilafu wakati wa kutuma ujumbe wako. Tafadhali jaribu tena baadaye.');
+      } finally {
+        // Hide loading spinner
+        submitBtn.disabled = false;
+        spinner.style.display = 'none';
+      }
+    });
+
+    // Block right click and keyboard shortcuts
+    document.addEventListener('contextmenu', e => e.preventDefault());
+    document.addEventListener('keydown', e => {
+      if (e.ctrlKey && ['u', 'c', 'v', 's'].includes(e.key.toLowerCase())) {
+        e.preventDefault();
+      }
+      if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key.toUpperCase()))) {
+        e.preventDefault();
+      }
+    });
+  </script>
+</body>
+</html>

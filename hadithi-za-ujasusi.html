@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ujasusi - STORIES ZONE</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #0d0d0d;
+      color: #f5f5f5;
+      user-select: none;
+    }
+    
+    header {
+      background-color: #ffd700;
+      color: #000;
+      padding: 1rem;
+      text-align: center;
+      font-size: 1.8rem;
+      font-weight: bold;
+    }
+
+    .container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      padding: 2rem;
+    }
+
+    .card {
+      background-color: #1a1a1a;
+      border: 1px solid #ffd700;
+      border-radius: 12px;
+      padding: 1rem;
+      box-shadow: 0 0 10px #ffd70020;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card img.thumbnail {
+      width: 100%;
+      border-radius: 8px;
+      margin-bottom: 0.8rem;
+    }
+
+    .card h3 {
+      color: #ffd700;
+      margin: 0.5rem 0;
+    }
+
+    .desc {
+      margin: 0.5rem 0 1rem;
+      flex-grow: 1;
+    }
+
+    .stats {
+      display: flex;
+      justify-content: space-between;
+      color: #ccc;
+      font-size: 0.9rem;
+      margin-bottom: 0.8rem;
+    }
+
+    .stats div {
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    .stats div span.icon {
+      color: #ffd700;
+      font-weight: bold;
+    }
+
+    .btn-read {
+      background-color: #ffd700;
+      color: #000;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.3s ease;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .btn-read:hover {
+      background-color: #e6c200;
+    }
+
+    a.back {
+      display: inline-block;
+      margin: 2rem;
+      padding: 0.5rem 1rem;
+      background-color: #ffd700;
+      color: #000;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: bold;
+    }
+
+    a.back:hover {
+      background-color: #e6c200;
+    }
+
+    /* Story viewer and payment */
+    .story-viewer-container {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.9);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+      overflow-y: auto;
+    }
+
+    .story-viewer {
+      width: 95%;
+      max-width: 800px;
+      background: #1a1a1a;
+      border-radius: 10px;
+      padding: 20px;
+      position: relative;
+      color: #f5f5f5;
+    }
+
+    .close-viewer {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      color: white;
+      font-size: 1.5rem;
+      cursor: pointer;
+      z-index: 1001;
+    }
+
+    .story-content {
+      line-height: 1.6;
+      font-size: 1.1rem;
+      margin-top: 1rem;
+    }
+
+    #payment-prompt {
+      text-align: center;
+      padding: 20px;
+      background: #1a1a1a;
+      border-radius: 10px;
+      max-width: 400px;
+      margin: 0 auto;
+    }
+
+    #payment-prompt h3 {
+      color: #ffd700;
+      margin-top: 0;
+    }
+
+    #payment-prompt p {
+      margin-bottom: 20px;
+    }
+
+    .payment-methods {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin: 20px 0;
+    }
+
+    .payment-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px;
+      border-radius: 5px;
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .payment-btn.tigo {
+      background-color: #ff6600;
+      color: white;
+    }
+
+    .payment-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
+
+    .payment-instructions {
+      background-color: #222;
+      padding: 15px;
+      border-radius: 5px;
+      margin: 15px 0;
+      text-align: left;
+    }
+
+    .payment-number {
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #ff6600;
+      margin: 10px 0;
+    }
+
+    .payment-steps {
+      padding-left: 20px;
+    }
+
+    .payment-steps li {
+      margin-bottom: 8px;
+    }
+
+    .payment-confirmation {
+      display: none;
+      margin-top: 20px;
+    }
+
+    .payment-processing {
+      display: none;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .payment-processing i {
+      font-size: 2rem;
+      color: #ffd700;
+      margin-bottom: 10px;
+    }
+
+    /* Loading spinner */
+    .loading-spinner {
+      display: flex;
+      justify-content: center;
+      padding: 2rem;
+    }
+    
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid rgba(255, 215, 0, 0.3);
+      border-radius: 50%;
+      border-top-color: #ffd700;
+      animation: spin 1s ease-in-out infinite;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    /* Style mpya za alert */
+    .custom-alert {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background-color: #2ecc71;
+      color: white;
+      padding: 15px 25px;
+      border-radius: 5px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      z-index: 1000;
+      transform: translateX(120%);
+      transition: transform 0.3s ease-out;
+    }
+    
+    .custom-alert.show {
+      transform: translateX(0);
+    }
+    
+    .custom-alert.error {
+      background-color: #ff0000;
+    }
+    
+    .custom-alert i {
+      font-size: 1.5rem;
+    }
+    
+    .custom-alert .close-btn {
+      margin-left: 15px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+  <header>UJASUSI NA NJAMA</header>
+  
+  <div class="container" id="hadithiContainer">
+    <div class="loading-spinner">
+      <div class="spinner"></div>
+    </div>
+  </div>
+  
+  <a class="back" href="index.html">Rudi Kwenye Kuu</a>
+
+  <!-- Story Viewer and Payment -->
+  <div class="story-viewer-container" id="story-viewer">
+    <div class="story-viewer">
+      <span class="close-viewer" onclick="closeStory()"><i class="fas fa-times"></i></span>
+      
+      <div id="payment-prompt">
+        <h3>Malipo ya Hadithi</h3>
+        <p>Unahitaji kulipa TZS <span id="payment-amount"></span> kwa hadithi hii. Baada ya malipo, utaweza kuisoma mara nyingine bila kulipa tena.</p>
+        
+        <div class="payment-instructions">
+          <p>Tafadhali fanya malipo ya TZS <span id="payment-amount-instructions"></span> kwa:</p>
+          <div class="payment-number">22258408 (Tigo Pesa)</div>
+          <p>Jina la kupokea: <strong>OMARI SHOP10</strong></p>
+          
+          <ol class="payment-steps">
+            <li>Nenda kwenye Tigo Pesa yako</li>
+            <li>Chagua "Lipa kwa Namba"</li>
+            <li>Weka namba: <strong>22258408</strong></li>
+            <li>Weka kiasi: <strong><span id="payment-amount-step"></span></strong></li>
+            <li>Thibitisha jina "<strong>OMARI SHOP10</strong>"</li>
+            <li>Weka nenosiri lako</li>
+            <li>Bonyeza kutuma</li>
+          </ol>
+        </div>
+        
+        <div class="payment-methods">
+          <button class="payment-btn tigo" onclick="initiateTigoPayment()">
+            <i class="fas fa-mobile-alt" style="margin-right: 8px;"></i> Nimeshalipa
+          </button>
+        </div>
+        
+        <div class="payment-confirmation" id="payment-confirmation">
+          <p>Ukitumia malipo, tafadhali subiri mfumo kuthibitisha. Muda wa kuthibitisha ni hadi dakika 2.</p>
+          <button onclick="checkPaymentStatus()" style="background: #ffd700; color: #000; border: none; padding: 10px; border-radius: 5px; margin-top: 10px;">
+            <i class="fas fa-sync-alt" style="margin-right: 5px;"></i> Angalia tena
+          </button>
+        </div>
+        
+        <div class="payment-processing" id="payment-processing">
+          <i class="fas fa-spinner fa-spin"></i>
+          <p>Inathibitisha malipo yako...</p>
+        </div>
+        
+        <p style="font-size: 0.8rem; margin-top: 15px; color: #aaa;">
+          Kama una shida, wasiliana nasi kupitia huduma kwa wateja.
+        </p>
+      </div>
+      
+      <div id="story-content-container" style="display: none;">
+        <h3 id="story-title"></h3>
+        <div class="story-content" id="story-content"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script>
+    // Configuration
+    const TIGO_PESA_NUMBER = '22258408';
+    const RECIPIENT_NAME = 'OMARI SHOP10';
+    const CATEGORY = 'ujasusi';
+    
+    // State
+    let allHadithi = [];
+    let currentStoryId = null;
+    let currentStoryTitle = null;
+    let currentStoryContent = null;
+    let currentStoryPrice = 0;
+    
+    // DOM Elements
+    const hadithiContainer = document.getElementById('hadithiContainer');
+    const loadingElement = document.querySelector('.loading-spinner');
+    const storyViewer = document.getElementById('story-viewer');
+    const paymentPrompt = document.getElementById('payment-prompt');
+    const storyContentContainer = document.getElementById('story-content-container');
+    const storyTitle = document.getElementById('story-title');
+    const storyContent = document.getElementById('story-content');
+    const paymentConfirmation = document.getElementById('payment-confirmation');
+    const paymentProcessing = document.getElementById('payment-processing');
+    const paymentAmount = document.getElementById('payment-amount');
+    const paymentAmountInstructions = document.getElementById('payment-amount-instructions');
+    const paymentAmountStep = document.getElementById('payment-amount-step');
+
+    // Initialize Supabase
+    const supabaseUrl = 'https://vknaovalrilbpfgveqnj.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZrbmFvdmFscmlsYnBmZ3ZlcW5qIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkwMzQ2NjAsImV4cCI6MjA2NDYxMDY2MH0.uIKjFXMbKg0l0bIxTZpMF0QRh1BsDdPWsWK0G2kzqT8';
+    const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+    // Check user session
+    async function checkUserSession() {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        Swal.fire({
+          title: 'Tafadhali Ingia!',
+          text: 'Unahitaji kuwa umeingia kwenye akaunti yako ili kusoma hadithi.',
+          icon: 'warning',
+          confirmButtonText: 'Ingia',
+          showCancelButton: true,
+          cancelButtonText: 'Ghairi',
+          confirmButtonColor: '#FF6B00',
+          background: '#121212',
+          color: '#F5F5F5',
+        }).then((result) => {
+          if (result.isConfirmed) {
+            window.location.href = 'login.html';
+          }
+        });
+        return false;
+      }
+      return true;
+    }
+
+    // Function to show custom alert
+    function showCustomAlert(type, message) {
+      const alertDiv = document.createElement('div');
+      alertDiv.className = `custom-alert ${type}`;
+      alertDiv.innerHTML = `
+        <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i>
+        <span>${message}</span>
+        <span class="close-btn" onclick="this.parentElement.remove()">×</span>
+      `;
+      
+      document.body.appendChild(alertDiv);
+      
+      setTimeout(() => {
+        alertDiv.classList.add('show');
+      }, 10);
+      
+      setTimeout(() => {
+        alertDiv.classList.remove('show');
+        setTimeout(() => {
+          alertDiv.remove();
+        }, 300);
+      }, 5000);
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', async () => {
+      if (await checkUserSession()) {
+        loadHadithi();
+      }
+    });
+    
+    // Function to load hadithi from Supabase
+    async function loadHadithi() {
+      try {
+        loadingElement.style.display = 'flex';
+        hadithiContainer.innerHTML = '';
+        
+        const { data: hadithi, error } = await supabase
+          .from('stories')
+          .select('*')
+          .eq('category', CATEGORY)
+          .order('created_at', { ascending: false });
+
+        if (error) throw error;
+
+        allHadithi = hadithi.map(hadithi => ({
+          id: hadithi.id,
+          title: hadithi.title,
+          thumbnailUrl: hadithi.thumbnail_url || 'https://via.placeholder.com/300x169?text=No+Thumbnail',
+          content: hadithi.content,
+          readTime: hadithi.read_time || calculateReadTime(hadithi.content),
+          price: hadithi.price || 0
+        }));
+
+        if (allHadithi.length === 0) {
+          hadithiContainer.innerHTML = '<p style="color: #ffd700; text-align: center;">Hakuna hadithi za ujasusi zilizopatikana kwa sasa.</p>';
+        } else {
+          displayHadithi(allHadithi);
+        }
+        loadingElement.style.display = 'none';
+      } catch (error) {
+        console.error('Error fetching hadithi:', error);
+        hadithiContainer.innerHTML = '<p style="color: #ffd700; text-align: center;">Kuna hitilafu katika kupakia hadithi. Tafadhali jaribu tena baadaye.</p>';
+        loadingElement.style.display = 'none';
+      }
+    }
+    
+    // Calculate read time based on content
+    function calculateReadTime(content) {
+      const wordsPerMinute = 200;
+      const wordCount = content.split(/\s+/).length;
+      return Math.ceil(wordCount / wordsPerMinute);
+    }
+    
+    // Display hadithi in grid
+    function displayHadithi(hadithiList) {
+      hadithiContainer.innerHTML = '';
+      hadithiList.forEach(hadithi => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <img src="${hadithi.thumbnailUrl}" alt="${hadithi.title}" class="thumbnail" onerror="this.src='https://via.placeholder.com/300x169?text=No+Thumbnail'">
+          <h3>${hadithi.title}</h3>
+          <div class="desc">Hadithi yenye ujasusi na njama inayovutia!</div>
+          <div class="stats">
+            <div><span class="icon">⏱</span> ${hadithi.readTime} min</div>
+            ${hadithi.price > 0 ? `<div><span class="icon">💰</span> TZS ${hadithi.price.toLocaleString()}</div>` : ''}
+          </div>
+          <a class="btn-read" onclick="readStory('${hadithi.id}', '${hadithi.title.replace(/'/g, "\\'")}', \`${hadithi.content.replace(/`/g, '\\`')}\`, ${hadithi.price})">Soma</a>
+        `;
+        hadithiContainer.appendChild(card);
+      });
+    }
+    
+    // Check if story is paid for
+    async function hasPaidForStory(storyId) {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return false;
+
+      const { data, error } = await supabase
+        .from('payments')
+        .select('*')
+        .eq('user_id', user.id)
+        .eq('story_id', storyId)
+        .eq('status', 'paid')
+        .single();
+
+      return !error && data;
+    }
+    
+    // Mark story as paid
+    async function markStoryAsPaid(storyId, userId) {
+      const { error } = await supabase
+        .from('payments')
+        .insert({
+          user_id: userId,
+          story_id: storyId,
+          amount: currentStoryPrice,
+          status: 'paid',
+          created_at: new Date().toISOString()
+        });
+
+      if (!error) {
+        loadHadithi(); // Refresh to show updated payment status
+      }
+    }
+    
+    // Initiate Tigo Pesa payment
+    async function initiateTigoPayment() {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        showCustomAlert('error', 'Tafadhali ingia kwanza ili uweze kulipa.');
+        setTimeout(() => {
+          window.location.href = 'login.html';
+        }, 2000);
+        return;
+      }
+
+      paymentConfirmation.style.display = 'block';
+      paymentProcessing.style.display = 'none';
+    }
+    
+    // Check payment status
+    async function checkPaymentStatus() {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        showCustomAlert('error', 'Tafadhali ingia kwanza ili uweze kuthibitisha malipo.');
+        setTimeout(() => {
+          window.location.href = 'login.html';
+        }, 2000);
+        return;
+      }
+
+      paymentConfirmation.style.display = 'none';
+      paymentProcessing.style.display = 'block';
+
+      try {
+        const { data, error } = await supabase
+          .from('payments')
+          .select('*')
+          .eq('user_id', user.id)
+          .eq('story_id', currentStoryId)
+          .eq('status', 'paid')
+          .single();
+
+        if (error || !data) {
+          throw new Error('Malipo bado hayajathibitishwa.');
+        }
+
+        await markStoryAsPaid(currentStoryId, user.id);
+        completePayment();
+      } catch (error) {
+        paymentProcessing.style.display = 'none';
+        paymentConfirmation.style.display = 'block';
+        showCustomAlert('error', 'Malipo bado hayajaingia. Hakikisha umeisha malipo na subiri dakika 2 kabla ya kujaribu tena.');
+      }
+    }
+    
+    // Complete payment process
+    async function completePayment() {
+      paymentPrompt.style.display = 'none';
+      paymentProcessing.style.display = 'none';
+      
+      storyContentContainer.style.display = 'block';
+      storyTitle.textContent = currentStoryTitle;
+      storyContent.innerHTML = currentStoryContent.replace(/\n/g, '<br>');
+
+      showCustomAlert('success', '🎉 Malipo yako yamethibitishwa! Sasa unaweza kusoma hadithi yako ya ujasusi!');
+    }
+    
+    // Read story function
+    async function readStory(storyId, storyTitle, storyContent, price) {
+      if (!await checkUserSession()) return;
+      
+      currentStoryId = storyId;
+      currentStoryTitle = storyTitle;
+      currentStoryContent = storyContent;
+      currentStoryPrice = price;
+
+      paymentAmount.textContent = price.toLocaleString();
+      paymentAmountInstructions.textContent = price.toLocaleString();
+      paymentAmountStep.textContent = price.toLocaleString();
+
+      const isPaid = await hasPaidForStory(storyId);
+
+      if (isPaid) {
+        paymentPrompt.style.display = 'none';
+        storyContentContainer.style.display = 'block';
+        storyTitle.textContent = storyTitle;
+        storyContent.innerHTML = storyContent.replace(/\n/g, '<br>');
+        storyViewer.style.display = 'flex';
+      } else if (price > 0) {
+        paymentPrompt.style.display = 'block';
+        paymentConfirmation.style.display = 'none';
+        paymentProcessing.style.display = 'none';
+        storyContentContainer.style.display = 'none';
+        storyViewer.style.display = 'flex';
+      } else {
+        paymentPrompt.style.display = 'none';
+        storyContentContainer.style.display = 'block';
+        storyTitle.textContent = storyTitle;
+        storyContent.innerHTML = storyContent.replace(/\n/g, '<br>');
+        storyViewer.style.display = 'flex';
+      }
+    }
+    
+    // Close story viewer
+    function closeStory() {
+      storyViewer.style.display = 'none';
+      storyTitle.textContent = '';
+      storyContent.innerHTML = '';
+      paymentConfirmation.style.display = 'none';
+      paymentProcessing.style.display = 'none';
+      paymentPrompt.style.display = 'none';
+      storyContentContainer.style.display = 'none';
+    }
+    
+    // Close story viewer when clicking outside
+    document.getElementById('story-viewer').addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeStory();
+      }
+    });
+
+    // Content protection
+    document.addEventListener('contextmenu', e => {
+      e.preventDefault();
+      showCustomAlert('error', 'Hakuna kuruhusiwa kunakili au kuchukua picha za skrini kwenye tovuti hii.');
+    });
+
+    document.addEventListener('keydown', e => {
+      if (
+        e.key === 'PrintScreen' ||
+        (e.ctrlKey && ['c', 'u', 'v', 's', 'p'].includes(e.key.toLowerCase())) ||
+        (e.metaKey && ['c', 'u', 'v', 's', 'p'].includes(e.key.toLowerCase())) ||
+        e.key === 'F12' ||
+        (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key.toUpperCase()))
+      ) {
+        e.preventDefault();
+        showCustomAlert('error', 'Hakuna kuruhusiwa kunakili, kuchukua picha za skrini, au kufungua zana za msanidi.');
+      }
+    });
+
+    document.addEventListener('keyup', e => {
+      if (e.key === 'PrintScreen') {
+        navigator.clipboard.writeText('').then(() => {
+          showCustomAlert('error', 'Kuchukua picha za skrini hakuruhusiwi kwenye tovuti hii.');
+        });
+      }
+    });
+
+    // Make functions available globally
+    window.readStory = readStory;
+    window.closeStory = closeStory;
+    window.initiateTigoPayment = initiateTigoPayment;
+    window.checkPaymentStatus = checkPaymentStatus;
+  </script>
+</body>
+</html>

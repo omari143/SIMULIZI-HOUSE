@@ -1,0 +1,1433 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SIMULIZI HOUSE- Hadithi Zote</title>
+  <style>
+    :root {
+      --primary: #FF3D81;
+      --secondary: #00F0FF;
+      --dark: #0A0A12;
+      --darker: #05050A;
+      --light: #E6E6FA;
+      --gray: #1F1F2E;
+      --light-gray: #A0A0C0;
+      --whatsapp-green: #25D366;
+      --neon-pink: #FF1F8A;
+      --neon-cyan: #00F0FF;
+      --header-bg-start: #1B0034;
+      --header-bg-end: #3A006F;
+      --accent-purple: #8A2BE2;
+      --accent-blue: #1E90FF;
+      --transition: all 0.4s ease;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+      overflow-x: hidden;
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(180deg, var(--dark) 0%, var(--darker) 100%);
+      color: var(--light);
+      scroll-behavior: smooth;
+      user-select: none;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+    }
+
+    body.light-theme {
+      background: linear-gradient(180deg, #FFFFFF 0%, #F0F0F0 100%);
+      color: #000000;
+    }
+
+    body.light-theme header {
+      background: linear-gradient(135deg, #FFFFFF, #E0E0E0);
+    }
+
+    body.light-theme .story-card {
+      background: #F5F5F5;
+      color: #000000;
+    }
+
+    body.light-theme .story-title,
+    body.light-theme .category-title {
+      color: #000000;
+    }
+
+    body.light-theme .payment-modal-content {
+      background: #FFFFFF;
+      color: #000000;
+    }
+
+    .hero-section {
+      position: relative;
+      height: 50vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: var(--light);
+      text-shadow: 0 0 15px var(--neon-pink);
+      padding: 1.5rem;
+      z-index: 1;
+    }
+
+    .hero-title {
+      font-size: 0.625rem;
+      font-weight: 800;
+      margin-bottom: 0.8rem;
+      animation: glow 2s ease-in-out infinite;
+    }
+
+    .hero-subtitle {
+      font-size: 3rem;
+      font-weight: 400;
+      max-width: 600px;
+      margin-bottom: 1.5rem;
+      animation: colorChange 2s infinite ease-in-out;
+    }
+
+    @keyframes colorChange {
+      0%, 100% { color: var(--neon-cyan); }
+      50% { color: var(--neon-pink); }
+    }
+
+    .hero-btn {
+      background: linear-gradient(135deg, var(--neon-pink), var(--neon-cyan));
+      color: var(--dark);
+      padding: 0.8rem 2rem;
+      border-radius: 30px;
+      font-size: 1rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: var(--transition);
+      box-shadow: 0 0 20px var(--neon-cyan);
+    }
+
+    .hero-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 30px var(--neon-pink);
+    }
+
+    @keyframes glow {
+      0%, 100% { text-shadow: 0 0 15px var(--neon-pink); }
+      50% { text-shadow: 0 0 25px var(--neon-cyan); }
+    }
+
+    header {
+      background: linear-gradient(135deg, var(--header-bg-start), var(--header-bg-end));
+      padding: 1rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-container img {
+      height: 60px;
+      border-radius: 50%;
+      border: 2px solid var(--neon-cyan);
+      box-shadow: 0 0 15px var(--neon-pink);
+      animation: spinGlow 3s linear infinite;
+      transition: var(--transition);
+    }
+
+    .logo-container img:hover {
+      transform: scale(1.1);
+    }
+
+    @keyframes spinGlow {
+      0% { box-shadow: 0 0 15px var(--neon-pink); }
+      50% { box-shadow: 0 0 25px var(--neon-cyan); }
+      100% { box-shadow: 0 0 15px var(--neon-pink); }
+    }
+
+    .logo-text {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--secondary);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      text-shadow: 0 0 10px var(--neon-cyan);
+      line-height: 1;
+    }
+
+    .nav-container {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .nav-btn {
+      background: var(--neon-pink);
+      color: var(--dark);
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 1rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 0 15px var(--neon-pink);
+      animation: pulse 2s infinite ease-in-out;
+    }
+
+    .nav-btn:hover {
+      background: var(--neon-cyan);
+      box-shadow: 0 0 20px var(--neon-cyan);
+      transform: scale(1.1);
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 0 15px var(--neon-pink);
+      }
+      50% {
+        transform: scale(1.05);
+        box-shadow: 0 0 25px var(--neon-cyan);
+      }
+    }
+
+    .user-menu {
+      position: relative;
+    }
+
+    .user-btn {
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--light);
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .user-btn:hover {
+      background: var(--neon-pink);
+      color: var(--dark);
+      box-shadow: 0 0 15px var(--neon-pink);
+    }
+
+    .user-dropdown {
+      display: none;
+      position: absolute;
+      top: 100%;
+      right: 0;
+      background: var(--gray);
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+      padding: 1rem;
+      width: 250px;
+      z-index: 100;
+    }
+
+    .user-dropdown.active {
+      display: block;
+    }
+
+    .user-info {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      color: var(--light);
+      font-size: 0.9rem;
+    }
+
+    .user-info label {
+      font-weight: bold;
+    }
+
+    .user-info input {
+      background: var(--darker);
+      border: 1px solid var(--light-gray);
+      border-radius: 5px;
+      padding: 5px;
+      color: var(--light);
+    }
+
+    .user-info input[readonly] {
+      background: var(--gray);
+    }
+
+    .password-toggle {
+      cursor: pointer;
+      color: var(--neon-cyan);
+      margin-left: 5px;
+    }
+
+    .auth-btn {
+      background: var(--neon-pink);
+      color: var(--dark);
+      padding: 8px;
+      border-radius: 5px;
+      text-align: center;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      margin-top: 10px;
+    }
+
+    .auth-btn:hover {
+      background: var(--neon-cyan);
+      transform: scale(1.05);
+    }
+
+    .theme-toggle {
+      background: none;
+      border: none;
+      color: var(--light);
+      font-size: 1.3rem;
+      cursor: pointer;
+      transition: var(--transition);
+      margin-left: 10px;
+    }
+
+    .theme-toggle:hover {
+      color: var(--neon-cyan);
+      transform: rotate(180deg);
+    }
+
+    .hamburger {
+      display: none;
+      font-size: 1.6rem;
+      color: var(--light);
+      cursor: pointer;
+    }
+
+    .filter-bar {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin: 2rem 0;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      background: var(--gray);
+      color: var(--light);
+      padding: 0.8rem 1.5rem;
+      border-radius: 20px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .filter-btn.active, .filter-btn:hover {
+      background: var(--neon-cyan);
+      color: var(--dark);
+      box-shadow: 0 0 15px var(--neon-cyan);
+    }
+
+    .main-container {
+      padding: 3rem;
+      max-width: 1600px;
+      margin: 0 auto;
+    }
+
+    .category-title {
+      color: var(--secondary);
+      font-size: 2rem;
+      margin: 2rem 0;
+      padding-bottom: 0.5rem;
+      border-bottom: 3px solid var(--neon-pink);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      text-shadow: 0 0 10px var(--neon-cyan);
+      transition: var(--transition);
+    }
+
+    .category-title:hover {
+      color: var(--neon-pink);
+      transform: translateX(10px);
+    }
+
+    .category-title i.fa-chevron-right {
+      transition: transform 0.3s ease;
+    }
+
+    .category-title.active i.fa-chevron-right {
+      transform: rotate(90deg);
+    }
+
+    .stories-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 2rem;
+      margin-bottom: 3rem;
+      display: none;
+      animation: fadeIn 0.6s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .stories-grid.active {
+      display: grid;
+    }
+
+    .story-card {
+      background: var(--gray);
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+      transition: var(--transition);
+      cursor: pointer;
+      position: relative;
+      border: 2px solid var(--neon-cyan);
+    }
+
+    .story-card:hover {
+      transform: translateY(-10px) scale(1.03);
+      box-shadow: 0 12px 30px rgba(0, 240, 255, 0.4);
+    }
+
+    .story-image {
+      height: 200px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .story-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+
+    .story-card:hover .story-image img {
+      transform: scale(1.1);
+    }
+
+    .story-badge {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: var(--neon-pink);
+      color: var(--dark);
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: bold;
+    }
+
+    .story-content {
+      padding: 1.5rem;
+    }
+
+    .story-title {
+      font-size: 1.4rem;
+      margin: 0 0 1rem 0;
+      color: var(--secondary);
+      font-weight: 600;
+    }
+
+    .story-description {
+      font-size: 0.95rem;
+      color: var(--light-gray);
+      margin-bottom: 1rem;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      line-height: 1.5;
+    }
+
+    .story-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .story-price {
+      font-weight: bold;
+      font-size: 1.1rem;
+      background: linear-gradient(135deg, var(--neon-pink), var(--neon-cyan));
+      color: var(--dark);
+      padding: 6px 12px;
+      border-radius: 20px;
+      transition: var(--transition);
+    }
+
+    .story-price:hover {
+      transform: scale(1.05);
+    }
+
+    .story-category {
+      padding: 0.4rem 0.9rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+
+    .category-ujasusi { background: #FF6347; color: #000; }
+    .category-huzuni { background: #4682B4; color: #000; }
+    .category-horror { background: #DC143C; color: #FFF; }
+    .category-drama { background: #FFD700; color: #000; }
+    .category-simulizi { background: var(--accent-purple); color: #FFF; }
+    .category-chombezo { background: #FF4500; color: #FFF; }
+    .category-ujasusi-simulizi,
+    .category-huzuni-simulizi,
+    .category-horror-simulizi,
+    .category-drama-simulizi { background: var(--accent-purple); color: #FFF; }
+    .category-video { background: var(--accent-blue); color: #FFF; }
+
+    .btn-category {
+      display: block;
+      width: 90%;
+      max-width: 450px;
+      margin: 2rem auto;
+      padding: 1.2rem;
+      background: linear-gradient(135deg, var(--neon-pink), var(--neon-cyan));
+      color: var(--dark);
+      font-size: 1.2rem;
+      font-weight: bold;
+      border-radius: 30px;
+      text-decoration: none;
+      text-align: center;
+      transition: var(--transition);
+      box-shadow: 0 0 20px var(--neon-cyan);
+    }
+
+    .btn-category:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 30px var(--neon-pink);
+    }
+
+    .service-btn, .whatsapp-btn {
+      position: fixed;
+      right: 20px;
+      background: var(--neon-pink);
+      color: var(--dark);
+      border: none;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      font-size: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      z-index: 100;
+      transition: var(--transition);
+    }
+
+    .service-btn {
+      bottom: 20px;
+    }
+
+    .whatsapp-btn {
+      bottom: 80px;
+      background: var(--whatsapp-green);
+    }
+
+    .service-btn:hover, .whatsapp-btn:hover {
+      transform: scale(1.2) rotate(360deg);
+      box-shadow: 0 10px 20px var(--neon-cyan);
+    }
+
+    footer {
+      background: var(--darker);
+      color: var(--light-gray);
+      text-align: center;
+      padding: 2rem;
+      font-size: 0.9rem;
+      border-top: 3px solid var(--neon-pink);
+    }
+
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .social-links {
+      color: var(--light);
+      font-size: 1.8rem;
+      transition: var(--transition);
+      margin-left: 20px;
+      margin-right: 20px;
+    }
+
+    .social-links a:hover {
+      color: var(--neon-cyan);
+      transform: scale(1.3);
+    }
+
+    .payment-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      z-index: 1000;
+      overflow: auto;
+    }
+
+    .payment-modal-content {
+      background: var(--gray);
+      margin: 5% auto;
+      padding: 2rem;
+      width: 90%;
+      max-width: 600px;
+      border-radius: 15px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+      color: var(--light);
+      position: relative;
+      border: 2px solid var(--neon-cyan);
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 20px;
+      font-size: 2rem;
+      color: var(--secondary);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .close-btn:hover {
+      color: var(--neon-pink);
+      transform: rotate(90deg);
+    }
+
+    .payment-prompt {
+      background: var(--darker);
+      padding: 2rem;
+      border-radius: 10px;
+      margin-top: 1rem;
+      border: 2px solid var(--neon-pink);
+      animation: fadeIn 0.5s ease;
+    }
+
+    .payment-methods {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      margin: 1.5rem 0;
+    }
+
+    .payment-btn {
+      padding: 1rem;
+      border-radius: 25px;
+      border: none;
+      font-weight: bold;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: var(--transition);
+      background: linear-gradient(135deg, #FF6600, var(--neon-pink));
+      color: var(--dark);
+    }
+
+    .payment-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 8px 15px var(--neon-cyan);
+    }
+
+    .payment-instructions {
+      background: rgba(0, 0, 0, 0.3);
+      padding: 1.5rem;
+      border-radius: 10px;
+      margin: 1.5rem 0;
+      border-left: 4px solid var(--neon-cyan);
+    }
+
+    .payment-number {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: var(--neon-cyan);
+      margin: 15px 0;
+      text-align: center;
+      background: rgba(0, 240, 255, 0.1);
+      padding: 10px;
+      border-radius: 10px;
+      border: 2px dashed var(--neon-pink);
+    }
+
+    .payment-steps {
+      padding-left: 20px;
+      line-height: 1.8;
+    }
+
+    .payment-steps li {
+      margin-bottom: 10px;
+    }
+
+    .payment-confirmation, .payment-verification {
+      background: rgba(0, 0, 0, 0.2);
+      padding: 1.5rem;
+      border-radius: 10px;
+      margin-top: 1.5rem;
+      border: 2px dashed var(--neon-cyan);
+    }
+
+    .payment-verification h3 {
+      color: var(--secondary);
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .payment-verification form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .payment-verification input {
+      padding: 10px;
+      font-size: 1rem;
+      border: 2px solid var(--light-gray);
+      border-radius: 5px;
+      background: var(--darker);
+      color: var(--light);
+      transition: var(--transition);
+    }
+
+    .payment-verification input:focus {
+      border-color: var(--neon-cyan);
+      box-shadow: 0 0 10px var(--neon-cyan);
+    }
+
+    .payment-verification button {
+      background: var(--neon-pink);
+      color: var(--dark);
+      padding: 12px;
+      border: none;
+      border-radius: 5px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .payment-verification button:hover:not(:disabled) {
+      background: var(--neon-cyan);
+      transform: scale(1.05);
+    }
+
+    .custom-alert {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: var(--neon-cyan);
+      color: var(--dark);
+      padding: 15px 25px;
+      border-radius: 8px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      z-index: 1001;
+      transform: translateX(120%);
+      transition: transform 0.3s ease-out, opacity 0.3s ease;
+      opacity: 0;
+    }
+
+    .custom-alert.show {
+      transform: translateX(0);
+      opacity: 1;
+    }
+
+    .custom-alert.error {
+      background: #FF3F3F;
+    }
+
+    .spinner {
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(0, 0, 0, 0.3);
+      border-top-color: var(--neon-cyan);
+      animation: spin 1s ease-in-out infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    @media (max-width: 992px) {
+      .main-container {
+        padding: 2rem;
+      }
+
+      .hero-title {
+        font-size: 0.5rem;
+      }
+
+      .hero-subtitle {
+        font-size: 2rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      header {
+        padding: 1rem;
+        flex-wrap: wrap;
+      }
+
+      .hamburger {
+        display: block;
+      }
+
+      .user-menu {
+        display: none;
+      }
+
+      .user-menu.active {
+        display: block;
+        width: 100%;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        background: var(--header-bg-start);
+        padding: 1rem;
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+      }
+
+      .nav-container {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .user-dropdown {
+        width: 100%;
+      }
+
+      .logo-container img {
+        height: 50px;
+      }
+
+      .logo-text {
+        font-size: 1.5rem;
+      }
+
+      .stories-grid {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      }
+    }
+
+    @media (max-width: 576px) {
+      .main-container {
+        padding: 1rem;
+      }
+
+      .category-title {
+        font-size: 1.7rem;
+      }
+
+      .stories-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-title {
+        font-size: 2.45rem;
+      }
+
+      .hero-subtitle {
+        font-size: 1.5rem;
+      }
+
+      .logo-container img {
+        height: 80px;
+      }
+
+      .logo-text {
+        font-size: 1.2rem;
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+  <div class="hero-section">
+    <h1 class="hero-title">SIMULIZI HOUSE</h1>
+    <p class="hero-subtitle">Jiunge na Dunia ya Hadithi Zisizosahaulika - Zote!</p>
+    <a href="#all-stories" class="hero-btn">Anza Kusoma Sasa</a>
+  </div>
+
+  <header>
+    <div class="logo-container">
+      <img src="/Picsart_26-05-13_01-57-22-165.png" alt="SIMULIZI HOUSE Logo">
+      <div class="logo-text">SIMULIZI HOUSE</div>
+    </div>
+    <div class="nav-container">
+      <a href="bure.html" class="nav-btn"><i class="fas fa-gift"></i> Hadithi za Bure</a>
+      <div class="hamburger" id="hamburger">
+        <i class="fas fa-bars"></i>
+      </div>
+      <div class="user-menu" id="userMenu">
+        <button class="user-btn" id="userBtn"><i class="fas fa-user"></i> Akaunti</button>
+        <div class="user-dropdown" id="userDropdown">
+          <div class="user-info" id="userInfo">
+            <div>
+              <label>Jina la Mtumiaji:</label>
+              <input type="text" id="username" readonly>
+            </div>
+            <div>
+              <label>Nenosiri:</label>
+              <input type="password" id="password" readonly>
+              <span class="password-toggle" id="passwordToggle"><i class="fas fa-eye"></i></span>
+            </div>
+            <div>
+              <label>Barua Pepe:</label>
+              <input type="email" id="email" readonly>
+            </div>
+            <div>
+              <label>Namba ya Simu:</label>
+              <input type="text" id="phone" readonly>
+            </div>
+            <div class="auth-btn" id="authBtn">Login</div>
+          </div>
+        </div>
+      </div>
+      <button class="theme-toggle" id="themeToggle" title="Badilisha Moduli">
+        <i class="fas fa-moon"></i>
+      </button>
+    </div>
+  </header>
+
+  <div class="filter-bar">
+    <button class="filter-btn active" data-filter="all">Zote</button>
+    <button class="filter-btn" data-filter="ujasusi">Ujasusi</button>
+    <button class="filter-btn" data-filter="huzuni">Huzuni</button>
+    <button class="filter-btn" data-filter="horror">Horror</button>
+    <button class="filter-btn" data-filter="drama">Drama</button>
+    <button class="filter-btn" data-filter="simulizi">Simulizi</button>
+    <button class="filter-btn" data-filter="chombezo">Chombezo</button>
+    <button class="filter-btn" data-filter="video">Video</button>
+  </div>
+
+  <div class="main-container">
+    <h2 class="category-title active" data-category="all" id="all-stories">
+      <span><i class="fas fa-list"></i> Hadithi Zote</span>
+      <i class="fas fa-chevron-down"></i>
+    </h2>
+    <div class="stories-grid active" id="all-stories-grid">
+      <div class="loading-spinner" style="text-align: center; padding: 2rem;">
+        <div class="spinner"></div>
+        <p>Inapakia hadithi...</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="payment-modal" id="paymentModal">
+    <div class="payment-modal-content">
+      <span class="close-btn" id="closePaymentModal">×</span>
+      <div class="payment-prompt">
+        <h3>Malipo ya Hadithi</h3>
+        <p>Unahitaji kulipa TZS <span id="modalPaymentAmount"></span> kwa hadithi hii. Baada ya malipo, utaweza kuisoma mara nyingine bila kulipa tena.</p>
+        <div class="payment-methods">
+          <button class="payment-btn tigo" id="tigoPaymentBtn">
+            <i class="fas fa-mobile-alt"></i> LIPIA KWA TIGO PESA
+          </button>
+        </div>
+        <div class="payment-confirmation" id="paymentConfirmation" style="display: none;">
+          <p>Tuma TZS <span id="confirmationAmount"></span> kwa nambari ifuatayo:</p>
+          <div class="payment-number">22258408</div>
+          <p>Jina: OMARI SHOP10</p>
+          <ol class="payment-steps">
+            <li>Nenda kwenye menyu ya Tigo Pesa kwenye simu yako</li>
+            <li>Chagua "Tuma Pesa"</li>
+            <li>Weka nambari: <strong>22258408</strong></li>
+            <li>Weka kiasi: <strong><span id="confirmationAmountRepeat"></span></strong></li>
+            <li>Weka nenosiri na kuthibitisha</li>
+            <li>Ingiza reference code kwenye fomu ya uthibitisho hapa chini</li>
+          </ol>
+        </div>
+        <div class="payment-verification" id="paymentVerification" style="display: none;">
+          <h3>Thibitisha Malipo</h3>
+          <form id="paymentForm">
+            <label for="referenceCode">Ingiza Reference Code ya Malipo</label>
+            <input type="text" id="referenceCode" name="referenceCode" required placeholder="Mfano: REF22258408OK">
+            <button type="submit">Thibitisha Malipo</button>
+            <div class="message" id="verificationMessage"></div>
+          </form>
+          <div class="countdown" id="countdownTimer" style="display: none; margin-top: 15px; text-align: center; font-weight: bold; color: var(--secondary);">
+            <p>Inasubiri sekunde <span id="countdownSeconds">15</span>...</p>
+          </div>
+        </div>
+        <div class="payment-processing" id="paymentProcessing" style="display: none;">
+          <i class="fas fa-spinner fa-spin"></i>
+          <p>Inathibitisha malipo yako...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <button class="service-btn" onclick="location.href='huduma.html'" title="Huduma kwa Wateja">
+    <i class="fas fa-headset"></i>
+  </button>
+  <a href="https://chat.whatsapp.com/BxPl7HYjyhkGKZPvuxhp4Y" target="_blank" class="whatsapp-btn" title="Jiunge na WhatsApp Group">
+    <i class="fab fa-whatsapp"></i>
+  </a>
+
+  <footer>
+    <div class="footer-content">
+      <div class="social-links">
+        <a href="https://facebook.com/storieszone" target="_blank"><i class="fab fa-facebook"></i></a>
+        <a href="https://x.com/storieszone" target="_blank"><i class="fab fa-twitter"></i></a>
+        <a href="https://instagram.com/storieszone" target="_blank"><i class="fab fa-instagram"></i></a>
+        <a href="https://youtube.com/@storieszone" target="_blank"><i class="fab fa-youtube"></i></a>
+      </div>
+      <p>© <span id="current-year"></span> SIMULIZI HOUSE- Hadithi za Kisasa</p>
+      <p>Haki Zote Zimehifadhiwa</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script>
+    const szSupabaseUrl = 'https://vknaovalrilbpfgveqnj.supabase.co';
+    const szSupabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZrbmFvdmFscmlsYnBmZ3ZlcW5qIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkwMzQ2NjAsImV4cCI6MjA2NDYxMDY2MH0.uIKjFXMbKg0l0bIxTZpMF0QRh1BsDdPWsWK0G2kzqT8';
+    const szClient = window.supabase.createClient(szSupabaseUrl, szSupabaseKey);
+
+    const hamburger = document.getElementById('hamburger');
+    const userMenu = document.getElementById('userMenu');
+
+    hamburger.addEventListener('click', () => {
+      userMenu.classList.toggle('active');
+      hamburger.querySelector('i').classList.toggle('fa-bars');
+      hamburger.querySelector('i').classList.toggle('fa-times');
+    });
+
+    const userBtn = document.getElementById('userBtn');
+    const userDropdown = document.getElementById('userDropdown');
+    userBtn.addEventListener('click', () => {
+      userDropdown.classList.toggle('active');
+    });
+
+    const passwordInput = document.getElementById('password');
+    const passwordToggle = document.getElementById('passwordToggle');
+    passwordToggle.addEventListener('click', () => {
+      if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        passwordToggle.innerHTML = '<i class="fas fa-eye-slash"></i>';
+      } else {
+        passwordInput.type = 'password';
+        passwordToggle.innerHTML = '<i class="fas fa-eye"></i>';
+      }
+    });
+
+    const themeToggle = document.getElementById('themeToggle');
+    themeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('light-theme');
+      themeToggle.querySelector('i').classList.toggle('fa-moon');
+      themeToggle.querySelector('i').classList.toggle('fa-sun');
+      localStorage.setItem('theme', document.body.classList.contains('light-theme') ? 'light' : 'dark');
+    });
+
+    window.addEventListener('load', () => {
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme === 'light') {
+        document.body.classList.add('light-theme');
+        themeToggle.querySelector('i').classList.replace('fa-moon', 'fa-sun');
+      }
+    });
+
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+
+    async function updateUserInfo() {
+      const { data: { user } } = await szClient.auth.getUser();
+      const authBtn = document.getElementById('authBtn');
+      const usernameInput = document.getElementById('username');
+      const passwordInput = document.getElementById('password');
+      const emailInput = document.getElementById('email');
+      const phoneInput = document.getElementById('phone');
+
+      if (user) {
+        usernameInput.value = user.user_metadata?.username || 'Mtumiaji';
+        passwordInput.value = '********';
+        emailInput.value = user.email || '';
+        phoneInput.value = user.user_metadata?.phone || '';
+        authBtn.textContent = 'Ondoka';
+        authBtn.onclick = async () => {
+          await szClient.auth.signOut();
+          showCustomAlert('success', 'Umetoka kwenye akaunti.');
+          setTimeout(() => window.location.href = 'login.html', 1000);
+        };
+      } else {
+        usernameInput.value = '';
+        passwordInput.value = '';
+        emailInput.value = '';
+        phoneInput.value = '';
+        authBtn.textContent = 'Login';
+        authBtn.onclick = () => window.location.href = 'login.html';
+      }
+    }
+
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const filter = btn.getAttribute('data-filter');
+        window.location.href = `${filter}.html`;
+      });
+    });
+
+    async function checkAuthAndRedirect() {
+      const { data: { user } } = await szClient.auth.getUser();
+      updateUserInfo();
+      if (!user) {
+        showCustomAlert('error', 'Tafadhali ingia kwanza.');
+        setTimeout(() => window.location.href = 'login.html', 2000);
+      } else {
+        loadInitialContent();
+      }
+    }
+
+    async function loadInitialContent() {
+      const title = document.querySelector('.category-title');
+      title.addEventListener('click', () => {
+        const category = title.getAttribute('data-category');
+        const storiesGrid = document.getElementById('all-stories-grid');
+        
+        title.classList.toggle('active');
+        storiesGrid.classList.toggle('active');
+        
+        const chevron = title.querySelector('i.fa-chevron-down');
+        if (title.classList.contains('active')) {
+          chevron.classList.replace('fa-chevron-right', 'fa-chevron-down');
+          if (!storiesGrid.dataset.loaded) {
+            loadStories(category);
+            storiesGrid.dataset.loaded = 'true';
+          }
+        } else {
+          chevron.classList.replace('fa-chevron-down', 'fa-chevron-right');
+        }
+      });
+      loadStories('all');
+    }
+
+    let currentStory = { id: null, price: 0 };
+
+    async function loadStories(category) {
+      const grid = document.getElementById('all-stories-grid');
+      try {
+        let query = szClient.from('stories').select('*').order('created_at', { ascending: false });
+        const { data: stories, error } = await query;
+        if (error) {
+          grid.innerHTML = `<p style="text-align: center; padding: 2rem;">Hitilafu: ${error.message}</p>`;
+        } else if (!stories || stories.length === 0) {
+          grid.innerHTML = '<p style="text-align: center; padding: 2rem;">Hakuna hadithi katika kategoria hii kwa sasa.</p>';
+        } else {
+          grid.innerHTML = stories.map(story => `
+            <div class="story-card" onclick="handleStoryClick('${story.id}', ${story.price || 0})">
+              <div class="story-image">
+                <img src="${story.thumbnail_url || 'https://via.placeholder.com/300x200'}" alt="${story.title}">
+                ${story.price > 0 ? '<div class="story-badge">Malipo</div>' : '<div class="story-badge" style="background: #2ecc71;">Bure</div>'}
+              </div>
+              <div class="story-content">
+                <h3 class="story-title">${story.title}</h3>
+                <p class="story-description">${story.summary || 'Hakuna maelezo'}</p>
+                <div class="story-meta">
+                  <span class="story-price">${story.price || 0} TZS</span>
+                  <span class="story-category category-${story.category.toLowerCase()}">${story.category.charAt(0).toUpperCase() + story.category.slice(1)}</span>
+                </div>
+              </div>
+            </div>
+          `).join('');
+        }
+      } catch (error) {
+        grid.innerHTML = `<p style="text-align: center; padding: 2rem;">Hitilafu ya mtandao: ${error.message}</p>`;
+      }
+    }
+
+    function showCustomAlert(type, message) {
+      const alertDiv = document.createElement('div');
+      alertDiv.className = `custom-alert ${type}`;
+      alertDiv.innerHTML = `
+        <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i>
+        <span>${message}</span>
+        <span class="close-btn" onclick="this.parentElement.remove()">×</span>
+      `;
+      document.body.appendChild(alertDiv);
+      setTimeout(() => alertDiv.classList.add('show'), 10);
+      setTimeout(() => {
+        alertDiv.classList.remove('show');
+        setTimeout(() => alertDiv.remove(), 300);
+      }, 5000);
+    }
+
+    async function checkUserAuth() {
+      const { data: { user } } = await szClient.auth.getUser();
+      if (!user) {
+        showCustomAlert('error', 'Tafadhali ingia kwanza ili uweze kuona hadithi.');
+        setTimeout(() => window.location.href = 'login.html', 2000);
+        return false;
+      }
+      return user;
+    }
+
+    async function handleStoryClick(storyId, price) {
+      const user = await checkUserAuth();
+      if (!user) return;
+
+      if (price === 0) {
+        const { data: story, error } = await szClient
+          .from('stories')
+          .select('*')
+          .eq('id', storyId)
+          .single();
+
+        if (error) {
+          showCustomAlert('error', 'Hitilafu: Imeshindwa kupakia hadithi.');
+          return;
+        }
+        window.location.href = `story.html?id=${storyId}`;
+      } else {
+        const { data: payment, error } = await szClient
+          .from('payments')
+          .select('*')
+          .eq('story_id', storyId)
+          .eq('user_id', user.id)
+          .eq('status', 'paid')
+          .single();
+
+        if (payment && !error) {
+          window.location.href = `story.html?id=${storyId}`;
+          return;
+        }
+        openPaymentModal(storyId, price);
+      }
+    }
+
+    async function openPaymentModal(storyId, price) {
+      currentStory.id = storyId;
+      currentStory.price = price || 0;
+      document.getElementById('modalPaymentAmount').textContent = price;
+      document.getElementById('confirmationAmount').textContent = price;
+      document.getElementById('confirmationAmountRepeat').textContent = price;
+      document.getElementById('paymentModal').style.display = 'block';
+      document.body.style.overflow = 'hidden';
+      document.getElementById('paymentConfirmation').style.display = 'none';
+      document.getElementById('paymentVerification').style.display = 'none';
+      document.getElementById('paymentProcessing').style.display = 'none';
+      document.getElementById('countdownTimer').style.display = 'none';
+      document.getElementById('referenceCode').value = '';
+      document.getElementById('verificationMessage').innerHTML = '';
+    }
+
+    function closePaymentModal() {
+      document.getElementById('paymentModal').style.display = 'none';
+      document.body.style.overflow = 'auto';
+      currentStory = { id: null, price: 0 };
+    }
+
+    async function initiateTigoPayment() {
+      const paymentConfirmation = document.getElementById('paymentConfirmation');
+      const paymentVerification = document.getElementById('paymentVerification');
+      const modalPaymentAmount = document.getElementById('modalPaymentAmount').textContent;
+
+      paymentConfirmation.style.display = 'block';
+      paymentVerification.style.display = 'block';
+
+      Swal.fire({
+        title: 'Maelekezo ya Malipo',
+        html: `
+          <div class="payment-instructions">
+            <p>Tuma TZS ${modalPaymentAmount} kwa nambari ifuatayo:</p>
+            <div class="payment-number">22258408</div>
+            <p>Jina: OMARI SHOP10</p>
+            <ol class="payment-steps">
+              <li>Nenda kwenye menyu ya Tigo Pesa kwenye simu yako</li>
+              <li>Chagua "Tuma Pesa"</li>
+              <li>Weka nambari: <strong>22258408</strong></li>
+              <li>Weka kiasi: <strong>${modalPaymentAmount}</strong></li>
+              <li>Weka nenosiri na kuthibitisha</li>
+              <li>Ingiza reference code kwenye fomu ya uthibitisho</li>
+            </ol>
+          </div>
+        `,
+        icon: 'info',
+        background: '#1a1a1a',
+        color: '#ffffff',
+        confirmButtonColor: '#FF3D81',
+        confirmButtonText: 'Nimeelewa'
+      });
+    }
+
+    async function verifyPayment(event) {
+      event.preventDefault();
+      const referenceCode = document.getElementById('referenceCode').value.trim();
+      const verificationMessage = document.getElementById('verificationMessage');
+      const paymentProcessing = document.getElementById('paymentProcessing');
+      const countdownTimer = document.getElementById('countdownTimer');
+      const paymentForm = document.getElementById('paymentForm');
+
+      if (!referenceCode) {
+        showCustomAlert('error', 'Tafadhali ingiza reference code.');
+        return;
+      }
+
+      verificationMessage.innerHTML = '<span class="spinner"></span> Inathibitisha malipo...';
+      paymentForm.querySelector('button').disabled = true;
+      paymentProcessing.style.display = 'block';
+
+      try {
+        const user = await checkUserAuth();
+        if (!user) return;
+
+        const { data: existingPayment, error: checkError } = await szClient
+          .from('payments')
+          .select('*')
+          .eq('reference_code', referenceCode)
+          .single();
+
+        if (existingPayment && !checkError) {
+          verificationMessage.innerHTML = '';
+          paymentProcessing.style.display = 'none';
+          paymentForm.querySelector('button').disabled = false;
+          showCustomAlert('error', 'Reference code hii tayari imetumika. Tumia code mpya au akaunti yako itafungwa.');
+          return;
+        }
+
+        const { error: insertError } = await szClient
+          .from('payments')
+          .insert({
+            story_id: currentStory.id,
+            user_id: user.id,
+            status: 'pending',
+            reference_code: referenceCode,
+            created_at: new Date().toISOString()
+          });
+
+        if (insertError) {
+          showCustomAlert('error', 'Imeshindwa kuthibitisha malipo.');
+          verificationMessage.innerHTML = '';
+          paymentProcessing.style.display = 'none';
+          paymentForm.querySelector('button').disabled = false;
+          return;
+        }
+
+        let seconds = 15;
+        countdownTimer.style.display = 'block';
+        document.getElementById('countdownSeconds').textContent = seconds;
+
+        const countdownInterval = setInterval(() => {
+          seconds--;
+          document.getElementById('countdownSeconds').textContent = seconds;
+          if (seconds <= 0) {
+            clearInterval(countdownInterval);
+            completePayment();
+          }
+        }, 1000);
+
+      } catch (error) {
+        showCustomAlert('error', 'Hitilafu ya mtandao.');
+        verificationMessage.innerHTML = '';
+        paymentProcessing.style.display = 'none';
+        paymentForm.querySelector('button').disabled = false;
+      }
+    }
+
+    async function completePayment() {
+      const paymentModal = document.getElementById('paymentModal');
+      const paymentProcessing = document.getElementById('paymentProcessing');
+      const countdownTimer = document.getElementById('countdownTimer');
+
+      const user = await checkUserAuth();
+      if (!user) return;
+
+      const { error } = await szClient
+        .from('payments')
+        .update({ status: 'paid' })
+        .eq('story_id', currentStory.id)
+        .eq('user_id', user.id)
+        .eq('status', 'pending');
+
+      if (error) {
+        showCustomAlert('error', 'Imeshindwa kuthibitisha malipo.');
+        paymentProcessing.style.display = 'none';
+        countdownTimer.style.display = 'none';
+        return;
+      }
+
+      paymentProcessing.style.display = 'none';
+      countdownTimer.style.display = 'none';
+      showCustomAlert('success', 'Malipo yamekamilika! Unaweza kusoma hadithi sasa.');
+      setTimeout(() => {
+        closePaymentModal();
+        window.location.href = `story.html?id=${currentStory.id}`;
+      }, 1000);
+    }
+
+    document.getElementById('closePaymentModal').addEventListener('click', closePaymentModal);
+    document.getElementById('paymentModal').addEventListener('click', (e) => {
+      if (e.target === document.getElementById('paymentModal')) {
+        closePaymentModal();
+      }
+    });
+
+    document.getElementById('tigoPaymentBtn').addEventListener('click', initiateTigoPayment);
+    document.getElementById('paymentForm').addEventListener('submit', verifyPayment);
+
+    document.addEventListener('contextmenu', e => {
+      e.preventDefault();
+      showCustomAlert('error', 'Hakuna kuruhusiwa kunakili au kuchukua picha za skrini.');
+    });
+
+    document.addEventListener('keydown', e => {
+      if (
+        e.key === 'PrintScreen' ||
+        (e.ctrlKey && ['c', 'u', 'v', 's', 'p'].includes(e.key.toLowerCase())) ||
+        (e.metaKey && ['c', 'u', 'v', 's', 'p'].includes(e.key.toLowerCase())) ||
+        e.key === 'F12' ||
+        (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key.toUpperCase()))
+      ) {
+        e.preventDefault();
+        showCustomAlert('error', 'Hakuna kuruhusiwa kunakili au kufungua zana za msanidi.');
+      }
+    });
+
+    document.addEventListener('selectstart', e => e.preventDefault());
+    document.addEventListener('dragstart', e => e.preventDefault());
+
+    document.addEventListener('keyup', e => {
+      if (e.key === 'PrintScreen') {
+        navigator.clipboard.writeText('').then(() => {
+          showCustomAlert('error', 'Kuchukua picha za skrini hakuruhusiwi.');
+        });
+      }
+    });
+
+    window.handleStoryClick = handleStoryClick;
+    window.openPaymentModal = openPaymentModal;
+    window.closePaymentModal = closePaymentModal;
+
+    window.addEventListener('load', checkAuthAndRedirect);
+  </script>
+</body>
+</html>

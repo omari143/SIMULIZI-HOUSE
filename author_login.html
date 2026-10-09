@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ingia - STORIES ZONE | Muandishi</title>
+  <style>
+    :root {
+      --primary: #00B4D8;
+      --primary-dark: #0077B6;
+      --secondary: #48CAE4;
+      --dark: #0A0A0A;
+      --darker: #050505;
+      --light: #F5F5F5;
+      --gray: #1A1A1A;
+      --light-gray: #AAAAAA;
+      --gradient-start: #03045E;
+      --gradient-end: #0077B6;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+    
+    body {
+      background: linear-gradient(135deg, #03045E 0%, #000000 50%, #0077B6 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 20px;
+      overflow-y: auto;
+    }
+    
+    .auth-container {
+      background: linear-gradient(135deg, rgba(3, 4, 94, 0.95) 0%, rgba(0, 0, 0, 0.95) 50%, rgba(0, 119, 182, 0.95) 100%);
+      backdrop-filter: blur(10px);
+      border-radius: 15px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.5), 0 0 0 1px rgba(0, 180, 216, 0.2);
+      width: 100%;
+      max-width: 500px;
+      padding: 40px;
+      border: 1px solid rgba(0, 180, 216, 0.3);
+      animation: fadeIn 0.5s ease;
+      position: relative;
+      margin: 20px 0;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .logo {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    
+    .logo img {
+      height: 70px;
+      width: auto;
+      border-radius: 50%;
+      border: 2px solid var(--primary);
+      box-shadow: 0 0 20px rgba(0, 180, 216, 0.4);
+      transition: transform 0.3s ease;
+    }
+    
+    .logo img:hover {
+      transform: scale(1.1);
+    }
+    
+    .logo h1 {
+      background: linear-gradient(135deg, #00B4D8, #48CAE4, #90E0EF);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-top: 10px;
+      font-size: 1.8rem;
+      text-shadow: 0 2px 10px rgba(0, 180, 216, 0.3);
+      letter-spacing: 1px;
+    }
+    
+    .auth-form h2 {
+      color: var(--light);
+      margin-bottom: 20px;
+      text-align: center;
+      font-size: 1.5rem;
+      position: relative;
+    }
+    
+    .auth-form h2::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 3px;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      border-radius: 2px;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+      position: relative;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--light-gray);
+      font-weight: 500;
+    }
+    
+    .form-group input {
+      width: 100%;
+      padding: 12px 15px;
+      border-radius: 8px;
+      border: 1px solid rgba(0, 180, 216, 0.3);
+      background-color: rgba(0, 0, 0, 0.6);
+      color: var(--light);
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+    
+    .form-group input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 5px rgba(0, 180, 216, 0.5);
+      background-color: rgba(0, 0, 0, 0.8);
+    }
+    
+    .password-toggle {
+      position: absolute;
+      right: 15px;
+      top: 50px;
+      color: var(--light-gray);
+      cursor: pointer;
+      font-size: 1.2rem;
+      transition: color 0.3s ease;
+    }
+    
+    .password-toggle:hover {
+      color: var(--primary);
+    }
+    
+    .btn {
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      border: none;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      font-weight: bold;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    
+    .btn:hover {
+      background: linear-gradient(135deg, var(--secondary), var(--primary));
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 180, 216, 0.4);
+    }
+    
+    .auth-footer {
+      text-align: center;
+      margin-top: 20px;
+      color: var(--light-gray);
+      font-size: 0.95rem;
+    }
+    
+    .auth-footer a {
+      color: var(--secondary);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+    
+    .auth-footer a:hover {
+      color: var(--primary);
+      text-decoration: underline;
+    }
+    
+    small {
+      font-size: 0.75rem;
+      opacity: 0.8;
+    }
+    
+    @media (max-width: 576px) {
+      .auth-container {
+        padding: 30px 20px;
+        margin: 10px;
+      }
+      
+      .logo h1 {
+        font-size: 1.5rem;
+      }
+      
+      .auth-form h2 {
+        font-size: 1.3rem;
+      }
+      
+      .form-group input {
+        padding: 10px 12px;
+        font-size: 0.95rem;
+      }
+      
+      .btn {
+        padding: 10px;
+        font-size: 0.95rem;
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+  <div class="auth-container">
+    <div class="logo">
+      <img src="/Picsart_26-05-13_01-57-22-165.png" alt="STORIES ZONE Logo">
+      <h1>STORIES ZONE</h1>
+    </div>
+    
+    <div class="auth-form">
+      <h2>Ingia kama Muandishi</h2>
+      
+      <form id="authorLoginForm">
+        <div class="form-group">
+          <label for="secretCode"><i class="fas fa-key"></i> Secret Code</label>
+          <input type="text" id="secretCode" name="secretCode" required placeholder="Weka secret code">
+          <small style="color: var(--light-gray); display: block; margin-top: 5px;">
+            <i class="fas fa-info-circle"></i> Ingiza secret code ya muandishi
+          </small>
+        </div>
+        
+        <div class="form-group">
+          <label for="email">Barua Pepe</label>
+          <input type="email" id="email" name="email" required placeholder="muandishi@example.com">
+        </div>
+        
+        <div class="form-group">
+          <label for="password">Nenosiri</label>
+          <input type="password" id="password" name="password" required placeholder="Weka nenosiri">
+          <i class="fas fa-eye password-toggle" id="passwordToggle"></i>
+        </div>
+        
+        <button type="submit" class="btn"><i class="fas fa-sign-in-alt"></i> Ingia</button>
+      </form>
+      
+      <div class="auth-footer">
+        <p>Haujajisajili? <a href="author_signup.html">Jisajili hapa</a></p>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script>
+    (function() {
+      const CORRECT_SECRET_CODE = '@malkiasimulizi';
+      
+      // Initialize Supabase with unique global name to avoid conflicts
+      const supabaseUrl = 'https://ifpntbnrwgsooqqkoefk.supabase.co';
+      const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlmcG50Ym5yd2dzb29xcWtvZWZrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg5MzE4MzMsImV4cCI6MjA5NDUwNzgzM30.m0ggLnB8ywRNNRSJv3YsJaKZ5g8a0VDIN6mQzM-BAwM';
+      
+      // Use a unique global variable name that won't conflict with CDN
+      if (typeof window.__STORIES_ZONE_SUPABASE_CLIENT__ === 'undefined') {
+        window.__STORIES_ZONE_SUPABASE_CLIENT__ = window.supabase.createClient(supabaseUrl, supabaseKey);
+      }
+      const supabase = window.__STORIES_ZONE_SUPABASE_CLIENT__;
+
+      const passwordInput = document.getElementById('password');
+      const passwordToggle = document.getElementById('passwordToggle');
+      if (passwordToggle) {
+        passwordToggle.addEventListener('click', () => {
+          const type = passwordInput.type === 'password' ? 'text' : 'password';
+          passwordInput.type = type;
+          passwordToggle.classList.toggle('fa-eye');
+          passwordToggle.classList.toggle('fa-eye-slash');
+        });
+      }
+
+      const loginForm = document.getElementById('authorLoginForm');
+      if (loginForm) {
+        loginForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          
+          const secretCode = document.getElementById('secretCode').value.trim();
+          const email = document.getElementById('email').value.trim();
+          const password = document.getElementById('password').value;
+
+          // Validate Secret Code
+          if (secretCode !== CORRECT_SECRET_CODE) {
+            Swal.fire({ 
+              title: 'Hitilafu!', 
+              text: 'Secret code sio sahihi! Jaribu tena.', 
+              icon: 'error', 
+              confirmButtonColor: '#00B4D8', 
+              background: '#0A0A0A', 
+              color: '#F5F5F5' 
+            });
+            return;
+          }
+
+          if (!email || !password) {
+            Swal.fire({ title: 'Hitilafu!', text: 'Jaza barua pepe na nenosiri!', icon: 'error', confirmButtonColor: '#00B4D8', background: '#0A0A0A', color: '#F5F5F5' });
+            return;
+          }
+
+          Swal.fire({ title: 'Inaingia...', html: 'Subiri...', allowOutsideClick: false, didOpen: () => Swal.showLoading(), background: '#0A0A0A', color: '#F5F5F5' });
+
+          try {
+            // 1. Sign in with Supabase Auth
+            const { data: authData, error: signInError } = await supabase.auth.signInWithPassword({ 
+              email, 
+              password 
+            });
+            
+            if (signInError) throw signInError;
+
+            if (!authData.user) throw new Error('Hakuna taarifa za mtumiaji');
+
+            const userId = authData.user.id;
+
+            // 2. FIRST, get author profile from author_profiles table
+            const { data: authorProfile, error: profileError } = await supabase
+              .from('author_profiles')
+              .select('id, user_id, name, bio, avatar_url, is_verified, followers_count, stories_count')
+              .eq('user_id', userId)
+              .single();
+
+            // 3. If author profile doesn't exist, check users table and create profile
+            if (profileError || !authorProfile) {
+              console.log('Author profile not found, checking users table...');
+              
+              // Get user data from users table
+              const { data: userData, error: userError } = await supabase
+                .from('users')
+                .select('id, full_name, email, role, avatar_url, phone')
+                .eq('id', userId)
+                .single();
+
+              if (userError) {
+                console.error('User data error:', userError);
+                throw new Error('Taarifa za mtumiaji hazipatikani');
+              }
+
+              // Check if user role is author
+              if (userData.role !== 'author') {
+                await supabase.auth.signOut();
+                throw new Error('Akaunti hii si ya muandishi. Hakikisha umejisajili kama muandishi.');
+              }
+
+              // Create author profile
+              const { data: newProfile, error: createError } = await supabase
+                .from('author_profiles')
+                .insert({
+                  user_id: userId,
+                  name: userData.full_name || email.split('@')[0],
+                  bio: null,
+                  avatar_url: userData.avatar_url || null,
+                  is_verified: true,
+                  followers_count: 0,
+                  stories_count: 0,
+                  created_at: new Date().toISOString(),
+                  updated_at: new Date().toISOString()
+                })
+                .select()
+                .single();
+              
+              if (createError) {
+                console.error('Author profile creation error:', createError);
+                throw new Error('Imeshindwa kuunda wasifu wa muandishi');
+              }
+              
+              // Store the new profile
+              window.authorProfileData = newProfile;
+              
+              // Store user info in localStorage
+              localStorage.setItem('storiesZoneUser', JSON.stringify({
+                id: userId,
+                email: email,
+                role: 'author',
+                name: userData.full_name,
+                authorProfileId: newProfile.id,
+                isVerified: true,
+                isLoggedIn: true
+              }));
+
+              // Show success and redirect
+              Swal.fire({
+                title: 'Karibu Muandishi!', 
+                text: `Karibu ${userData.full_name || 'Muandishi'}! Wasifu wako umeundwa kikamilifu.`, 
+                icon: 'success',
+                confirmButtonText: 'Endelea', 
+                confirmButtonColor: '#00B4D8', 
+                background: '#0A0A0A', 
+                color: '#F5F5F5'
+              }).then(() => {
+                window.location.href = 'author_dashboard.html';
+              });
+              return;
+            }
+
+            // 4. Author profile exists - verify it's valid
+            if (!authorProfile.is_verified) {
+              await supabase.auth.signOut();
+              throw new Error('Wasifu wako bado haujathibitishwa. Wasiliana na msimamizi.');
+            }
+
+            // 5. Get user data from users table for additional info
+            const { data: userData, error: userError } = await supabase
+              .from('users')
+              .select('full_name, email, role, phone')
+              .eq('id', userId)
+              .single();
+
+            if (userError) {
+              console.warn('Could not fetch user data:', userError);
+            }
+
+            // 6. Store complete author info in localStorage
+            localStorage.setItem('storiesZoneUser', JSON.stringify({
+              id: userId,
+              email: email,
+              role: 'author',
+              name: authorProfile.name,
+              authorProfileId: authorProfile.id,
+              bio: authorProfile.bio,
+              avatar_url: authorProfile.avatar_url,
+              isVerified: authorProfile.is_verified,
+              followers_count: authorProfile.followers_count,
+              stories_count: authorProfile.stories_count,
+              isLoggedIn: true
+            }));
+
+            // 7. Show success and redirect
+            Swal.fire({
+              title: 'Karibu Muandishi!', 
+              text: `Karibu ${authorProfile.name || userData?.full_name || 'Muandishi'}! Umeingia kikamilifu kwenye STORIES ZONE.`, 
+              icon: 'success',
+              confirmButtonText: 'Endelea', 
+              confirmButtonColor: '#00B4D8', 
+              background: '#0A0A0A', 
+              color: '#F5F5F5'
+            }).then(() => {
+              window.location.href = 'author_dashboard.html';
+            });
+            
+          } catch (error) {
+            await supabase.auth.signOut();
+            Swal.fire({ 
+              title: 'Hitilafu!', 
+              text: error.message || 'Barua pepe au nenosiri sio sahihi.', 
+              icon: 'error', 
+              confirmButtonColor: '#00B4D8', 
+              background: '#0A0A0A', 
+              color: '#F5F5F5' 
+            });
+          }
+        });
+      }
+
+      // Check if user is already logged in
+      window.addEventListener('DOMContentLoaded', async () => {
+        const savedUser = localStorage.getItem('storiesZoneUser');
+        if (savedUser) {
+          const user = JSON.parse(savedUser);
+          if (user.isLoggedIn && user.role === 'author') {
+            // Verify session is still valid
+            const { data: { session } } = await supabase.auth.getSession();
+            if (session) {
+              // Also verify author profile still exists
+              const { data: authorProfile } = await supabase
+                .from('author_profiles')
+                .select('id')
+                .eq('user_id', user.id)
+                .single();
+              
+              if (authorProfile) {
+                window.location.href = 'author_dashboard.html';
+              } else {
+                localStorage.removeItem('storiesZoneUser');
+              }
+            } else {
+              localStorage.removeItem('storiesZoneUser');
+            }
+          }
+        }
+      });
+
+      // Content protection
+      document.addEventListener('contextmenu', e => e.preventDefault());
+      document.addEventListener('keydown', e => { 
+        if (e.key === 'PrintScreen' || (e.ctrlKey && e.key === 'u')) {
+          e.preventDefault();
+          return false;
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

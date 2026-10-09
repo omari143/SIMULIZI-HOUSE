@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DRAMA SIMULIZI | STORIES ZONE</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background-color: #0d0d0d;
+      color: #f5f5f5;
+      overflow-x: hidden;
+      user-select: none;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+    }
+
+    header {
+      background-color: #ffd700;
+      padding: 0.5rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .logo-container img {
+      height: 30px;
+      width: auto;
+    }
+
+    .logo-text {
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #000;
+      margin-left: 10px;
+    }
+
+    nav {
+      margin-top: 10px;
+      display: flex;
+      justify-content: center;
+    }
+
+    nav a {
+      color: #000;
+      text-decoration: none;
+      font-weight: 600;
+      padding: 5px 10px;
+      margin: 0 5px;
+    }
+
+    .marquee-container {
+      width: 100%;
+      overflow: hidden;
+      background-color: #1a1a1a;
+      padding: 0.3rem 0;
+      border-top: 1px solid #ffd700;
+      border-bottom: 1px solid #ffd700;
+    }
+
+    .marquee-content {
+      color: #ffd700;
+      font-size: 0.9rem;
+      white-space: nowrap;
+      animation: marquee 20s linear infinite;
+    }
+
+    @keyframes marquee {
+      0% { transform: translateX(100%); }
+      100% { transform: translateX(-100%); }
+    }
+
+    .main-container {
+      padding: 10px;
+      margin-bottom: 50px;
+    }
+
+    .search-container {
+      margin: 10px auto;
+      width: 90%;
+      max-width: 500px;
+    }
+
+    #search-input {
+      width: 100%;
+      padding: 8px;
+      border-radius: 5px;
+      border: 1px solid #ffd700;
+      background-color: #1a1a1a;
+      color: white;
+    }
+
+    .videos-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 10px;
+      padding: 10px;
+    }
+
+    .video-item {
+      background-color: #1a1a1a;
+      border-radius: 5px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.2s;
+      border: 1px solid #ffd70040;
+    }
+
+    .video-item:hover {
+      transform: scale(1.03);
+      box-shadow: 0 0 10px #ffd70080;
+    }
+
+    .video-thumbnail {
+      position: relative;
+      width: 100%;
+      padding-top: 56.25%;
+    }
+
+    .video-thumbnail img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .play-icon {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: white;
+      font-size: 2rem;
+      opacity: 0.8;
+    }
+
+    .video-info {
+      padding: 8px;
+    }
+
+    .video-title {
+      font-size: 0.8rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: #ffd700;
+    }
+
+    .video-duration {
+      font-size: 0.7rem;
+      color: #aaa;
+      margin-top: 3px;
+    }
+
+    .pagination {
+      display: flex;
+      justify-content: center;
+      margin: 20px 0;
+      flex-wrap: wrap;
+    }
+
+    .page-btn {
+      padding: 5px 10px;
+      margin: 5px;
+      background-color: #1a1a1a;
+      border: 1px solid #ffd700;
+      color: #ffd700;
+      border-radius: 3px;
+      cursor: pointer;
+      min-width: 30px;
+      text-align: center;
+    }
+
+    .page-btn.active {
+      background-color: #ffd700;
+      color: #000;
+    }
+
+    .page-btn.disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .video-player-container {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.9);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .video-player {
+      width: 95%;
+      max-width: 800px;
+      position: relative;
+    }
+
+    .close-player {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      color: white;
+      font-size: 1.5rem;
+      cursor: pointer;
+      z-index: 1001;
+    }
+
+    .service-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: #ff0000;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      cursor: pointer;
+    }
+
+    footer {
+      background-color: #000;
+      color: #999;
+      text-align: center;
+      padding: 0.5rem;
+      font-size: 0.7rem;
+      border-top: 1px solid #ffd700;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 20px;
+      color: #ffd700;
+    }
+
+    #payment-prompt {
+      display: none;
+      text-align: center;
+      padding: 20px;
+      background: #1a1a1a;
+      border-radius: 10px;
+      max-width: 400px;
+      margin: 0 auto;
+    }
+
+    #payment-prompt h3 {
+      color: #ffd700;
+      margin-top: 0;
+    }
+
+    #payment-prompt p {
+      margin-bottom: 20px;
+    }
+
+    .payment-methods {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin: 20px 0;
+    }
+
+    .payment-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px;
+      border-radius: 5px;
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .payment-btn.tigo {
+      background-color: #ff6600;
+      color: white;
+    }
+
+    .payment-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
+
+    .payment-instructions {
+      background-color: #222;
+      padding: 15px;
+      border-radius: 5px;
+      margin: 15px 0;
+      text-align: left;
+    }
+
+    .payment-number {
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #ff6600;
+      margin: 10px 0;
+    }
+
+    .payment-steps {
+      padding-left: 20px;
+    }
+
+    .payment-steps li {
+      margin-bottom: 8px;
+    }
+
+    .payment-confirmation {
+      display: none;
+      margin-top: 20px;
+    }
+
+    .payment-processing {
+      display: none;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .payment-processing i {
+      font-size: 2rem;
+      color: #ffd700;
+      margin-bottom: 10px;
+    }
+
+    .custom-alert {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background-color: #2ecc71;
+      color: white;
+      padding: 15px 25px;
+      border-radius: 5px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      z-index: 1000;
+      transform: translateX(120%);
+      transition: transform 0.3s ease-out;
+      font-size: 0.9rem;
+      max-width: 300px;
+    }
+
+    .custom-alert.error {
+      background-color: #e74c3c;
+    }
+
+    .custom-alert.show {
+      transform: translateX(0);
+    }
+
+    .custom-alert i {
+      font-size: 1.2rem;
+    }
+
+    .custom-alert .close-btn {
+      margin-left: auto;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 1rem;
+    }
+
+    @media (max-width: 600px) {
+      .videos-grid {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      }
+
+      .custom-alert {
+        max-width: 80%;
+        font-size: 0.8rem;
+        padding: 12px 20px;
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+  <header>
+    <div class="logo-container">
+      <img src="file_00000000d1cc6230872747a8605addb8.png" alt="STORIES ZONE Logo">
+      <div class="logo-text">STORIES ZONE</div>
+    </div>
+    <nav>
+      <a href="index.html"><i class="fas fa-home"></i> Nyumbani</a>
+      <a href="huduma.html"><i class="fas fa-headset"></i> Huduma</a>
+      <a href="login.html"><i class="fas fa-sign-in-alt"></i> Ingia</a>
+      <a href="signup.html"><i class="fas fa-user-plus"></i> Jisajili</a>
+    </nav>
+  </header>
+
+  <div class="marquee-container">
+    <div class="marquee-content">
+      ✨ HADITHI ZA DRAMA ZA KUSISIMUA ✨ | PATA UZOEFU WA KUSISIMU NA MICHANGOMICHO ✨ | TAZAMA NA UFURAHI ✨
+    </div>
+  </div>
+
+  <div class="main-container">
+    <div class="search-container">
+      <input type="text" id="search-input" placeholder="Tafuta video...">
+    </div>
+
+    <div id="loading" class="loading">
+      <i class="fas fa-spinner fa-spin"></i> Inapakia video...
+    </div>
+
+    <div class="videos-grid" id="videos-container"></div>
+
+    <div class="pagination" id="pagination"></div>
+  </div>
+
+  <div class="video-player-container" id="video-player">
+    <div class="video-player">
+      <span class="close-player" onclick="closeVideo()"><i class="fas fa-times"></i></span>
+      
+      <div id="payment-prompt">
+        <h3>Malipo ya Video</h3>
+        <p>Unahitaji kulipa TZS <span id="payment-amount"></span> kwa video hii. Baada ya malipo, utaweza kuiona mara nyingine bila kulipa tena.</p>
+        
+        <div class="payment-instructions">
+          <p>Tafadhali fanya malipo ya TZS <span id="payment-amount-instructions"></span> kwa:</p>
+          <div class="payment-number">22258408 (Tigo Pesa)</div>
+          <p>Jina la kupokea: <strong>OMARI SHOP10</strong></p>
+          
+          <ol class="payment-steps">
+            <li>Nenda kwenye Tigo Pesa yako</li>
+            <li>Chagua "Lipa kwa Namba"</li>
+            <li>Weka namba: <strong>22258408</strong></li>
+            <li>Weka kiasi: <strong><span id="payment-amount-step"></span></strong></li>
+            <li>Thibitisha jina "<strong>OMARI SHOP10</strong>"</li>
+            <li>Weka nenosiri lako</li>
+            <li>Bonyeza kutuma</li>
+          </ol>
+        </div>
+        
+        <div class="payment-methods">
+          <button class="payment-btn tigo" onclick="initiateTigoPayment()">
+            <i class="fas fa-mobile-alt" style="margin-right: 8px;"></i> Nimeshalipa
+          </button>
+        </div>
+        
+        <div class="payment-confirmation" id="payment-confirmation">
+          <p>Ukitumia malipo, tafadhali subiri mfumo kuthibitisha. Muda wa kuthibitisha ni hadi dakika 2.</p>
+          <button onclick="checkPaymentStatus()" style="background: #ffd700; color: #000; border: none; padding: 10px; border-radius: 5px; margin-top: 10px;">
+            <i class="fas fa-sync-alt" style="margin-right: 5px;"></i> Angalia tena
+          </button>
+        </div>
+        
+        <div class="payment-processing" id="payment-processing">
+          <i class="fas fa-spinner fa-spin"></i>
+          <p>Inathibitisha malipo yako...</p>
+        </div>
+        
+        <p style="font-size: 0.8rem; margin-top: 15px; color: #aaa;">
+          Kama una shida, wasiliana nasi kupitia huduma kwa wateja.
+        </p>
+      </div>
+      
+      <video controls autoplay id="main-video" style="width:100%; display:none;">
+        Your browser does not support the video tag.
+      </video>
+    </div>
+  </div>
+
+  <button class="service-btn" onclick="location.href='huduma.html'" title="Huduma kwa Wateja">
+    <i class="fas fa-headset"></i>
+  </button>
+
+  <footer>
+    © <span id="current-year"></span> STORIES ZONE - Hadithi za Drama Simulizi
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script>
+    // Configuration
+    const TIGO_PESA_NUMBER = '22258408';
+    const RECIPIENT_NAME = 'OMARI SHOP10';
+    const VIDEOS_PER_PAGE = 20;
+    const CATEGORY = 'drama';
+    
+    // State
+    let currentPage = 1;
+    let totalVideos = 0;
+    let allVideos = [];
+    let currentVideoId = null;
+    let currentVideoUrl = null;
+    let currentVideoTitle = null;
+    let currentVideoPrice = 0;
+    
+    // DOM Elements
+    const videosContainer = document.getElementById('videos-container');
+    const paginationElement = document.getElementById('pagination');
+    const searchInput = document.getElementById('search-input');
+    const loadingElement = document.getElementById('loading');
+    const currentYearElement = document.getElementById('current-year');
+    const paymentPrompt = document.getElementById('payment-prompt');
+    const videoElement = document.getElementById('main-video');
+    const paymentConfirmation = document.getElementById('payment-confirmation');
+    const paymentProcessing = document.getElementById('payment-processing');
+    const paymentAmount = document.getElementById('payment-amount');
+    const paymentAmountInstructions = document.getElementById('payment-amount-instructions');
+    const paymentAmountStep = document.getElementById('payment-amount-step');
+
+    // Initialize Supabase
+    const supabaseUrl = 'https://vknaovalrilbpfgveqnj.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZrbmFvdmFscmllYnBmZ3ZlcW5qIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkwMzQ2NjAsImV4cCI6MjA2NDYxMDY2MH0.uIKjFXMbKg0l0bIxTZpMF0QRh1BsDdPWsWK0G2kzqT8';
+    const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+    // Check user session
+    async function checkUserSession() {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        Swal.fire({
+          title: 'Tafadhali Ingia!',
+          text: 'Unahitaji kuwa umeingia kwenye akaunti yako ili kutazama video.',
+          icon: 'warning',
+          confirmButtonText: 'Ingia',
+          showCancelButton: true,
+          cancelButtonText: 'Ghairi',
+          confirmButtonColor: '#FF6B00',
+          background: '#121212',
+          color: '#F5F5F5',
+        }).then((result) => {
+          if (result.isConfirmed) {
+            window.location.href = 'login.html';
+          }
+        });
+        return false;
+      }
+      return true;
+    }
+
+    // Function to show custom alert
+    function showCustomAlert(type, message) {
+      const alertDiv = document.createElement('div');
+      alertDiv.className = `custom-alert ${type}`;
+      alertDiv.innerHTML = `
+        <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i>
+        <span>${message}</span>
+        <span class="close-btn" onclick="this.parentElement.remove()">×</span>
+      `;
+      
+      document.body.appendChild(alertDiv);
+      
+      setTimeout(() => {
+        alertDiv.classList.add('show');
+      }, 10);
+      
+      setTimeout(() => {
+        alertDiv.classList.remove('show');
+        setTimeout(() => {
+          alertDiv.remove();
+        }, 300);
+      }, 5000);
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', async () => {
+      currentYearElement.textContent = new Date().getFullYear();
+      if (await checkUserSession()) {
+        loadVideos();
+      }
+    });
+    
+    // Function to load videos from Supabase
+    async function loadVideos() {
+      try {
+        loadingElement.style.display = 'block';
+        videosContainer.innerHTML = '';
+        
+        const { data: videos, error } = await supabase
+          .from('videos')
+          .select('*')
+          .eq('category', CATEGORY)
+          .order('created_at', { ascending: false });
+
+        if (error) throw error;
+
+        allVideos = videos.map(video => ({
+          id: video.id,
+          title: video.title,
+          thumbnailUrl: video.thumbnail_url || 'https://via.placeholder.com/300x169?text=No+Thumbnail',
+          videoUrl: video.video_url,
+          duration: video.duration || 0,
+          price: video.price || 0
+        }));
+
+        totalVideos = allVideos.length;
+        displayVideos(allVideos, currentPage);
+        loadingElement.style.display = 'none';
+      } catch (error) {
+        console.error('Error fetching videos:', error);
+        videosContainer.innerHTML = '<p style="color:red; text-align:center; grid-column:1/-1;">Hitilafu katika kupakia video. Tafadhali jaribu tena baadaye.</p>';
+        loadingElement.style.display = 'none';
+      }
+    }
+    
+    // Display videos in grid
+    async function displayVideos(videos, page) {
+      videosContainer.innerHTML = '';
+      const start = (page - 1) * VIDEOS_PER_PAGE;
+      const end = start + VIDEOS_PER_PAGE;
+      const paginatedVideos = videos.slice(start, end);
+      
+      if (paginatedVideos.length === 0) {
+        videosContainer.innerHTML = '<p style="text-align:center; grid-column:1/-1;">Hakuna video zilizopatikana.</p>';
+        return;
+      }
+      
+      const { data: { user } } = await supabase.auth.getUser();
+      const userId = user.id;
+
+      paginatedVideos.forEach(video => {
+        const videoItem = document.createElement('div');
+        videoItem.className = 'video-item';
+        
+        videoItem.innerHTML = `
+          <div class="video-thumbnail" onclick="playVideo('${video.id}', '${video.videoUrl}', '${video.title.replace(/'/g, "\\'")}', ${video.price})">
+            <img src="${video.thumbnailUrl}" alt="${video.title}" onerror="this.src='https://via.placeholder.com/300x169?text=No+Thumbnail'">
+            <div class="play-icon"><i class="fas fa-play"></i></div>
+            ${await hasPaidForVideo(video.id) ? '<div style="position:absolute; top:5px; right:5px; background:green; color:white; padding:2px 5px; border-radius:3px; font-size:0.7rem;">ImeLipwa</div>' : ''}
+          </div>
+          <div class="video-info">
+            <div class="video-title" title="${video.title}">${video.title}</div>
+            <div class="video-duration">${formatDuration(video.duration)}</div>
+            ${video.price > 0 && !await hasPaidForVideo(video.id) ? '<div style="color:#ffd700; font-size:0.7rem; margin-top:3px;">TZS ' + video.price.toLocaleString() + '</div>' : ''}
+          </div>
+        `;
+        
+        videosContainer.appendChild(videoItem);
+      });
+      
+      setupPagination(videos.length, page);
+    }
+    
+    // Format duration (seconds to MM:SS)
+    function formatDuration(seconds) {
+      const mins = Math.floor(seconds / 60);
+      const secs = Math.floor(seconds % 60);
+      return `${mins}:${secs.toString().padStart(2, '0')}`;
+    }
+    
+    // Setup pagination
+    function setupPagination(totalVideos, currentPage) {
+      paginationElement.innerHTML = '';
+      const pageCount = Math.ceil(totalVideos / VIDEOS_PER_PAGE);
+      const maxVisiblePages = 5;
+      
+      const prevBtn = document.createElement('button');
+      prevBtn.className = `page-btn ${currentPage === 1 ? 'disabled' : ''}`;
+      prevBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
+      prevBtn.onclick = () => {
+        if (currentPage > 1) {
+          currentPage--;
+          displayVideos(allVideos, currentPage);
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      };
+      paginationElement.appendChild(prevBtn);
+      
+      const startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+      const endPage = Math.min(pageCount, startPage + maxVisiblePages - 1);
+      
+      for (let i = startPage; i <= endPage; i++) {
+        const pageBtn = document.createElement('button');
+        pageBtn.className = `page-btn ${i === currentPage ? 'active' : ''}`;
+        pageBtn.textContent = i;
+        pageBtn.onclick = () => {
+          currentPage = i;
+          displayVideos(allVideos, currentPage);
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+        paginationElement.appendChild(pageBtn);
+      }
+      
+      const nextBtn = document.createElement('button');
+      nextBtn.className = `page-btn ${currentPage === pageCount ? 'disabled' : ''}`;
+      nextBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
+      nextBtn.onclick = () => {
+        if (currentPage < pageCount) {
+          currentPage++;
+          displayVideos(allVideos, currentPage);
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      };
+      paginationElement.appendChild(nextBtn);
+    }
+    
+    // Check if video is paid for
+    async function hasPaidForVideo(videoId) {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return false;
+
+      const { data, error } = await supabase
+        .from('payments')
+        .select('*')
+        .eq('user_id', user.id)
+        .eq('video_id', videoId)
+        .eq('status', 'paid')
+        .single();
+
+      return !error && data;
+    }
+    
+    // Mark video as paid
+    async function markVideoAsPaid(videoId, userId) {
+      const { error } = await supabase
+        .from('payments')
+        .insert({
+          user_id: userId,
+          video_id: videoId,
+          amount: currentVideoPrice,
+          status: 'paid',
+          created_at: new Date().toISOString()
+        });
+
+      if (!error) {
+        displayVideos(allVideos, currentPage); // Refresh to show "ImeLipwa" badge
+      }
+    }
+    
+    // Initiate Tigo Pesa payment
+    async function initiateTigoPayment() {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        showCustomAlert('error', 'Tafadhali ingia kwanza ili uweze kulipa.');
+        setTimeout(() => {
+          window.location.href = 'login.html';
+        }, 2000);
+        return;
+      }
+
+      paymentConfirmation.style.display = 'block';
+      paymentProcessing.style.display = 'none';
+    }
+    
+    // Check payment status
+    async function checkPaymentStatus() {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        showCustomAlert('error', 'Tafadhali ingia kwanza ili uweze kuthibitisha malipo.');
+        setTimeout(() => {
+          window.location.href = 'login.html';
+        }, 2000);
+        return;
+      }
+
+      paymentConfirmation.style.display = 'none';
+      paymentProcessing.style.display = 'block';
+
+      try {
+        const { data, error } = await supabase
+          .from('payments')
+          .select('*')
+          .eq('user_id', user.id)
+          .eq('video_id', currentVideoId)
+          .eq('status', 'paid')
+          .single();
+
+        if (error || !data) {
+          throw new Error('Malipo bado hayajathibitishwa.');
+        }
+
+        await markVideoAsPaid(currentVideoId, user.id);
+        completePayment();
+      } catch (error) {
+        paymentProcessing.style.display = 'none';
+        paymentConfirmation.style.display = 'block';
+        showCustomAlert('error', 'Malipo bado hayajaingia. Hakikisha umeisha malipo na subiri dakika 2 kabla ya kujaribu tena.');
+      }
+    }
+    
+    // Complete payment process
+    async function completePayment() {
+      paymentPrompt.style.display = 'none';
+      paymentProcessing.style.display = 'none';
+      
+      videoElement.style.display = 'block';
+      videoElement.src = currentVideoUrl;
+      videoElement.play().catch(e => console.error('Video play failed:', e));
+
+      showCustomAlert('success', 'Malipo yako yamethibitishwa! Sasa unaweza kutazama video.');
+    }
+    
+    // Play video function
+    async function playVideo(videoId, videoUrl, videoTitle, price) {
+      if (!await checkUserSession()) return;
+      
+      currentVideoId = videoId;
+      currentVideoUrl = videoUrl;
+      currentVideoTitle = videoTitle;
+      currentVideoPrice = price;
+      const playerContainer = document.getElementById('video-player');
+
+      paymentAmount.textContent = price.toLocaleString();
+      paymentAmountInstructions.textContent = price.toLocaleString();
+      paymentAmountStep.textContent = price.toLocaleString();
+
+      const isPaid = await hasPaidForVideo(videoId);
+
+      if (isPaid) {
+        paymentPrompt.style.display = 'none';
+        videoElement.style.display = 'block';
+        videoElement.src = videoUrl;
+        playerContainer.style.display = 'flex';
+        videoElement.play().catch(e => console.error('Video play failed:', e));
+      } else if (price > 0) {
+        paymentPrompt.style.display = 'block';
+        paymentConfirmation.style.display = 'none';
+        paymentProcessing.style.display = 'none';
+        videoElement.style.display = 'none';
+        playerContainer.style.display = 'flex';
+      } else {
+        paymentPrompt.style.display = 'none';
+        videoElement.style.display = 'block';
+        videoElement.src = videoUrl;
+        playerContainer.style.display = 'flex';
+        videoElement.play().catch(e => console.error('Video play failed:', e));
+      }
+    }
+    
+    // Close video player
+    function closeVideo() {
+      const playerContainer = document.getElementById('video-player');
+      
+      videoElement.pause();
+      videoElement.src = '';
+      playerContainer.style.display = 'none';
+      
+      paymentConfirmation.style.display = 'none';
+      paymentProcessing.style.display = 'none';
+    }
+    
+    // Search functionality
+    searchInput.addEventListener('input', function(e) {
+      const searchTerm = e.target.value.toLowerCase().trim();
+      
+      if (searchTerm === '') {
+        displayVideos(allVideos, 1);
+        currentPage = 1;
+        return;
+      }
+      
+      const filteredVideos = allVideos.filter(video => 
+        video.title.toLowerCase().includes(searchTerm)
+      );
+      
+      currentPage = 1;
+      displayVideos(filteredVideos, currentPage);
+    });
+    
+    // Close video player when clicking outside
+    document.getElementById('video-player').addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeVideo();
+      }
+    });
+
+    // Content protection
+    document.addEventListener('contextmenu', e => {
+      e.preventDefault();
+      Swal.fire({
+        title: 'Umezuiliwa!',
+        text: 'Hakuna kuruhusiwa kunakili au kuchukua picha za skrini kwenye tovuti hii.',
+        icon: 'warning',
+        background: '#121212',
+        color: '#F5F5F5',
+        confirmButtonColor: '#FF6B00',
+        confirmButtonText: 'Sawa'
+      });
+    });
+
+    document.addEventListener('keydown', e => {
+      if (
+        e.key === 'PrintScreen' ||
+        (e.ctrlKey && ['c', 'u', 'v', 's', 'p'].includes(e.key.toLowerCase())) ||
+        (e.metaKey && ['c', 'u', 'v', 's', 'p'].includes(e.key.toLowerCase())) ||
+        e.key === 'F12' ||
+        (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key.toUpperCase()))
+      ) {
+        e.preventDefault();
+        Swal.fire({
+          title: 'Umezuiliwa!',
+          text: 'Hakuna kuruhusiwa kunakili, kuchukua picha za skrini, au kufungua zana za msanidi.',
+          icon: 'warning',
+          background: '#121212',
+          color: '#F5F5F5',
+          confirmButtonColor: '#FF6B00',
+          confirmButtonText: 'Sawa'
+        });
+      }
+    });
+
+    document.addEventListener('keyup', e => {
+      if (e.key === 'PrintScreen') {
+        navigator.clipboard.writeText('').then(() => {
+          Swal.fire({
+            title: 'Umezuiliwa!',
+            text: 'Kuchukua picha za skrini hakuruhusiwi kwenye tovuti hii.',
+            icon: 'warning',
+            background: '#121212',
+            color: '#F5F5F5',
+            confirmButtonColor: '#FF6B00',
+            confirmButtonText: 'Sawa'
+          });
+        });
+      }
+    });
+
+    // Make functions available globally
+    window.playVideo = playVideo;
+    window.closeVideo = closeVideo;
+    window.initiateTigoPayment = initiateTigoPayment;
+    window.checkPaymentStatus = checkPaymentStatus;
+
+    // Load initial data
+    loadVideos();
+  </script>
+</body>
+</html>

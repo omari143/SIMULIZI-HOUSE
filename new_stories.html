@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Hadithi Mpya - SIMULIZI HOUSE</title>
+  <style>
+    :root {
+      --primary: #FF3D81;
+      --secondary: #00F0FF;
+      --dark: #0A0A12;
+      --darker: #05050A;
+      --light: #E6E6FA;
+      --gray: #1F1F2E;
+      --light-gray: #A0A0C0;
+      --whatsapp-green: #25D366;
+      --neon-pink: #FF1F8A;
+      --neon-cyan: #00F0FF;
+      --header-bg-start: #1B0034;
+      --header-bg-end: #3A006F;
+      --accent-purple: #8A2BE2;
+      --accent-blue: #1E90FF;
+      --transition: all 0.4s ease;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+      overflow-x: hidden;
+      font-family: 'Poppins', 'Inter', 'Nunito Sans', sans-serif;
+      background: linear-gradient(180deg, #FFFFFF 0%, #F5F5F5 100%);
+      color: #000000;
+      scroll-behavior: smooth;
+      user-select: none;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+    }
+
+    body.dark-theme {
+      background: linear-gradient(180deg, var(--dark) 0%, var(--darker) 100%);
+      color: var(--light);
+    }
+
+    /* Security Overlay */
+    #securityOverlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #000000;
+      z-index: 99999;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 2rem;
+      font-family: 'Poppins', 'Inter', sans-serif;
+    }
+
+    #securityOverlay.show {
+      display: flex;
+    }
+
+    #securityOverlay .sec-icon {
+      font-size: 5rem;
+      margin-bottom: 1.5rem;
+      animation: pulse 1.5s infinite;
+    }
+
+    #securityOverlay h1 {
+      font-size: 2rem;
+      font-weight: 800;
+      color: #c62828;
+      margin-bottom: 1rem;
+      text-shadow: 0 0 20px rgba(198, 40, 40, 0.6);
+    }
+
+    #securityOverlay p {
+      font-size: 1.1rem;
+      color: #aaaaaa;
+      max-width: 500px;
+      line-height: 1.8;
+      margin-bottom: 2rem;
+    }
+
+    #securityOverlay .sec-close-btn {
+      background: linear-gradient(135deg, #c62828, #8B0000);
+      color: #ffffff;
+      border: none;
+      padding: 14px 40px;
+      border-radius: 50px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 6px 20px rgba(198, 40, 40, 0.5);
+      font-family: 'Poppins', 'Inter', sans-serif;
+    }
+
+    #securityOverlay .sec-close-btn:hover {
+      background: linear-gradient(135deg, #00F0FF, #1E90FF);
+      color: #000000;
+      box-shadow: 0 8px 25px rgba(0, 240, 255, 0.6);
+      transform: scale(1.05);
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.08); opacity: 0.9; }
+    }
+
+    /* Header Styles */
+    header {
+      background: linear-gradient(135deg, #FFFFFF, #F0F0F0);
+      padding: 0.5rem 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    body.dark-theme header {
+      background: linear-gradient(135deg, var(--header-bg-start), var(--header-bg-end));
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-container img {
+      height: 60px;
+      border-radius: 50%;
+      border: 2px solid var(--neon-cyan);
+      box-shadow: 0 0 10px var(--neon-pink);
+      animation: spinGlow 3s linear infinite;
+      transition: var(--transition);
+    }
+
+    .logo-container img:hover {
+      transform: scale(1.1);
+    }
+
+    @keyframes spinGlow {
+      0% { box-shadow: 0 0 10px var(--neon-pink); }
+      50% { box-shadow: 0 0 15px var(--neon-cyan); }
+      100% { box-shadow: 0 0 10px var(--neon-pink); }
+    }
+
+    .logo-text {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--neon-pink);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      text-shadow: 0 0 5px rgba(255, 31, 138, 0.3);
+      line-height: 1;
+    }
+
+    body.dark-theme .logo-text {
+      color: var(--secondary);
+    }
+
+    .nav-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .back-btn {
+      background: var(--neon-cyan);
+      color: #000000;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      box-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
+    }
+
+    .back-btn:hover {
+      background: var(--neon-pink);
+      color: #FFFFFF;
+      box-shadow: 0 0 15px rgba(255, 31, 138, 0.5);
+      transform: scale(1.1);
+    }
+
+    /* Theme Toggle Button */
+    .theme-toggle {
+      background: var(--neon-cyan);
+      color: #000;
+      border: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      font-size: 1.1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 10px rgba(0, 240, 255, 0.4);
+      transition: var(--transition);
+    }
+
+    .theme-toggle:hover {
+      background: var(--neon-pink);
+      color: #fff;
+      transform: scale(1.1);
+    }
+
+    body.dark-theme .theme-toggle {
+      background: var(--neon-pink);
+      color: #fff;
+    }
+
+    body.dark-theme .theme-toggle:hover {
+      background: var(--neon-cyan);
+      color: #000;
+    }
+
+    /* Page Header */
+    .page-header {
+      background: linear-gradient(135deg, var(--neon-pink), var(--neon-cyan));
+      color: #000000;
+      text-align: center;
+      padding: 3rem 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .page-title {
+      font-size: 3rem;
+      font-weight: 800;
+      margin-bottom: 1rem;
+      text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+    }
+
+    .page-subtitle {
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+
+    /* Main Container */
+    .main-container {
+      padding: 2rem;
+      max-width: 1600px;
+      margin: 0 auto;
+    }
+
+    /* Stories Grid */
+    .stories-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 0.8rem;
+      margin-bottom: 2rem;
+      animation: fadeIn 0.6s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .story-card {
+      background: #FFFFFF;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+      transition: var(--transition);
+      cursor: pointer;
+      position: relative;
+      border: 1px solid #E0E0E0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    body.dark-theme .story-card {
+      background: linear-gradient(135deg, rgba(31, 31, 46, 0.9), rgba(10, 10, 18, 0.95));
+      border-color: rgba(0, 240, 255, 0.3);
+    }
+
+    .story-card:hover {
+      transform: translateY(-5px) scale(1.03);
+      box-shadow: 0 8px 25px rgba(255, 31, 138, 0.4), 0 0 15px rgba(0, 240, 255, 0.3);
+      border-color: var(--neon-pink);
+    }
+
+    .story-image {
+      width: 100%;
+      position: relative;
+      overflow: hidden;
+      background: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 140px;
+    }
+
+    .story-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      transition: transform 0.4s ease;
+    }
+
+    .story-card:hover .story-image img {
+      transform: scale(1.08) rotate(1deg);
+      filter: brightness(1.1);
+    }
+
+    .story-badge {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      background: linear-gradient(135deg, var(--neon-pink), var(--neon-cyan));
+      color: #000;
+      padding: 2px 6px;
+      border-radius: 10px;
+      font-size: 0.6rem;
+      font-weight: 800;
+      z-index: 10;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+      text-transform: uppercase;
+    }
+
+    .story-content {
+      padding: 0.6rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .story-title {
+      font-size: 0.75rem;
+      margin: 0;
+      color: #000000;
+      font-weight: 700;
+      line-height: 1.2;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    body.dark-theme .story-title {
+      color: var(--neon-cyan);
+      text-shadow: 0 0 5px rgba(0, 240, 255, 0.3);
+    }
+
+    .story-read-more {
+      background: linear-gradient(135deg, var(--neon-pink), var(--accent-purple));
+      color: #FFF;
+      border: none;
+      padding: 0.3rem 0.6rem;
+      border-radius: 5px;
+      font-size: 0.65rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: var(--transition);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      box-shadow: 0 2px 8px rgba(255, 31, 138, 0.4);
+      margin-top: 0.3rem;
+    }
+
+    .story-read-more:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 12px rgba(0, 240, 255, 0.6);
+      background: linear-gradient(135deg, var(--neon-cyan), var(--neon-pink));
+    }
+
+    .story-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.3rem;
+      flex-wrap: wrap;
+    }
+
+    .story-price {
+      font-weight: 800;
+      font-size: 0.65rem;
+      background: linear-gradient(135deg, var(--neon-pink), var(--neon-cyan));
+      color: #000;
+      padding: 2px 6px;
+      border-radius: 8px;
+      transition: var(--transition);
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    }
+
+    .story-price:hover {
+      transform: scale(1.08);
+    }
+
+    .story-category {
+      padding: 0.2rem 0.4rem;
+      border-radius: 8px;
+      font-size: 0.6rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .category-ujasusi { background: #FF6347; color: #000; }
+    .category-huzuni { background: #4682B4; color: #000; }
+    .category-horror { background: #DC143C; color: #FFF; }
+    .category-drama { background: #FFD700; color: #000; }
+    .category-simulizi { background: var(--accent-purple); color: #FFF; }
+    .category-chombezo { background: #FF4500; color: #FFF; }
+    .category-ujasusi-simulizi,
+    .category-huzuni-simulizi,
+    .category-horror-simulizi,
+    .category-drama-simulizi { background: var(--accent-purple); color: #FFF; }
+    .category-video { background: var(--accent-blue); color: #FFF; }
+
+    .story-views, .story-likes, .story-comments {
+      font-size: 0.6rem;
+      color: #666666;
+      display: flex;
+      align-items: center;
+      gap: 2px;
+    }
+
+    body.dark-theme .story-views,
+    body.dark-theme .story-likes,
+    body.dark-theme .story-comments {
+      color: var(--light-gray);
+    }
+
+    .story-views .fa-eye {
+      animation: blink 1.5s infinite;
+      font-size: 0.65rem;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; color: var(--neon-cyan); }
+      50% { opacity: 0.3; color: var(--neon-pink); }
+    }
+
+    .story-stats {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      padding: 0.3rem 0;
+    }
+
+    .story-share {
+      display: flex;
+      justify-content: center;
+      gap: 3px;
+      margin-top: 0.3rem;
+      padding-top: 0.3rem;
+      border-top: 1px solid rgba(160, 160, 192, 0.2);
+      flex-wrap: wrap;
+    }
+
+    .share-btn {
+      padding: 2px 5px;
+      border-radius: 6px;
+      font-size: 0.55rem;
+      font-weight: 700;
+      text-decoration: none;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      cursor: pointer;
+    }
+
+    .share-whatsapp { background: var(--whatsapp-green); color: #FFFFFF; }
+    .share-facebook { background: #1877F2; color: #FFFFFF; }
+    .share-twitter { background: #1DA1F2; color: #FFFFFF; }
+    .share-telegram { background: #0088CC; color: #FFFFFF; }
+
+    .share-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Loading Spinner */
+    .loading-spinner {
+      text-align: center;
+      padding: 3rem;
+      grid-column: 1 / -1;
+    }
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid rgba(0, 240, 255, 0.3);
+      border-top-color: var(--neon-pink);
+      border-radius: 50%;
+      animation: spin 1s ease-in-out infinite;
+      margin: 0 auto 1rem;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Footer */
+    footer {
+      background: #F5F5F5;
+      color: #666666;
+      text-align: center;
+      padding: 1.5rem;
+      font-size: 0.8rem;
+      border-top: 2px solid var(--neon-pink);
+      margin-top: 3rem;
+    }
+
+    body.dark-theme footer {
+      background: var(--darker);
+      color: var(--light-gray);
+    }
+
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .social-links a {
+      color: #000000;
+      font-size: 1.5rem;
+      margin: 0 15px;
+      transition: var(--transition);
+    }
+
+    body.dark-theme .social-links a {
+      color: var(--light);
+    }
+
+    .social-links a:hover {
+      color: var(--neon-cyan);
+      transform: scale(1.2);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .page-title { font-size: 2rem; }
+      .page-subtitle { font-size: 1rem; }
+      .stories-grid { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 0.7rem; }
+      .main-container { padding: 1rem; }
+    }
+
+    @media (max-width: 576px) {
+      .stories-grid { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 0.6rem; }
+      .page-header { padding: 2rem 1rem; }
+      .page-title { font-size: 1.8rem; }
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=Inter:wght@400;600;700;800&family=Nunito+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+  <!-- Security Overlay -->
+  <div id="securityOverlay">
+    <div class="sec-icon" id="secIcon">🔒</div>
+    <h1 id="secTitle">Usalama wa Tovuti</h1>
+    <p id="secMessage">Inaangalia mazingira ya kifaa chako...</p>
+    <button class="sec-close-btn" id="secCloseBtn" onclick="window.close()">Funga Ukurasa</button>
+  </div>
+
+  <header>
+    <div class="logo-container">
+      <img src="/Picsart_26-05-13_01-57-22-165.png" alt="SIMULIZI HOUSE Logo">
+      <div class="logo-text">SIMULIZI HOUSE</div>
+    </div>
+    <div class="nav-container">
+      <a href="index.html" class="back-btn">
+        <i class="fas fa-arrow-left"></i> Nyumbani
+      </a>
+      <button class="theme-toggle" id="themeToggle" title="Badilisha Rangi">
+        <i class="fas fa-sun"></i>
+      </button>
+    </div>
+  </header>
+
+  <div class="page-header">
+    <h1 class="page-title">Hadithi Mpya</h1>
+    <p class="page-subtitle">Hadithi 6 mpya zaidi zilizowasilishwa hivi karibuni</p>
+  </div>
+
+  <div class="main-container">
+    <div class="stories-grid" id="newStoriesGrid">
+      <div class="loading-spinner">
+        <div class="spinner"></div>
+        <p>Inapakia hadithi mpya...</p>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-content">
+      <div class="social-links">
+        <a href="https://www.facebook.com/profile.php?id=100079473949932" target="_blank"><i class="fab fa-facebook"></i></a>
+        <a href="https://x.com/storieszone" target="_blank"><i class="fab fa-twitter"></i></a>
+        <a href="https://instagram.com/storieszone" target="_blank"><i class="fab fa-instagram"></i></a>
+        <a href="https://youtube.com/@storieszone" target="_blank"><i class="fab fa-youtube"></i></a>
+      </div>
+      <p>© <span id="current-year"></span> SIMULIZI HOUSE- Hadithi za Kisasa</p>
+      <p>Haki Zote Zimehifadhiwa</p>
+    </div>
+  </footer>
+
+  <script>
+    // ========== SEHEMU YA 1: USALAMA WA JUU KABISA ==========
+    (function SecurityFirst() {
+        'use strict';
+        
+        // Silence all console output
+        var noop = function () {};
+        var consoleMethods = [
+            'log', 'warn', 'error', 'info', 'debug', 'table', 'trace',
+            'dir', 'group', 'groupEnd', 'groupCollapsed', 'time', 'timeEnd',
+            'timeLog', 'count', 'countReset', 'assert', 'clear', 'profile', 'profileEnd'
+        ];
+        consoleMethods.forEach(function (method) {
+            try { console[method] = noop; } catch (e) {}
+        });
+        
+        // Helper: show security overlay
+        function showSecOverlay(icon, title, message, showCloseBtn) {
+            function _show() {
+                var ov = document.getElementById('securityOverlay');
+                var ic = document.getElementById('secIcon');
+                var tl = document.getElementById('secTitle');
+                var ms = document.getElementById('secMessage');
+                var btn = document.getElementById('secCloseBtn');
+                if (!ov) return;
+                if (ic) ic.textContent = icon;
+                if (tl) tl.textContent = title;
+                if (ms) ms.textContent = message;
+                if (btn) btn.style.display = showCloseBtn ? 'block' : 'none';
+                ov.classList.add('show');
+                document.body.style.overflow = 'hidden';
+            }
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', _show);
+            } else {
+                _show();
+            }
+        }
+        
+        // ========== BOT / AUTOMATION DETECTION ==========
+        var ua = (navigator.userAgent || '');
+        var botSignatures = [
+            'HeadlessChrome', 'Headless', 'PhantomJS', 'Selenium', 'WebDriver',
+            'Puppeteer', 'Playwright', 'Cypress', 'Chrome-Lighthouse', 'slimerjs',
+            'HtmlUnit', 'Scrapy', 'python-requests', 'Go-http-client',
+            'Java/', 'curl/', 'wget/', 'libwww-perl', 'python-urllib',
+            'axios/', 'node-fetch', 'got/', 'superagent'
+        ];
+        var isBot = false;
+        for (var bi = 0; bi < botSignatures.length; bi++) {
+            if (ua.indexOf(botSignatures[bi]) !== -1) {
+                isBot = true;
+                break;
+            }
+        }
+        if (!isBot && navigator.webdriver === true) {
+            isBot = true;
+        }
+        
+        if (isBot) {
+            showSecOverlay('🤖', 'Ufikiaji Umezuiwa', 'Zana za kiotomatiki (bots) haziruhusiwi kwenye tovuti hii.', false);
+            return;
+        }
+        
+        // ========== MOBILE DEVICE DETECTION ==========
+        var isMobileUA = /Mobi|Android|iPhone|iPad|iPod|BlackBerry|Windows Phone|Opera Mini|IEMobile|Mobile|mobi/i.test(ua);
+        var isMobileScreen = window.innerWidth <= 768;
+        var hasTouchScreen = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+        var isPCOS = /Mac|Win|Linux|X11/i.test(ua);
+        var hasOrientation = typeof window.orientation !== 'undefined';
+        
+        var isPC = (isPCOS && window.innerWidth >= 1024 && !hasTouchScreen && !isMobileUA);
+        
+        if (isPC) {
+            showSecOverlay('📱', 'Simu ya Mkononi Inahitajika', 'Tovuti hii inapatikana kwenye simu za mkononi pekee. Tafadhali tumia simu yako (Android/iPhone) kusoma hadithi.', false);
+            return;
+        }
+        
+        var mobileIndicators = 0;
+        if (isMobileUA) mobileIndicators++;
+        if (isMobileScreen) mobileIndicators++;
+        if (hasTouchScreen) mobileIndicators++;
+        if (hasOrientation) mobileIndicators++;
+        
+        if (mobileIndicators < 2) {
+            showSecOverlay('📱', 'Kifaa Hakikutambuliwa', 'Tafadhali tumia simu yako ya mkononi kufikia tovuti hii.', false);
+            return;
+        }
+        
+        // ========== DEVTOOLS BLOCKER ==========
+        var devToolsOpen = false;
+        
+        function openDevToolsHandler() {
+            if (devToolsOpen) return;
+            devToolsOpen = true;
+            showSecOverlay('🚫', 'Developer Tools Zimefunguliwa', 'Matumizi ya zana za msanidi programu (DevTools) hayaruhusiwi kwenye tovuti hii.', true);
+        }
+        
+        function detectBySize() {
+            var wDiff = window.outerWidth - window.innerWidth;
+            var hDiff = window.outerHeight - window.innerHeight;
+            return (wDiff > 160 || hDiff > 160);
+        }
+        
+        setInterval(function () {
+            if (detectBySize()) {
+                openDevToolsHandler();
+            }
+        }, 1000);
+        
+        // Block all keyboard shortcuts
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'F12' || e.keyCode === 123) {
+                e.preventDefault(); e.stopPropagation();
+                openDevToolsHandler();
+                return false;
+            }
+            if (e.ctrlKey && e.shiftKey && ['I', 'i', 'J', 'j', 'C', 'c'].indexOf(e.key) !== -1) {
+                e.preventDefault(); e.stopPropagation();
+                openDevToolsHandler();
+                return false;
+            }
+            if (e.ctrlKey && (e.key === 'u' || e.key === 'U')) {
+                e.preventDefault(); e.stopPropagation();
+                return false;
+            }
+            if (e.ctrlKey && (e.key === 's' || e.key === 'S')) {
+                e.preventDefault(); e.stopPropagation();
+                return false;
+            }
+            if (e.ctrlKey && (e.key === 'p' || e.key === 'P')) {
+                e.preventDefault(); e.stopPropagation();
+                return false;
+            }
+            if (e.ctrlKey && (e.key === 'a' || e.key === 'A')) {
+                e.preventDefault();
+                return false;
+            }
+            if (e.ctrlKey && (e.key === 'c' || e.key === 'C')) {
+                e.preventDefault();
+                return false;
+            }
+            if (e.ctrlKey && (e.key === 'x' || e.key === 'X')) {
+                e.preventDefault();
+                return false;
+            }
+            if (e.key === 'PrintScreen') {
+                e.preventDefault();
+                return false;
+            }
+        }, true);
+        
+        // Block right-click
+        document.addEventListener('contextmenu', function (e) {
+            e.preventDefault();
+            return false;
+        }, true);
+        
+        // Block copy/cut/paste events
+        document.addEventListener('copy', function (e) {
+            e.preventDefault();
+            return false;
+        }, true);
+        document.addEventListener('cut', function (e) {
+            e.preventDefault();
+            return false;
+        }, true);
+        document.addEventListener('paste', function (e) {
+            e.preventDefault();
+            return false;
+        }, true);
+        
+        // Block drag events
+        document.addEventListener('dragstart', function (e) {
+            e.preventDefault();
+            return false;
+        }, true);
+        
+    })();
+
+    // Initialize Supabase
+    const supabaseUrl = 'https://btnzevupmwsdubpgjpds.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ0bnpldnVwbXdzZHVicGdqcGRzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAyNDEyMzAsImV4cCI6MjA2NTgxNzIzMH0.Cn36rmP6IeSI-LfTUgViCcpBzeqlpplDbSPH3pXrCg4';
+    const _supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+    let user = null;
+    let userPaidStories = new Set();
+    let commentsCountCache = new Map();
+
+    // Theme Toggle
+    const themeToggle = document.getElementById('themeToggle');
+    const body = document.body;
+
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+      body.classList.add('dark-theme');
+      themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+    }
+
+    themeToggle.addEventListener('click', () => {
+      body.classList.toggle('dark-theme');
+      const isDark = body.classList.contains('dark-theme');
+      themeToggle.innerHTML = isDark ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('current-year').textContent = new Date().getFullYear();
+      checkAuthAndLoadStories();
+    });
+
+    async function checkAuthAndLoadStories() {
+      const { data: { user: currentUser } } = await _supabaseClient.auth.getUser();
+      user = currentUser;
+
+      if (!user) {
+        showCustomAlert('error', 'Tafadhali ingia kwanza ili uweze kuona hadithi.');
+        setTimeout(() => window.location.href = 'login.html', 2000);
+        return;
+      }
+
+      await Promise.all([
+        loadUserPaidStories(),
+        loadCommentsCount(),
+        loadNewStories()
+      ]);
+    }
+
+    async function loadUserPaidStories() {
+      try {
+        const { data } = await _supabaseClient
+          .from('payments')
+          .select('story_id')
+          .eq('user_id', user.id)
+          .eq('status', 'paid');
+        userPaidStories = new Set(data?.map(p => p.story_id) || []);
+      } catch (e) { console.error(e); }
+    }
+
+    async function loadCommentsCount() {
+      try {
+        const { data } = await _supabaseClient.from('comments').select('story_id');
+        commentsCountCache.clear();
+        data?.forEach(c => {
+          const count = commentsCountCache.get(c.story_id) || 0;
+          commentsCountCache.set(c.story_id, count + 1);
+        });
+      } catch (e) { console.error(e); }
+    }
+
+    async function loadNewStories() {
+      const grid = document.getElementById('newStoriesGrid');
+      try {
+        const { data: stories, error } = await _supabaseClient
+          .from('stories')
+          .select('*')
+          .order('created_at', { ascending: false })
+          .limit(6);
+
+        if (error) throw error;
+
+        if (!stories || stories.length === 0) {
+          grid.innerHTML = '<p style="text-align:center;grid-column:1/-1;padding:2rem;">Hakuna hadithi mpya kwa sasa.</p>';
+          return;
+        }
+
+        grid.innerHTML = stories.map(createStoryCard).join('');
+      } catch (error) {
+        grid.innerHTML = `<p style="text-align:center;grid-column:1/-1;padding:2rem;color:#f66;">Hitilafu: ${error.message}</p>`;
+      }
+    }
+
+    function createStoryCard(story) {
+      const imageUrl = story.thumbnail_url || 'https://via.placeholder.com/300x200';
+      const shareUrl = `https://storieszone.site/story.html?id=${story.id}`;
+      const price = story.price || 0;
+      const views = story.views || 0;
+      const likes = story.likes || 0;
+      const comments = commentsCountCache.get(story.id) || 0;
+      const isPaid = price === 0 || userPaidStories.has(story.id);
+
+      return `
+        <div class="story-card" onclick="handleReadMore('${story.id}', ${price}, ${isPaid})">
+          <div class="story-image">
+            <img src="${imageUrl}" alt="${story.title}" loading="lazy">
+            ${price > 0 ? `<div class="story-badge">${isPaid ? 'IMEFUNGULIWA' : 'TZS ' + price}</div>` : '<div class="story-badge">BURE</div>'}
+          </div>
+          <div class="story-content">
+            <h3 class="story-title">${story.title}</h3>
+            <button class="story-read-more" onclick="event.stopPropagation(); handleReadMore('${story.id}', ${price}, ${isPaid})">
+              Soma Utangulizi
+            </button>
+            <div class="story-meta">
+              <span class="story-category category-${story.category}">${story.category}</span>
+              <span class="story-price">${price > 0 ? (isPaid ? 'Imefunguliwa' : 'TZS ' + price) : 'BURE'}</span>
+            </div>
+            <div class="story-stats">
+              <div class="story-views"><i class="fas fa-eye"></i> ${views}</div>
+              <div class="story-likes"><i class="fas fa-heart"></i> ${likes}</div>
+              <div class="story-comments"><i class="fas fa-comments"></i> ${comments}</div>
+            </div>
+            <div class="story-share">
+              <a href="https://api.whatsapp.com/send?text=${encodeURIComponent(story.title + ' - ' + shareUrl)}" target="_blank" class="share-btn share-whatsapp" onclick="event.stopPropagation()"><i class="fab fa-whatsapp"></i></a>
+              <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}" target="_blank" class="share-btn share-facebook" onclick="event.stopPropagation()"><i class="fab fa-facebook"></i></a>
+              <a href="https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(story.title)}" target="_blank" class="share-btn share-twitter" onclick="event.stopPropagation()"><i class="fab fa-twitter"></i></a>
+              <a href="https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(story.title)}" target="_blank" class="share-btn share-telegram" onclick="event.stopPropagation()"><i class="fab fa-telegram"></i></a>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    async function handleReadMore(storyId, price, isPaid) {
+      if (!user) return showCustomAlert('warning', 'Tafadhali ingia kwanza.');
+
+      await incrementStoryView(storyId);
+
+      if (price === 0 || isPaid) {
+        window.location.href = `story.html?id=${storyId}`;
+      } else {
+        showCustomAlert('info', `Malipo yanahitajika: TZS ${price}. Nenda ukurasa wa malipo.`);
+      }
+    }
+
+    async function incrementStoryView(storyId) {
+      try {
+        const { data } = await _supabaseClient.from('stories').select('views').eq('id', storyId).single();
+        await _supabaseClient.from('stories').update({ views: (data.views || 0) + 1 }).eq('id', storyId);
+      } catch (e) { console.error(e); }
+    }
+
+    function showCustomAlert(type, message) {
+      const div = document.createElement('div');
+      div.style.cssText = `
+        position:fixed;top:20px;right:20px;background:${type==='error'?'#f33':type==='warning'?'#fa0':'#0cf'};
+        color:${type==='warning'?'#000':'#fff'};padding:1rem 1.5rem;border-radius:8px;
+        box-shadow:0 4px 12px rgba(0,0,0,0.3);z-index:10000;max-width:300px;word-wrap:break-word;
+      `;
+      div.textContent = message;
+      document.body.appendChild(div);
+      setTimeout(() => div.remove(), 5000);
+    }
+
+    window.handleReadMore = handleReadMore;
+  </script>
+</body>
+</html>

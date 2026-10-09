@@ -1,0 +1,1675 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Episode - SIMULIZI HOUSE</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <style>
+    :root {
+      --primary: #3b82f6;
+      --primary-dark: #1e40af;
+      --primary-light: #60a5fa;
+      --bg-main: #0f1e3d;
+      --bg-darker: #0a1428;
+      --bg-card: #1a2b52;
+      --bg-card-hover: #233a72;
+      --text-light: #e8efff;
+      --text-muted: #a8b4d4;
+      --border: rgba(59, 130, 246, 0.25);
+      --accent-blue: #3b82f6;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --transition: all 0.3s ease;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+      margin: 0; padding: 0; padding-bottom: 70px;
+      font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg-main);
+      background-image:
+        radial-gradient(ellipse at 10% 0%, rgba(59,130,246,0.10) 0%, transparent 50%),
+        radial-gradient(ellipse at 90% 100%, rgba(30,64,175,0.15) 0%, transparent 50%);
+      color: var(--text-light);
+      user-select: none;
+      -webkit-user-select: none;
+      min-height: 100vh;
+    }
+
+    /* ═════════════════════════════════════════════════════════════
+       OPEN IN CHROME BANNER
+    ═════════════════════════════════════════════════════════════ */
+    .open-in-chrome-banner {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 99999;
+      background: linear-gradient(135deg, #3b82f6, #1e40af);
+      color: #fff;
+      padding: 12px 16px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+      font-family: 'Inter', sans-serif;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 2px solid #fff;
+    }
+    .open-in-chrome-banner.show { display: flex; }
+    .open-in-chrome-banner .oicb-icon { font-size: 1.3rem; flex-shrink: 0; }
+    .open-in-chrome-banner .oicb-text {
+      flex: 1; font-size: 0.8rem; line-height: 1.3; color: #fff;
+    }
+    .open-in-chrome-banner .oicb-text strong {
+      display: block; font-size: 0.85rem; margin-bottom: 2px; color: #fff;
+    }
+    .open-in-chrome-banner .oicb-btn {
+      background: #fff; color: #1e40af; border: none;
+      padding: 8px 14px; border-radius: 20px;
+      font-weight: 700; font-size: 0.78rem; cursor: pointer;
+      font-family: inherit; white-space: nowrap; flex-shrink: 0;
+    }
+    .open-in-chrome-banner .oicb-btn:hover { background: #f0f0f0; transform: scale(1.03); }
+    .open-in-chrome-banner .oicb-close {
+      background: transparent; color: #fff; border: none;
+      padding: 6px; cursor: pointer; font-size: 1rem;
+      flex-shrink: 0; opacity: 0.8;
+    }
+    .open-in-chrome-banner .oicb-close:hover { opacity: 1; }
+
+    #securityOverlay {
+      display: none;
+      position: fixed; inset: 0;
+      background: #000;
+      z-index: 99999;
+      flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center;
+      padding: 2rem;
+    }
+    #securityOverlay.show { display: flex; }
+    #securityOverlay .sec-icon { font-size: 5rem; margin-bottom: 1.5rem; animation: pulse 1.5s infinite; }
+    #securityOverlay h1 { font-size: 2rem; font-weight: 800; color: #ef4444; margin-bottom: 1rem; }
+    #securityOverlay p { font-size: 1.1rem; color: #aaa; max-width: 500px; line-height: 1.8; margin-bottom: 2rem; }
+    #securityOverlay .sec-close-btn {
+      background: linear-gradient(135deg, #ef4444, #b91c1c);
+      color: #fff; border: none; padding: 14px 40px; border-radius: 50px;
+      font-size: 1rem; font-weight: 700; cursor: pointer;
+      box-shadow: 0 6px 20px rgba(239, 68, 68, 0.5);
+    }
+    @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); } }
+
+    header {
+      background: linear-gradient(135deg, var(--bg-darker), var(--bg-card));
+      padding: 0.8rem 1rem;
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 1000;
+      box-shadow: 0 2px 16px rgba(0, 0, 0, 0.4);
+      border-bottom: 2px solid var(--accent-blue);
+      border-radius: 0 0 16px 16px;
+    }
+
+    .logo-container { display: flex; align-items: center; gap: 8px; }
+    .logo-container img {
+      height: 50px; border-radius: 50%;
+      border: 2px solid var(--accent-blue);
+      box-shadow: 0 2px 12px rgba(59, 130, 246, 0.5);
+      transition: var(--transition);
+    }
+    .logo-text {
+      font-size: 1.1rem; font-weight: 700;
+      color: var(--text-light);
+      text-transform: uppercase; letter-spacing: 0.5px; line-height: 1;
+      text-shadow: 0 0 8px rgba(59, 130, 246, 0.5);
+    }
+
+    .nav-container { display: flex; align-items: center; gap: 8px; }
+    .nav-btn {
+      background: var(--accent-blue); color: #fff;
+      padding: 8px 14px; border-radius: 24px;
+      font-size: 0.85rem; font-weight: 600; text-decoration: none;
+      display: inline-flex; align-items: center; gap: 6px;
+      box-shadow: 0 2px 8px rgba(59, 130, 246, 0.4);
+      transition: var(--transition);
+    }
+    .nav-btn:hover { background: #2563eb; transform: translateY(-2px); }
+
+    .main-container {
+      padding: 1.5rem;
+      max-width: 900px;
+      margin: 1.5rem auto;
+      background: var(--bg-card);
+      border-radius: 20px;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+      border: 1px solid var(--border);
+    }
+
+    .story-header {
+      text-align: center;
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .story-title {
+      font-size: 1.8rem; color: var(--text-light);
+      margin-bottom: 0.8rem; font-weight: 700; line-height: 1.3;
+      text-shadow: 0 0 12px rgba(59, 130, 246, 0.3);
+    }
+    .story-meta {
+      color: var(--text-muted); font-size: 0.9rem;
+      display: flex; align-items: center; justify-content: center;
+      gap: 12px; flex-wrap: wrap;
+    }
+    .story-meta span { display: flex; align-items: center; gap: 5px; }
+
+    .episode-nav-row {
+      display: flex; justify-content: space-between; align-items: center;
+      gap: 10px; margin-top: 1.2rem; flex-wrap: wrap;
+    }
+    .ep-nav-btn {
+      background: rgba(59, 130, 246, 0.15);
+      color: var(--text-light);
+      padding: 10px 18px; border-radius: 24px;
+      font-size: 0.85rem; font-weight: 600;
+      text-decoration: none;
+      border: 2px solid var(--accent-blue);
+      display: inline-flex; align-items: center; gap: 6px;
+      cursor: pointer; transition: var(--transition);
+      font-family: inherit;
+    }
+    .ep-nav-btn:hover {
+      background: var(--accent-blue); color: #fff;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 16px rgba(59, 130, 246, 0.5);
+    }
+    .ep-nav-btn.locked {
+      background: rgba(245, 158, 11, 0.12);
+      border-color: var(--warning);
+      color: var(--warning);
+    }
+    .ep-nav-btn.locked:hover {
+      background: var(--warning);
+      color: #000;
+      box-shadow: 0 4px 16px rgba(245, 158, 11, 0.5);
+    }
+    .ep-nav-btn.disabled {
+      opacity: 0.35;
+      pointer-events: none;
+      cursor: not-allowed;
+      border-color: var(--text-muted);
+      color: var(--text-muted);
+    }
+    .ep-nav-btn .lock-icon { font-size: 0.75rem; }
+
+    .like-row { text-align: center; margin-top: 1rem; }
+    .like-button {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(239, 68, 68, 0.15);
+      color: #ef4444;
+      padding: 8px 18px; border-radius: 24px;
+      font-size: 0.9rem; font-weight: 600;
+      cursor: pointer; transition: var(--transition);
+      border: 2px solid rgba(239, 68, 68, 0.4);
+      box-shadow: 0 2px 8px rgba(239, 68, 68, 0.2);
+    }
+    .like-button:hover { transform: translateY(-2px) scale(1.03); }
+    .like-button.liked {
+      background: linear-gradient(135deg, #ef4444, #b91c1c);
+      color: white; border-color: #b91c1c;
+    }
+    .like-button i { font-size: 1.1rem; }
+    .like-button.liked i { animation: heartbeat 0.8s ease infinite; }
+    @keyframes heartbeat {
+      0%, 100% { transform: scale(1); }
+      10%, 30% { transform: scale(1.2); }
+      20% { transform: scale(1.1); }
+    }
+
+    .story-content {
+      font-size: 1.05rem;
+      line-height: 1.9;
+      color: var(--text-light);
+      white-space: pre-wrap;
+      margin-bottom: 2rem;
+      text-align: justify;
+    }
+
+    .story-content.dropcap::first-letter {
+      font-family: 'Georgia', 'Times New Roman', serif;
+      font-size: 4.2em;
+      font-weight: 900;
+      float: left;
+      line-height: 0.85;
+      margin: 0.08em 0.12em 0 0;
+      padding: 0.05em 0.15em 0 0;
+      color: var(--accent-blue);
+      text-shadow: 0 0 20px rgba(59, 130, 246, 0.6);
+      text-transform: uppercase;
+    }
+
+    .story-image { text-align: center; margin-bottom: 1.5rem; }
+    .story-image img {
+      max-width: 100%; height: auto;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+      border: 1px solid var(--border);
+    }
+    .story-image.hidden { display: none; }
+
+    .audio-player-container {
+      position: relative;
+      border-radius: 14px;
+      margin: 1.5rem 0;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+      overflow: hidden;
+      min-height: 200px;
+      border: 1px solid var(--border);
+    }
+    .audio-background {
+      position: absolute; inset: 0;
+      background-size: cover; background-position: center;
+      filter: brightness(0.35) blur(2px);
+      z-index: 1;
+    }
+    .audio-content {
+      position: relative; z-index: 2;
+      padding: 1.5rem; color: #fff;
+      display: flex; flex-direction: column;
+      min-height: 200px;
+    }
+    .audio-header { display: flex; align-items: center; gap: 15px; margin-bottom: 1.5rem; }
+    .headphones-icon {
+      width: 60px; height: 60px;
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.9), rgba(96, 165, 250, 0.9));
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      animation: rotate 4s linear infinite;
+      box-shadow: 0 4px 15px rgba(59, 130, 246, 0.5);
+    }
+    .headphones-icon i { font-size: 1.5rem; color: white; }
+    .audio-info { flex: 1; }
+    .audio-title { color: white; font-size: 1.3rem; font-weight: 700; margin-bottom: 5px; }
+    .audio-subtitle { color: #cbd5e1; font-size: 1rem; }
+
+    .audio-controls { display: flex; align-items: center; gap: 12px; margin-bottom: 0.5rem; }
+    .audio-control-btn {
+      background: rgba(255, 255, 255, 0.2); border: none;
+      width: 40px; height: 40px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      color: white; cursor: pointer;
+      transition: all 0.3s ease; font-size: 1rem;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+    .audio-control-btn:hover { background: rgba(255, 255, 255, 0.3); transform: scale(1.1); }
+    .play-pause-btn {
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.9), rgba(96, 165, 250, 0.9));
+      width: 56px; height: 56px;
+      box-shadow: 0 4px 15px rgba(59, 130, 246, 0.5);
+      font-size: 1.3rem;
+    }
+    .progress-container {
+      flex: 1; background: rgba(255, 255, 255, 0.3);
+      height: 5px; border-radius: 2px; cursor: pointer; overflow: hidden;
+    }
+    .progress-bar {
+      background: linear-gradient(90deg, #3b82f6, #60a5fa);
+      height: 100%; width: 0%; border-radius: 2px;
+      transition: width 0.1s linear;
+    }
+    .time-display {
+      display: flex; justify-content: space-between;
+      color: white; font-size: 0.9rem; margin-top: 8px; font-weight: 500;
+    }
+    .volume-control { display: flex; align-items: center; gap: 8px; margin-top: 1rem; color: white; }
+    .volume-slider {
+      flex: 1; max-width: 100px; height: 5px;
+      background: rgba(255, 255, 255, 0.3); border-radius: 2px; cursor: pointer;
+    }
+    .volume-level {
+      background: linear-gradient(90deg, #3b82f6, #60a5fa);
+      height: 100%; width: 70%; border-radius: 2px;
+    }
+    @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+    .video-player-container {
+      background: #000; border-radius: 14px; overflow: hidden;
+      margin: 1.5rem auto;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+      position: relative; width: 100%;
+      border: 1px solid var(--border);
+    }
+    .video-player-wrapper {
+      position: relative; width: 100%; background: #000;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .video-player {
+      width: 100%; height: auto; display: block;
+      background: #000; aspect-ratio: 16/9;
+    }
+    .video-controls {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+      padding: 0; opacity: 0; transition: opacity 0.3s; z-index: 10;
+    }
+    .video-controls.show { opacity: 1; }
+    .video-progress-wrapper { width: 100%; padding: 0 12px; margin-bottom: 8px; cursor: pointer; }
+    .video-progress {
+      width: 100%; height: 5px;
+      background: rgba(255, 255, 255, 0.3); border-radius: 2px;
+    }
+    .video-progress-bar {
+      background: var(--accent-blue); height: 100%; width: 0%;
+      border-radius: 2px; transition: width 0.1s linear;
+    }
+    .video-controls-bottom {
+      display: flex; align-items: center;
+      padding: 8px 12px; gap: 12px;
+    }
+    .video-control-btn {
+      background: none; border: none; color: white;
+      font-size: 1.4rem; cursor: pointer;
+      padding: 8px; border-radius: 4px;
+      display: flex; align-items: center; justify-content: center;
+      width: 40px; height: 40px;
+    }
+    .video-control-btn:hover { background: rgba(255, 255, 255, 0.15); }
+    .video-time { color: white; font-size: 0.9rem; font-weight: 500; white-space: nowrap; }
+    .video-spacer { flex: 1; }
+    .video-volume-control { display: flex; align-items: center; gap: 8px; }
+    .video-volume-slider {
+      width: 0; height: 5px;
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 2px; cursor: pointer; overflow: hidden;
+      transition: width 0.3s;
+    }
+    .video-volume-control:hover .video-volume-slider { width: 60px; }
+    .video-volume-level { background: white; height: 100%; width: 70%; border-radius: 2px; }
+    .video-title-overlay {
+      position: absolute; top: 0; left: 0; right: 0;
+      padding: 1.5rem;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
+      color: white; font-weight: 600; font-size: 1.1rem;
+      opacity: 0; transition: opacity 0.3s; z-index: 5;
+    }
+    .video-title-overlay.show { opacity: 1; }
+    .video-loading {
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 60px; height: 60px;
+      border: 4px solid rgba(255, 255, 255, 0.2);
+      border-top: 4px solid var(--accent-blue);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      z-index: 5; display: none;
+    }
+    .video-loading.show { display: block; }
+    @keyframes spin { to { transform: translate(-50%, -50%) rotate(360deg); } }
+    .video-play-overlay {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(0, 0, 0, 0.3);
+      cursor: pointer; z-index: 8;
+    }
+    .video-play-overlay.hidden { display: none; }
+    .video-play-button {
+      width: 80px; height: 80px;
+      background: rgba(59, 130, 246, 0.95);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      color: white; font-size: 2.2rem;
+      box-shadow: 0 4px 20px rgba(59, 130, 246, 0.6);
+      padding-left: 6px;
+    }
+
+    .comments-section {
+      margin-top: 3rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+    }
+    .comments-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 1.5rem;
+    }
+    .comments-title {
+      font-size: 1.4rem; font-weight: 700; color: var(--text-light);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .comments-title i { color: var(--accent-blue); }
+    .comments-count {
+      background: rgba(59, 130, 246, 0.15);
+      padding: 4px 12px; border-radius: 20px;
+      font-size: 0.9rem; color: var(--primary-light); font-weight: 600;
+      border: 1px solid var(--border);
+    }
+    .comment-form {
+      background: rgba(59, 130, 246, 0.06);
+      padding: 1.5rem; border-radius: 16px;
+      margin-bottom: 2rem;
+      border: 1px solid var(--border);
+    }
+    .comment-form textarea {
+      width: 100%; padding: 12px;
+      border: 2px solid var(--border); border-radius: 12px;
+      font-size: 0.95rem; font-family: inherit;
+      resize: vertical; min-height: 100px;
+      background: var(--bg-darker);
+      color: var(--text-light);
+      transition: var(--transition);
+    }
+    .comment-form textarea:focus {
+      outline: none; border-color: var(--accent-blue);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+    }
+    .comment-form textarea::placeholder { color: var(--text-muted); }
+    .comment-form button {
+      background: var(--accent-blue); color: #fff;
+      padding: 10px 24px; border: none;
+      border-radius: 24px; font-size: 0.95rem;
+      font-weight: 600; cursor: pointer;
+      margin-top: 10px;
+      display: inline-flex; align-items: center; gap: 6px;
+      transition: var(--transition);
+      font-family: inherit;
+    }
+    .comment-form button:hover {
+      background: #2563eb;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 16px rgba(59, 130, 246, 0.5);
+    }
+    .comments-list { display: flex; flex-direction: column; gap: 1rem; }
+    .comment-item {
+      background: rgba(59, 130, 246, 0.06);
+      padding: 1.2rem; border-radius: 16px;
+      border: 1px solid var(--border);
+      transition: var(--transition);
+    }
+    .comment-item:hover { border-color: var(--accent-blue); }
+    .comment-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 0.8rem;
+    }
+    .comment-user { display: flex; align-items: center; gap: 10px; }
+    .comment-avatar {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent-blue), var(--primary-dark));
+      color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 0.9rem;
+    }
+    .comment-username { font-weight: 600; color: var(--text-light); font-size: 0.95rem; }
+    .comment-date { font-size: 0.8rem; color: var(--text-muted); }
+    .comment-text { color: var(--text-light); line-height: 1.6; font-size: 0.95rem; }
+    .no-comments {
+      text-align: center; padding: 2rem;
+      color: var(--text-muted);
+    }
+
+    .bottom-nav {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      background: linear-gradient(135deg, var(--bg-darker), var(--bg-card));
+      border-top: 2px solid var(--accent-blue);
+      padding: 10px 0;
+      display: flex; justify-content: space-around; align-items: center;
+      z-index: 1000;
+      box-shadow: 0 -2px 16px rgba(0, 0, 0, 0.5);
+      border-radius: 16px 16px 0 0;
+    }
+    .bottom-nav-item {
+      display: flex; flex-direction: column; align-items: center;
+      gap: 4px; color: var(--text-muted); text-decoration: none;
+      font-size: 0.75rem; font-weight: 600;
+      padding: 8px 16px; border-radius: 12px;
+      transition: var(--transition);
+    }
+    .bottom-nav-item i { font-size: 1.3rem; }
+    .bottom-nav-item:hover, .bottom-nav-item.active {
+      color: var(--primary-light);
+      background: rgba(59, 130, 246, 0.12);
+    }
+
+    .custom-alert {
+      position: fixed; top: 20px; right: 20px;
+      background: var(--bg-card); color: var(--text-light);
+      padding: 15px 25px; border-radius: 12px;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
+      display: flex; align-items: center; gap: 10px;
+      z-index: 1001;
+      transform: translateX(120%); opacity: 0;
+      transition: transform 0.3s ease-out, opacity 0.3s ease;
+      max-width: 90%;
+      border: 1px solid var(--border);
+    }
+    .custom-alert.show { transform: translateX(0); opacity: 1; }
+    .custom-alert.error { background: #7f1d1d; border-color: #ef4444; }
+    .custom-alert.success { background: #065f46; border-color: var(--success); }
+    .custom-alert.warning { background: #78350f; border-color: var(--warning); }
+    .custom-alert .close-btn { margin-left: 15px; cursor: pointer; font-weight: bold; font-size: 1.2rem; }
+
+    footer {
+      background: var(--bg-darker);
+      color: var(--text-muted);
+      text-align: center; padding: 1.5rem;
+      font-size: 0.85rem;
+      border-top: 1px solid var(--border);
+      margin-top: 2rem;
+    }
+
+    @media (max-width: 768px) {
+      header { padding: 0.6rem 0.8rem; }
+      .logo-container img { height: 42px; }
+      .logo-text { font-size: 0.95rem; }
+      .nav-btn { padding: 6px 12px; font-size: 0.8rem; }
+      .main-container { padding: 1.2rem; margin: 1rem 0.5rem; border-radius: 16px; }
+      .story-title { font-size: 1.5rem; }
+      .story-meta { font-size: 0.85rem; }
+      .comments-title { font-size: 1.2rem; }
+      .ep-nav-btn { padding: 8px 14px; font-size: 0.78rem; }
+      .story-content.dropcap::first-letter {
+        font-size: 3.6em;
+        margin: 0.05em 0.10em 0 0;
+      }
+    }
+    @media (max-width: 576px) {
+      .main-container { padding: 1rem; }
+      .story-title { font-size: 1.3rem; }
+      .bottom-nav-item { font-size: 0.7rem; padding: 6px 10px; }
+      .bottom-nav-item i { font-size: 1.1rem; }
+      .episode-nav-row { flex-direction: column; }
+      .ep-nav-btn { width: 100%; justify-content: center; }
+      .story-content { font-size: 1rem; }
+      .story-content.dropcap::first-letter {
+        font-size: 3.2em;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═════════════════════════════════════════════════════════════
+     OPEN IN CHROME BANNER
+═══════════════════════════════════════════════════════════════ -->
+<div id="openInChromeBanner" class="open-in-chrome-banner">
+  <i class="fas fa-external-link-alt oicb-icon"></i>
+  <div class="oicb-text">
+    <strong>Kwa uzoefu bora, fungua kwenye Chrome</strong>
+    Bonyeza "Fungua" kusoma vizuri zaidi
+  </div>
+  <button id="openInChromeBtn" class="oicb-btn">Fungua</button>
+  <button id="closeBannerBtn" class="oicb-close" aria-label="Funga">
+    <i class="fas fa-times"></i>
+  </button>
+</div>
+
+<div id="securityOverlay">
+  <div class="sec-icon" id="secIcon">🔒</div>
+  <h1 id="secTitle">Usalama wa Tovuti</h1>
+  <p id="secMessage">Inaangalia mazingira ya kifaa chako...</p>
+  <button class="sec-close-btn" id="secCloseBtn" onclick="window.close()">Funga Ukurasa</button>
+</div>
+
+<header>
+  <div class="logo-container">
+    <img src="/Picsart_26-05-13_01-57-22-165.png" alt="SIMULIZI HOUSE Logo">
+    <div class="logo-text">SIMULIZI HOUSE</div>
+  </div>
+  <div class="nav-container">
+    <a href="javascript:history.back()" class="nav-btn"><i class="fas fa-arrow-left"></i></a>
+    <a href="index.html" class="nav-btn"><i class="fas fa-home"></i></a>
+  </div>
+</header>
+
+<div class="main-container">
+  <div class="story-header">
+    <h1 class="story-title" id="storyTitle">Inapakia...</h1>
+    <div class="story-meta" id="storyMeta"></div>
+
+    <div class="episode-nav-row">
+      <button class="ep-nav-btn" id="prevEpBtn"><i class="fas fa-chevron-left"></i> Iliyopita</button>
+      <button class="ep-nav-btn" id="allEpBtn"><i class="fas fa-list-ol"></i> Episodes Zote</button>
+      <button class="ep-nav-btn" id="nextEpBtn">Ifuatayo <i class="fas fa-chevron-right"></i></button>
+    </div>
+
+    <div class="like-row">
+      <div class="like-button" id="likeButton" onclick="handleLike(event)">
+        <i class="fas fa-heart"></i>
+        <span id="likeCount">0</span> Likes
+      </div>
+    </div>
+  </div>
+
+  <div class="story-image" id="storyImageContainer"></div>
+  <div class="story-content dropcap" id="storyContent">Inapakia maudhui ya episode...</div>
+
+  <div id="audioPlayerContainer" style="display: none;">
+    <div class="audio-player-container">
+      <div class="audio-background" id="audioBackground"></div>
+      <div class="audio-content">
+        <div class="audio-header">
+          <div class="headphones-icon"><i class="fas fa-headphones"></i></div>
+          <div class="audio-info">
+            <div class="audio-title" id="audioTitle">Simulizi</div>
+            <div class="audio-subtitle" id="audioSubtitle">Inapakia...</div>
+          </div>
+        </div>
+        <div class="audio-controls">
+          <button class="audio-control-btn" onclick="skipBackward()"><i class="fas fa-backward"></i></button>
+          <button class="audio-control-btn play-pause-btn" id="playPauseBtn" onclick="togglePlayPause()">
+            <i class="fas fa-play" id="playPauseIcon"></i>
+          </button>
+          <button class="audio-control-btn" onclick="skipForward()"><i class="fas fa-forward"></i></button>
+          <div class="progress-container" onclick="seekAudio(event)">
+            <div class="progress-bar" id="progressBar"></div>
+          </div>
+        </div>
+        <div class="time-display">
+          <span id="currentTime">0:00</span>
+          <span id="duration">0:00</span>
+        </div>
+        <div class="volume-control">
+          <i class="fas fa-volume-up"></i>
+          <div class="volume-slider" onclick="setVolume(event)">
+            <div class="volume-level" id="volumeLevel"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <audio id="storyAudio" preload="metadata"></audio>
+  </div>
+
+  <div id="videoPlayerContainer" style="display: none;">
+    <div class="video-player-container">
+      <div class="video-title-overlay" id="videoTitleOverlay"></div>
+      <div class="video-loading" id="videoLoading"></div>
+      <div class="video-player-wrapper">
+        <video class="video-player" id="storyVideo" preload="metadata">
+          Your browser does not support the video tag.
+        </video>
+        <div class="video-play-overlay" id="videoPlayOverlay" onclick="playVideo()">
+          <div class="video-play-button"><i class="fas fa-play"></i></div>
+        </div>
+      </div>
+      <div class="video-controls" id="videoControls">
+        <div class="video-progress-wrapper" onclick="seekVideo(event)">
+          <div class="video-progress">
+            <div class="video-progress-bar" id="videoProgressBar"></div>
+          </div>
+        </div>
+        <div class="video-controls-bottom">
+          <button class="video-control-btn" onclick="toggleVideoPlayPause()"><i class="fas fa-play" id="videoPlayPauseIcon"></i></button>
+          <div class="video-time">
+            <span id="videoCurrentTime">0:00</span> / <span id="videoDuration">0:00</span>
+          </div>
+          <div class="video-spacer"></div>
+          <div class="video-volume-control">
+            <button class="video-control-btn" onclick="toggleMute()"><i class="fas fa-volume-up" id="volumeIcon"></i></button>
+            <div class="video-volume-slider" onclick="setVideoVolume(event)">
+              <div class="video-volume-level" id="videoVolumeLevel"></div>
+            </div>
+          </div>
+          <button class="video-control-btn" onclick="rotateVideo()"><i class="fas fa-sync-alt" id="rotateIcon"></i></button>
+          <button class="video-control-btn" onclick="toggleFullscreen()"><i class="fas fa-expand" id="fullscreenIcon"></i></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="comments-section" id="comments-section">
+    <div class="comments-header">
+      <h2 class="comments-title"><i class="fas fa-comments"></i> Maoni</h2>
+      <span class="comments-count" id="commentsCount">0</span>
+    </div>
+    <div class="comment-form" id="commentForm">
+      <textarea id="commentInput" placeholder="Andika maoni yako hapa..." maxlength="1000"></textarea>
+      <button onclick="submitComment()"><i class="fas fa-paper-plane"></i> Tuma Maoni</button>
+    </div>
+    <div class="comments-list" id="commentsList">
+      <div class="no-comments">Hakuna maoni bado.</div>
+    </div>
+  </div>
+</div>
+
+<div class="bottom-nav">
+  <a href="index.html" class="bottom-nav-item"><i class="fas fa-home"></i><span>Nyumbani</span></a>
+  <a href="#comments-section" class="bottom-nav-item" onclick="scrollToComments(event)"><i class="fas fa-comments"></i><span>Maoni</span></a>
+  <a href="javascript:window.scrollTo({top: 0, behavior: 'smooth'})" class="bottom-nav-item"><i class="fas fa-arrow-up"></i><span>Juu</span></a>
+</div>
+
+<footer>
+  <p>&copy; <span id="current-year"></span> SIMULIZI HOUSE- Hadithi za Kisasa</p>
+  <p>Haki Zote Zimehifadhiwa</p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<!-- ═════════════════════════════════════════════════════════════
+     OPEN IN CHROME SCRIPT
+═══════════════════════════════════════════════════════════════ -->
+<script>
+(function() {
+  'use strict';
+  var ua = navigator.userAgent || '';
+
+  var isFacebook  = /FBAN|FBAV|FB_IAB|FBIOS|FBSV|FBSS/i.test(ua);
+  var isInstagram = /Instagram/i.test(ua);
+  var isMessenger = /Messenger/i.test(ua);
+  var isTikTok    = /TikTok|musical_ly|BytedanceWebview/i.test(ua);
+  var isWhatsApp  = /WhatsApp/i.test(ua);
+  var isTwitter   = /Twitter|TwitterAndroid/i.test(ua);
+  var isLinkedIn  = /LinkedInApp/i.test(ua);
+  var isLine      = /Line\//i.test(ua);
+  var isWeChat    = /MicroMessenger/i.test(ua);
+  var isSnapchat  = /Snapchat/i.test(ua);
+  var isTelegram  = /Telegram/i.test(ua);
+
+  var isInApp = isFacebook || isInstagram || isMessenger || isTikTok ||
+                isWhatsApp || isTwitter || isLinkedIn || isLine || isWeChat ||
+                isSnapchat || isTelegram;
+
+  if (!isInApp) return;
+
+  var banner   = document.getElementById('openInChromeBanner');
+  var openBtn  = document.getElementById('openInChromeBtn');
+  var closeBtn = document.getElementById('closeBannerBtn');
+
+  if (!banner) return;
+
+  try {
+    if (sessionStorage.getItem('oicb_closed') === '1') return;
+  } catch(e) {}
+
+  banner.classList.add('show');
+
+  openBtn.addEventListener('click', function() {
+    var currentUrl = window.location.href;
+    var isAndroid = /Android/i.test(ua);
+    var isIOS     = /iPhone|iPad|iPod/i.test(ua);
+
+    if (isAndroid) {
+      var cleanUrl = currentUrl.replace(/^https?:\/\//, '');
+      var intentUrl = 'intent://' + cleanUrl + '#Intent;scheme=https;package=com.android.chrome;end';
+      try { window.location.href = intentUrl; } catch(e) {}
+      setTimeout(function() {
+        try { window.location.href = currentUrl; } catch(e) {}
+      }, 800);
+    } else if (isIOS) {
+      if (currentUrl.indexOf('https://') === 0) {
+        try { window.location.href = currentUrl.replace('https://', 'googlechrome://'); } catch(e) {}
+      } else if (currentUrl.indexOf('http://') === 0) {
+        try { window.location.href = currentUrl.replace('http://', 'googlechrome://'); } catch(e) {}
+      }
+      setTimeout(function() {
+        try { window.location.href = currentUrl; } catch(e) {}
+      }, 800);
+    } else {
+      try { window.open(currentUrl, '_blank'); } catch(e) {}
+    }
+  });
+
+  closeBtn.addEventListener('click', function() {
+    banner.classList.remove('show');
+    try { sessionStorage.setItem('oicb_closed', '1'); } catch(e) {}
+  });
+})();
+</script>
+
+<!-- ═════════════════════════════════════════════════════════════
+     SECURITY BLOCK
+═══════════════════════════════════════════════════════════════ -->
+<script>
+(function SecurityFirst() {
+    'use strict';
+    var noop = function () {};
+    ['log','warn','error','info','debug','table','trace','dir','group','groupEnd','groupCollapsed','time','timeEnd','timeLog','count','countReset','assert','clear','profile','profileEnd'].forEach(function(m){ try { console[m] = noop; } catch(e){} });
+    try { Object.defineProperty(window, 'console', { get: function(){ return { log:noop,warn:noop,error:noop,info:noop,debug:noop }; } }); } catch(e) {}
+
+    function showSecOverlay(icon, title, message, showCloseBtn) {
+      function _show() {
+        var ov = document.getElementById('securityOverlay');
+        var ic = document.getElementById('secIcon');
+        var tl = document.getElementById('secTitle');
+        var ms = document.getElementById('secMessage');
+        var btn = document.getElementById('secCloseBtn');
+        if (!ov) return;
+        if (ic) ic.textContent = icon;
+        if (tl) tl.textContent = title;
+        if (ms) ms.textContent = message;
+        if (btn) btn.style.display = showCloseBtn ? 'block' : 'none';
+        ov.classList.add('show');
+        document.body.style.overflow = 'hidden';
+      }
+      if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', _show);
+      else _show();
+    }
+
+    var ua = (navigator.userAgent || '');
+
+    // ── Angalia in-app browser kwanza ──
+    var inAppBrowserSignatures = [
+      'FBAN','FBAV','FB_IAB','FBIOS','FBSV','FBSS',
+      'Instagram','Messenger','WhatsApp','Line/','MicroMessenger',
+      'Twitter','TwitterAndroid','LinkedInApp','Snapchat',
+      'TikTok','musical_ly','BytedanceWebview','Pinterest','Telegram',
+      'GSA/','YaBrowser','OPR/','UCBrowser','SamsungBrowser',
+      'EdgA','EdgiOS','CriOS','FxiOS','wv)'
+    ];
+    var isInAppBrowser = false;
+    for (var ii = 0; ii < inAppBrowserSignatures.length; ii++) {
+      if (ua.indexOf(inAppBrowserSignatures[ii]) !== -1) {
+        isInAppBrowser = true;
+        break;
+      }
+    }
+
+    var botSignatures = ['HeadlessChrome','Headless','PhantomJS','Selenium','WebDriver','Puppeteer','Playwright','Cypress','Chrome-Lighthouse','slimerjs','HtmlUnit','Scrapy','python-requests','Go-http-client','Java/','curl/','wget/','libwww-perl','python-urllib','axios/','node-fetch','got/','superagent'];
+    var isBot = false;
+    for (var i = 0; i < botSignatures.length; i++) {
+      if (ua.indexOf(botSignatures[i]) !== -1) { isBot = true; break; }
+    }
+    if (!isBot && navigator.webdriver === true) isBot = true;
+    if (isBot && !isInAppBrowser) { showSecOverlay('🤖', 'Ufikiaji Umezuiwa', 'Zana za kiotomatiki haziruhusiwi.', false); return; }
+
+    function isMobileDevice() {
+      if (isInAppBrowser) return true;
+      var mobileUA = /Mobi|Android|iPhone|iPad|iPod|BlackBerry|Windows Phone|Opera Mini|IEMobile|Mobile|mobi/i.test(ua);
+      var smallScreen      = window.screen.width <= 768;
+      var hasTouchScreen   = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+      var hasOrientation   = (typeof window.orientation !== 'undefined');
+      var desktopOS        = /^(Win|Mac|Linux|X11)/.test(navigator.platform || '');
+      var largeScreen      = window.screen.width >= 1024;
+      if (desktopOS && largeScreen && !hasTouchScreen && !mobileUA) return false;
+      if (mobileUA) return true;
+      var score = 0;
+      if (mobileUA) score++; if (smallScreen) score++; if (hasTouchScreen) score++; if (hasOrientation) score++;
+      return score >= 2;
+    }
+
+    if (!isMobileDevice()) { showSecOverlay('📱', 'Simu ya Mkononi Inahitajika', 'Tovuti hii inapatikana kwenye simu za mkononi pekee.', false); return; }
+
+    var devToolsOpen = false;
+    function openDevToolsHandler() {
+      if (devToolsOpen) return;
+      devToolsOpen = true;
+      showSecOverlay('🚫', 'Developer Tools Zimefunguliwa', 'Matumizi ya DevTools hayaruhusiwi.', true);
+    }
+    setInterval(function () {
+      // USIBADILISHE: Kama ni in-app browser, ruka DevTools check
+      if (isInAppBrowser) return;
+      var wDiff = window.outerWidth - window.innerWidth;
+      var hDiff = window.outerHeight - window.innerHeight;
+      if (wDiff > 160 || hDiff > 160) openDevToolsHandler();
+    }, 1000);
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'F12' || e.keyCode === 123) { e.preventDefault(); e.stopPropagation(); openDevToolsHandler(); return false; }
+      if (e.ctrlKey && e.shiftKey && ['I','i','J','j','C','c'].indexOf(e.key) !== -1) { e.preventDefault(); e.stopPropagation(); openDevToolsHandler(); return false; }
+      if (e.ctrlKey && ['u','s','p','a','c','x'].indexOf(e.key.toLowerCase()) !== -1) { e.preventDefault(); return false; }
+      if (e.key === 'PrintScreen') { e.preventDefault(); return false; }
+    }, true);
+
+    document.addEventListener('contextmenu', function (e) { e.preventDefault(); return false; }, true);
+    document.addEventListener('copy', function (e) { e.preventDefault(); return false; }, true);
+    document.addEventListener('cut', function (e) { e.preventDefault(); return false; }, true);
+    document.addEventListener('paste', function (e) { e.preventDefault(); return false; }, true);
+    document.addEventListener('dragstart', function (e) { e.preventDefault(); return false; }, true);
+})();
+
+document.getElementById('current-year').textContent = new Date().getFullYear();
+</script>
+
+<!-- ═════════════════════════════════════════════════════════════
+     MAIN APP
+═══════════════════════════════════════════════════════════════ -->
+<script>
+const supabaseUrl = 'https://btnzevupmwsdubpgjpds.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ0bnpldnVwbXdzZHVicGdqcGRzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAyNDEyMzAsImV4cCI6MjA2NTgxNzIzMH0.Cn36rmP6IeSI-LfTUgViCcpBzeqlpplDbSPH3pXrCg4';
+const storiesDB = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+let currentUser = null;
+let currentEpisodeId = null;
+let currentEpisode = null;
+let currentStory = null;
+let allStoryEpisodes = [];
+let audio = null;
+let video = null;
+let isPlaying = false;
+let isVideoPlaying = false;
+let episodeCommentsArray = [];
+
+(function quickAuthCheck() {
+  try {
+    var keys = Object.keys(localStorage).filter(function(k){ return k.indexOf('sb-') === 0 && k.indexOf('-auth-token') !== -1; });
+    var hasSession = false;
+    for (var i = 0; i < keys.length; i++) {
+      var raw = localStorage.getItem(keys[i]);
+      if (!raw) continue;
+      try {
+        var parsed = JSON.parse(raw);
+        var token = parsed && (parsed.access_token || (parsed.currentSession && parsed.currentSession.access_token));
+        var expiresAt = parsed && (parsed.expires_at || (parsed.currentSession && parsed.currentSession.expires_at));
+        if (token && (!expiresAt || expiresAt * 1000 > Date.now())) { hasSession = true; break; }
+      } catch(e) {}
+    }
+    if (!hasSession) { window.location.replace('signup.html'); }
+  } catch(e) {}
+})();
+
+function showCustomAlert(type, message) {
+  const alertDiv = document.createElement('div');
+  alertDiv.className = `custom-alert ${type}`;
+  alertDiv.innerHTML = `
+    <i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle'}"></i>
+    <span>${message}</span>
+    <span class="close-btn" onclick="this.parentElement.remove()">&times;</span>
+  `;
+  document.body.appendChild(alertDiv);
+  setTimeout(() => alertDiv.classList.add('show'), 10);
+  setTimeout(() => {
+    alertDiv.classList.remove('show');
+    setTimeout(() => alertDiv.remove(), 300);
+  }, 5000);
+}
+
+function formatTime(seconds) {
+  if (isNaN(seconds)) return '0:00';
+  const mins = Math.floor(seconds / 60);
+  const secs = Math.floor(seconds % 60);
+  return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+}
+
+function catName(c) {
+  if (!c) return 'Hadithi';
+  const m = { ujasusi:'Ujasusi', horror:'Horror', drama:'Drama', chombezo:'Chombezo' };
+  return m[c.toLowerCase()] || c;
+}
+
+function escapeHtml(text) {
+  if (!text) return '';
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+const urlParams = new URLSearchParams(window.location.search);
+const episodeId = urlParams.get('id');
+currentEpisodeId = episodeId;
+
+if (!episodeId) {
+  document.getElementById('storyTitle').textContent = "Hakuna episode iliyochaguliwa.";
+  document.getElementById('storyContent').textContent = "Tafadhali chagua episode kutoka kwenye orodha.";
+  setTimeout(() => window.location.href = 'index.html', 3000);
+  throw new Error("No episode ID");
+}
+
+storiesDB.auth.onAuthStateChange((event, session) => {
+  currentUser = session?.user ?? null;
+  if (event === 'SIGNED_OUT') {
+    window.location.href = 'signup.html';
+  }
+});
+
+async function checkAuth() {
+  const { data: { session } } = await storiesDB.auth.getSession();
+  if (!session) {
+    showCustomAlert('error', 'Tafadhali ingia kwanza.');
+    setTimeout(() => window.location.href = 'signup.html', 2000);
+    return false;
+  }
+  currentUser = session.user;
+  return true;
+}
+
+function initAudioPlayer(audioUrl, title, thumbnailUrl) {
+  audio = document.getElementById('storyAudio');
+  audio.src = audioUrl;
+  document.getElementById('audioTitle').textContent = title;
+  document.getElementById('audioSubtitle').textContent = 'Simulizi';
+  document.getElementById('audioPlayerContainer').style.display = 'block';
+  document.getElementById('storyImageContainer').classList.add('hidden');
+
+  if (thumbnailUrl) {
+    document.getElementById('audioBackground').style.backgroundImage = `url('${thumbnailUrl}')`;
+  } else {
+    document.getElementById('audioBackground').style.background = 'linear-gradient(135deg, #1e40af, #0f1e3d)';
+  }
+
+  audio.addEventListener('loadedmetadata', function () {
+    document.getElementById('duration').textContent = formatTime(audio.duration);
+  });
+  audio.addEventListener('timeupdate', updateProgress);
+  audio.addEventListener('ended', function () {
+    document.getElementById('playPauseIcon').className = 'fas fa-play';
+    isPlaying = false;
+  });
+}
+
+function togglePlayPause() {
+  if (!audio) return;
+  if (isPlaying) {
+    audio.pause();
+    document.getElementById('playPauseIcon').className = 'fas fa-play';
+  } else {
+    audio.play();
+    document.getElementById('playPauseIcon').className = 'fas fa-pause';
+  }
+  isPlaying = !isPlaying;
+}
+
+function updateProgress() {
+  if (!audio) return;
+  const p = (audio.currentTime / audio.duration) * 100;
+  document.getElementById('progressBar').style.width = p + '%';
+  document.getElementById('currentTime').textContent = formatTime(audio.currentTime);
+}
+
+function seekAudio(e) {
+  if (!audio) return;
+  const container = e.currentTarget;
+  audio.currentTime = (e.offsetX / container.offsetWidth) * audio.duration;
+}
+function skipBackward() { if (audio) audio.currentTime = Math.max(0, audio.currentTime - 10); }
+function skipForward() { if (audio) audio.currentTime = Math.min(audio.duration, audio.currentTime + 10); }
+function setVolume(e) {
+  if (!audio) return;
+  const container = e.currentTarget;
+  const vol = e.offsetX / container.offsetWidth;
+  audio.volume = vol;
+  document.getElementById('volumeLevel').style.width = (vol * 100) + '%';
+}
+
+function initVideoPlayer(videoUrl, thumbnailUrl, title) {
+  video = document.getElementById('storyVideo');
+  video.src = videoUrl;
+  video.poster = thumbnailUrl || '';
+  document.getElementById('videoTitleOverlay').textContent = title;
+  document.getElementById('videoPlayerContainer').style.display = 'block';
+  document.getElementById('storyImageContainer').classList.add('hidden');
+
+  video.addEventListener('loadedmetadata', function () {
+    document.getElementById('videoDuration').textContent = formatTime(video.duration);
+    document.getElementById('videoLoading').classList.remove('show');
+  });
+  video.addEventListener('loadstart', function () { document.getElementById('videoLoading').classList.add('show'); });
+  video.addEventListener('canplay', function () { document.getElementById('videoLoading').classList.remove('show'); });
+  video.addEventListener('timeupdate', updateVideoProgress);
+  video.addEventListener('play', function () {
+    document.getElementById('videoPlayPauseIcon').className = 'fas fa-pause';
+    document.getElementById('videoPlayOverlay').classList.add('hidden');
+    isVideoPlaying = true;
+  });
+  video.addEventListener('pause', function () {
+    document.getElementById('videoPlayPauseIcon').className = 'fas fa-play';
+    isVideoPlaying = false;
+  });
+  video.addEventListener('ended', function () {
+    document.getElementById('videoPlayPauseIcon').className = 'fas fa-play';
+    document.getElementById('videoPlayOverlay').classList.remove('hidden');
+    isVideoPlaying = false;
+  });
+
+  const videoContainer = document.querySelector('.video-player-container');
+  videoContainer.addEventListener('mousemove', function () {
+    document.getElementById('videoControls').classList.add('show');
+    document.getElementById('videoTitleOverlay').classList.add('show');
+  });
+}
+
+function playVideo() { if (video) video.play(); }
+function toggleVideoPlayPause() { if (video) isVideoPlaying ? video.pause() : video.play(); }
+function updateVideoProgress() {
+  if (!video) return;
+  document.getElementById('videoProgressBar').style.width = ((video.currentTime / video.duration) * 100) + '%';
+  document.getElementById('videoCurrentTime').textContent = formatTime(video.currentTime);
+}
+function seekVideo(e) {
+  if (!video) return;
+  const rect = e.currentTarget.getBoundingClientRect();
+  video.currentTime = ((e.clientX - rect.left) / rect.width) * video.duration;
+}
+function setVideoVolume(e) {
+  if (!video) return;
+  const rect = e.currentTarget.getBoundingClientRect();
+  const vol = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+  video.volume = vol;
+  document.getElementById('videoVolumeLevel').style.width = (vol * 100) + '%';
+}
+function toggleMute() {
+  if (!video) return;
+  if (video.volume > 0) {
+    video.dataset.previousVolume = video.volume;
+    video.volume = 0;
+    document.getElementById('volumeIcon').className = 'fas fa-volume-mute';
+  } else {
+    const prev = parseFloat(video.dataset.previousVolume) || 0.7;
+    video.volume = prev;
+    document.getElementById('volumeIcon').className = 'fas fa-volume-up';
+  }
+}
+function toggleFullscreen() {
+  if (!video) return;
+  const videoContainer = document.querySelector('.video-player-container');
+  if (!document.fullscreenElement) videoContainer.requestFullscreen();
+  else document.exitFullscreen();
+}
+function rotateVideo() {
+  if (!video) return;
+  video.style.transform = video.style.transform === 'rotate(90deg)' ? '' : 'rotate(90deg)';
+}
+
+function playLikeSound() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.frequency.setValueAtTime(800, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(1200, ctx.currentTime + 0.1);
+    gain.gain.setValueAtTime(0.3, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.15);
+    osc.start(ctx.currentTime);
+    osc.stop(ctx.currentTime + 0.15);
+  } catch (e) {}
+}
+
+async function handleLike(event) {
+  if (event) event.preventDefault();
+  if (!currentUser) { showCustomAlert('error', 'Ingia kwanza.'); return; }
+
+  const likeButton = document.getElementById('likeButton');
+  likeButton.style.pointerEvents = 'none';
+
+  try {
+    const { data: existing } = await storiesDB
+      .from('user_likes')
+      .select('id')
+      .eq('story_id', currentEpisodeId)
+      .eq('user_id', currentUser.id)
+      .maybeSingle();
+
+    const { data: epRow, error: epErr } = await storiesDB
+      .from('episodes')
+      .select('likes')
+      .eq('id', currentEpisodeId)
+      .single();
+
+    if (epErr) {
+      showCustomAlert('error', 'Hitilafu: ' + epErr.message);
+      likeButton.style.pointerEvents = 'auto';
+      return;
+    }
+
+    const currentLikes = epRow && epRow.likes ? epRow.likes : 0;
+
+    if (existing) {
+      await storiesDB.from('user_likes').delete().eq('id', existing.id);
+      const newLikes = Math.max(0, currentLikes - 1);
+      const { error: upErr } = await storiesDB.from('episodes').update({ likes: newLikes }).eq('id', currentEpisodeId);
+      if (upErr) {
+        showCustomAlert('error', 'Hitilafu: ' + upErr.message);
+      } else {
+        likeButton.classList.remove('liked');
+        document.getElementById('likeCount').textContent = newLikes;
+        showCustomAlert('warning', 'Umeondoa like.');
+      }
+    } else {
+      await storiesDB.from('user_likes').insert({ story_id: currentEpisodeId, user_id: currentUser.id });
+      const newLikes = currentLikes + 1;
+      const { error: upErr } = await storiesDB.from('episodes').update({ likes: newLikes }).eq('id', currentEpisodeId);
+      if (upErr) {
+        showCustomAlert('error', 'Hitilafu: ' + upErr.message);
+      } else {
+        likeButton.classList.add('liked');
+        document.getElementById('likeCount').textContent = newLikes;
+        playLikeSound();
+        showCustomAlert('success', 'Umependa episode hii!');
+      }
+    }
+  } catch (e) {
+    showCustomAlert('error', 'Hitilafu: ' + (e.message || 'Jaribu tena.'));
+  } finally {
+    likeButton.style.pointerEvents = 'auto';
+  }
+}
+
+async function loadEpisode() {
+  try {
+    const isAuth = await checkAuth();
+    if (!isAuth) return;
+
+    const { data: episode, error: epErr } = await storiesDB
+      .from('episodes')
+      .select('*')
+      .eq('id', episodeId)
+      .single();
+
+    if (epErr || !episode) {
+      document.getElementById('storyTitle').textContent = "Episode haipatikani";
+      document.getElementById('storyContent').textContent = "Episode uliyochagua haipo au imefutwa.";
+      return;
+    }
+
+    currentEpisode = episode;
+
+    let story = null;
+    if (episode.story_id) {
+      const { data: storyData } = await storiesDB
+        .from('stories')
+        .select('*')
+        .eq('id', episode.story_id)
+        .single();
+      story = storyData;
+      currentStory = storyData;
+    }
+
+    if (episode.story_id) {
+      const { data: siblings } = await storiesDB
+        .from('episodes')
+        .select('id, episode_number, season, title, price, is_free')
+        .eq('story_id', episode.story_id)
+        .order('season', { ascending: true })
+        .order('episode_number', { ascending: true });
+      allStoryEpisodes = siblings || [];
+    }
+
+    const epPrice = episode.price || 0;
+    const isFree = episode.is_free === true || epPrice === 0;
+
+    if (!isFree) {
+      const user = await getCurrentUser();
+      if (!user) {
+        showCustomAlert('error', 'Ingia kwanza.');
+        setTimeout(() => window.location.href = 'index.html', 2000);
+        return;
+      }
+      const hasPaid = await checkPaymentStatus(user, episode.story_id, episodeId);
+      if (!hasPaid) {
+        showCustomAlert('error', 'Hujalipa episode hii.');
+        setTimeout(() => window.location.href = 'index.html', 2000);
+        return;
+      }
+    }
+
+    await displayEpisode(episode, story);
+    incrementEpisodeView(episodeId);
+    updateLikeButtonState(episode);
+    loadCommentsFromEpisode(episode);
+    await setupEpisodeNavigation(episode);
+
+  } catch (err) {
+    console.error(err);
+    document.getElementById('storyContent').textContent = "Hitilafu imetokea.";
+  }
+}
+
+async function updateLikeButtonState(episode) {
+  const likeButton = document.getElementById('likeButton');
+  const likeCount = document.getElementById('likeCount');
+  if (!likeButton || !likeCount) return;
+
+  likeCount.textContent = episode.likes || 0;
+
+  if (!currentUser) return;
+  try {
+    const { data } = await storiesDB
+      .from('user_likes')
+      .select('id')
+      .eq('story_id', currentEpisodeId)
+      .eq('user_id', currentUser.id)
+      .maybeSingle();
+    if (data) likeButton.classList.add('liked');
+    else likeButton.classList.remove('liked');
+  } catch (e) {}
+}
+
+async function displayEpisode(episode, story) {
+  const epTitle = episode.title || `Sehemu ya ${episode.episode_number || '?'}`;
+  const storyTitle = story ? story.title : '';
+  document.getElementById('storyTitle').textContent = epTitle;
+
+  const views = episode.views || 0;
+  const likes = episode.likes || 0;
+  const category = (story && story.category) || episode.category || '';
+  const season = episode.season || 1;
+  const epNum = episode.episode_number || 0;
+  const duration = episode.duration || '';
+
+  document.getElementById('storyMeta').innerHTML = `
+    ${storyTitle ? `<span><i class="fas fa-book"></i> ${escapeHtml(storyTitle)}</span>` : ''}
+    <span><i class="fas fa-layer-group"></i> S${season} · E${epNum}</span>
+    ${duration ? `<span><i class="fas fa-clock"></i> ${escapeHtml(duration)}</span>` : ''}
+    ${category ? `<span><i class="fas fa-tag"></i> ${catName(category)}</span>` : ''}
+    <span><i class="fas fa-eye"></i> ${views}</span>
+    <span><i class="fas fa-heart"></i> ${likes}</span>
+  `;
+  document.getElementById('likeCount').textContent = likes;
+
+  const imageUrl = episode.thumbnail_url || (story && story.thumbnail_url) || '';
+  const hasAudio = !!episode.audio_url;
+  const hasVideo = !!episode.video_url;
+  const isText = (episode.content_type === 'text') || (!hasAudio && !hasVideo);
+
+  const storyImageContainer = document.getElementById('storyImageContainer');
+  if (isText && imageUrl) {
+    storyImageContainer.innerHTML = `<img src="${imageUrl}" alt="${escapeHtml(epTitle)}">`;
+    storyImageContainer.classList.remove('hidden');
+  } else {
+    storyImageContainer.innerHTML = '';
+    storyImageContainer.classList.add('hidden');
+  }
+
+  const contentEl = document.getElementById('storyContent');
+  contentEl.innerHTML = '';
+  contentEl.classList.remove('dropcap');
+
+  if (isText) {
+    let text = '';
+    if (episode.text_content) text = episode.text_content;
+    else if (episode.description) text = episode.description;
+    else text = 'Maudhui ya episode hii hayapatikani.';
+
+    contentEl.textContent = text;
+    if (text.trim().length > 0) {
+      contentEl.classList.add('dropcap');
+    }
+  }
+
+  if (hasVideo) {
+    initVideoPlayer(episode.video_url, imageUrl, epTitle);
+  } else if (hasAudio) {
+    initAudioPlayer(episode.audio_url, epTitle, imageUrl);
+  }
+}
+
+async function setupEpisodeNavigation(currentEp) {
+  if (!allStoryEpisodes.length) return;
+
+  const idx = allStoryEpisodes.findIndex(e => String(e.id) === String(currentEp.id));
+  const prevBtn = document.getElementById('prevEpBtn');
+  const nextBtn = document.getElementById('nextEpBtn');
+  const allBtn = document.getElementById('allEpBtn');
+
+  prevBtn.classList.remove('disabled', 'locked');
+  nextBtn.classList.remove('disabled', 'locked');
+  prevBtn.innerHTML = `<i class="fas fa-chevron-left"></i> Iliyopita`;
+  nextBtn.innerHTML = `Ifuatayo <i class="fas fa-chevron-right"></i>`;
+
+  allBtn.onclick = () => { window.location.href = `episodes.html?id=${currentEp.story_id}`; };
+
+  if (idx > 0) {
+    const prevEp = allStoryEpisodes[idx - 1];
+    await setupNavButton(prevBtn, prevEp, 'prev', currentEp.story_id);
+  } else {
+    prevBtn.classList.add('disabled');
+    prevBtn.onclick = null;
+  }
+
+  if (idx < allStoryEpisodes.length - 1) {
+    const nextEp = allStoryEpisodes[idx + 1];
+    await setupNavButton(nextBtn, nextEp, 'next', currentEp.story_id);
+  } else {
+    nextBtn.classList.add('disabled');
+    nextBtn.onclick = null;
+  }
+}
+
+async function setupNavButton(btn, targetEp, direction, storyId) {
+  const epPrice = targetEp.price || 0;
+  const isFree = targetEp.is_free === true || epPrice === 0;
+
+  if (isFree) {
+    btn.classList.remove('locked');
+    const label = direction === 'prev'
+      ? `<i class="fas fa-chevron-left"></i> ${escapeHtml(targetEp.title || 'Iliyopita')}`
+      : `${escapeHtml(targetEp.title || 'Ifuatayo')} <i class="fas fa-chevron-right"></i>`;
+    btn.innerHTML = label;
+    btn.onclick = () => { window.location.href = `story.html?id=${targetEp.id}`; };
+  } else {
+    let hasPaid = false;
+    if (currentUser) {
+      hasPaid = await checkPaymentStatus(currentUser, storyId, targetEp.id);
+    }
+
+    if (hasPaid) {
+      btn.classList.remove('locked');
+      const label = direction === 'prev'
+        ? `<i class="fas fa-chevron-left"></i> ${escapeHtml(targetEp.title || 'Iliyopita')}`
+        : `${escapeHtml(targetEp.title || 'Ifuatayo')} <i class="fas fa-chevron-right"></i>`;
+      btn.innerHTML = label;
+      btn.onclick = () => { window.location.href = `story.html?id=${targetEp.id}`; };
+    } else {
+      btn.classList.add('locked');
+      const label = direction === 'prev'
+        ? `<i class="fas fa-chevron-left"></i> ${escapeHtml(targetEp.title || 'Iliyopita')} <i class="fas fa-lock lock-icon"></i>`
+        : `${escapeHtml(targetEp.title || 'Ifuatayo')} <i class="fas fa-lock lock-icon"></i> <i class="fas fa-chevron-right"></i>`;
+      btn.innerHTML = label;
+      btn.onclick = (e) => {
+        e.preventDefault();
+        confirmPaymentForNext(targetEp, storyId, epPrice);
+      };
+    }
+  }
+}
+
+function confirmPaymentForNext(ep, storyId, price) {
+  Swal.fire({
+    title: 'Episode hii inahitaji Malipo',
+    html: `
+      <p style="color:#a8b4d4;font-size:0.95rem;margin-bottom:8px;">
+        "${escapeHtml(ep.title || 'Episode')}" inahitaji malipo ili kuiendelea.
+      </p>
+      <p style="font-size:1.5rem;font-weight:800;color:#3b82f6;margin-top:12px;">
+        TZS ${price.toLocaleString('sw')}
+      </p>
+    `,
+    icon: 'info',
+    showCancelButton: true,
+    confirmButtonText: 'Lipia Sasa',
+    cancelButtonText: 'Ghairi',
+    confirmButtonColor: '#3b82f6',
+    cancelButtonColor: '#475569',
+    background: '#0f1e3d',
+    color: '#e8efff'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      window.location.href = `episodes.html?id=${storyId}`;
+    }
+  });
+}
+
+async function getCurrentUser() {
+  const { data: { user } } = await storiesDB.auth.getUser();
+  currentUser = user;
+  return user;
+}
+
+async function checkPaymentStatus(user, storyId, episodeId) {
+  try {
+    const { data: directAccess } = await storiesDB
+      .from('user_paid_stories')
+      .select('id')
+      .eq('user_id', user.id)
+      .eq('story_id', storyId)
+      .maybeSingle();
+    if (directAccess) return true;
+
+    const { data: payments } = await storiesDB
+      .from('payments')
+      .select('id, status')
+      .eq('user_id', user.id)
+      .eq('status', 'paid')
+      .or(`story_id.eq.${storyId},episode_id.eq.${episodeId}`)
+      .limit(1);
+    if (payments && payments.length > 0) return true;
+
+    if (user.email) {
+      const { data: byEmail } = await storiesDB
+        .from('payments')
+        .select('id, status')
+        .eq('email', user.email)
+        .eq('status', 'paid')
+        .or(`story_id.eq.${storyId},episode_id.eq.${episodeId}`)
+        .limit(1);
+      if (byEmail && byEmail.length > 0) return true;
+    }
+
+    return false;
+  } catch (err) {
+    return false;
+  }
+}
+
+async function incrementEpisodeView(episodeId) {
+  try {
+    const { data: ep } = await storiesDB
+      .from('episodes')
+      .select('views')
+      .eq('id', episodeId)
+      .single();
+    if (ep) {
+      await storiesDB
+        .from('episodes')
+        .update({ views: (ep.views || 0) + 1 })
+        .eq('id', episodeId);
+    }
+  } catch (e) {}
+}
+
+function loadCommentsFromEpisode(episode) {
+  let commentsArr = [];
+
+  if (episode.comments) {
+    if (typeof episode.comments === 'string') {
+      try {
+        const trimmed = episode.comments.trim();
+        if (trimmed.startsWith('[')) {
+          commentsArr = JSON.parse(trimmed);
+        } else if (trimmed.length > 0) {
+          commentsArr = [{ text: trimmed, username: 'Admin', date: episode.created_at || new Date().toISOString() }];
+        }
+      } catch (e) {
+        commentsArr = [{ text: episode.comments, username: 'Admin', date: episode.created_at || new Date().toISOString() }];
+      }
+    } else if (Array.isArray(episode.comments)) {
+      commentsArr = episode.comments;
+    }
+  }
+
+  episodeCommentsArray = commentsArr;
+  renderComments(commentsArr);
+}
+
+function renderComments(commentsArr) {
+  const list = document.getElementById('commentsList');
+  const countEl = document.getElementById('commentsCount');
+
+  countEl.textContent = commentsArr.length;
+
+  if (!commentsArr || commentsArr.length === 0) {
+    list.innerHTML = '<div class="no-comments">Hakuna maoni bado. Kuwa wa kwanza kutoa maoni!</div>';
+    return;
+  }
+
+  list.innerHTML = commentsArr.map(c => {
+    const username = c.username || c.user || 'Mtumiaji';
+    const initial = username.charAt(0).toUpperCase();
+    const dateRaw = c.date || c.created_at || new Date().toISOString();
+    const date = new Date(dateRaw).toLocaleDateString('sw', {
+      year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
+    });
+    const text = escapeHtml(c.text || c.comment_text || c.comment || '');
+    return `
+      <div class="comment-item">
+        <div class="comment-header">
+          <div class="comment-user">
+            <div class="comment-avatar">${initial}</div>
+            <div>
+              <div class="comment-username">${escapeHtml(username)}</div>
+              <div class="comment-date">${date}</div>
+            </div>
+          </div>
+        </div>
+        <div class="comment-text">${text}</div>
+      </div>
+    `;
+  }).join('');
+}
+
+async function submitComment() {
+  const commentText = document.getElementById('commentInput').value.trim();
+  if (!commentText) { showCustomAlert('warning', 'Andika maoni yako.'); return; }
+  if (!currentUser) { showCustomAlert('error', 'Ingia kwanza.'); setTimeout(() => window.location.href = 'signup.html', 2000); return; }
+
+  const submitBtn = document.querySelector('.comment-form button');
+  if (submitBtn) submitBtn.disabled = true;
+
+  try {
+    const { data: ep, error: fetchErr } = await storiesDB
+      .from('episodes')
+      .select('comments')
+      .eq('id', currentEpisodeId)
+      .single();
+
+    if (fetchErr) throw new Error('Imeshindwa kupakia: ' + fetchErr.message);
+
+    let commentsArr = [];
+    if (ep && ep.comments) {
+      if (typeof ep.comments === 'string') {
+        try {
+          const trimmed = ep.comments.trim();
+          if (trimmed.startsWith('[')) commentsArr = JSON.parse(trimmed);
+          else if (trimmed.length > 0) commentsArr = [{ text: trimmed, username: 'Admin', date: new Date().toISOString() }];
+        } catch (e) {
+          commentsArr = [{ text: ep.comments, username: 'Admin', date: new Date().toISOString() }];
+        }
+      } else if (Array.isArray(ep.comments)) {
+        commentsArr = ep.comments;
+      }
+    }
+
+    let username = 'Mtumiaji';
+    try {
+      const { data: userData } = await storiesDB
+        .from('users')
+        .select('full_name, username')
+        .eq('id', currentUser.id)
+        .maybeSingle();
+      if (userData) username = userData.username || userData.full_name || currentUser.email?.split('@')[0] || 'Mtumiaji';
+    } catch (e) {}
+
+    commentsArr.push({
+      text: commentText,
+      username: username,
+      user_id: currentUser.id,
+      date: new Date().toISOString()
+    });
+
+    const { error: upErr } = await storiesDB
+      .from('episodes')
+      .update({ comments: JSON.stringify(commentsArr) })
+      .eq('id', currentEpisodeId);
+
+    if (upErr) throw new Error('Imeshindwa kuhifadhi: ' + upErr.message);
+
+    episodeCommentsArray = commentsArr;
+    showCustomAlert('success', 'Maoni yametumwa!');
+    document.getElementById('commentInput').value = '';
+    renderComments(commentsArr);
+
+  } catch (e) {
+    showCustomAlert('error', e.message || 'Hitilafu imetokea wakati wa kutuma maoni.');
+  } finally {
+    if (submitBtn) submitBtn.disabled = false;
+  }
+}
+
+function scrollToComments(event) {
+  event.preventDefault();
+  document.getElementById('comments-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+loadEpisode();
+</script>
+</body>
+</html>

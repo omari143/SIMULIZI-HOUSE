@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>SIMULIZI HOUSE- Ingia</title>
+  <style>
+    :root {
+      --primary: #FF6B00;
+      --secondary: #FFD700;
+      --dark: #121212;
+      --darker: #0A0A0A;
+      --light: #F5F5F5;
+      --gray: #333333;
+      --light-gray: #AAAAAA;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+    
+    body {
+      background-color: var(--dark);
+      color: var(--light);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+    
+    .devtools-blocker {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: black;
+      z-index: 99999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .devtools-blocker.show { display: flex; }
+    .devtools-blocker h1 { color: #c62828; font-size: 28px; }
+    .devtools-blocker p { color: white; font-size: 16px; }
+    .devtools-blocker button {
+      background: #c62828; color: white; border: none;
+      padding: 12px 24px; border-radius: 8px; font-size: 16px; cursor: pointer;
+    }
+    
+    .auth-container {
+      background-color: var(--darker);
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      width: 100%; max-width: 500px;
+      padding: 40px;
+      border: 1px solid var(--primary);
+    }
+    
+    .logo { text-align: center; margin-bottom: 30px; }
+    .logo img {
+      height: 60px; width: auto;
+      border-radius: 50%; border: 2px solid var(--secondary);
+    }
+    .logo h1 { color: var(--secondary); margin-top: 10px; font-size: 1.8rem; }
+    
+    .auth-form h2 {
+      color: var(--light); margin-bottom: 20px;
+      text-align: center; font-size: 1.5rem;
+    }
+    
+    .form-group { margin-bottom: 20px; position: relative; }
+    .form-group label {
+      display: block; margin-bottom: 8px;
+      color: var(--light-gray); font-weight: 500;
+    }
+    .form-group input {
+      width: 100%; padding: 12px 15px;
+      border-radius: 8px; border: 1px solid var(--gray);
+      background-color: var(--dark); color: var(--light); font-size: 1rem;
+    }
+    .form-group input:focus { outline: none; border-color: var(--primary); }
+
+    .password-toggle {
+      position: absolute; right: 15px; top: 50px;
+      color: var(--light-gray); cursor: pointer; font-size: 1.2rem;
+    }
+
+    .checkbox-group {
+      display: flex; align-items: flex-start;
+      gap: 8px; margin: 15px 0;
+      font-size: 0.85rem; color: var(--light-gray);
+    }
+    .checkbox-group input[type="checkbox"] {
+      margin-top: 3px; accent-color: var(--primary);
+    }
+    .checkbox-group a { color: var(--secondary); text-decoration: underline; }
+
+    .btn {
+      width: 100%; padding: 12px; border-radius: 8px; border: none;
+      background-color: var(--primary); color: #000;
+      font-weight: bold; font-size: 1rem; cursor: pointer;
+      transition: all 0.3s ease; margin-top: 10px;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .btn:hover { background-color: var(--secondary); }
+    .btn:disabled { background-color: #555; cursor: not-allowed; }
+    
+    .divider {
+      display: flex; align-items: center;
+      margin: 20px 0; color: var(--light-gray);
+    }
+    .divider::before, .divider::after {
+      content: ""; flex: 1; border-bottom: 1px solid var(--gray);
+    }
+    .divider::before { margin-right: 10px; }
+    .divider::after { margin-left: 10px; }
+    
+    .social-login { display: flex; flex-direction: column; gap: 10px; }
+    
+    .social-btn {
+      display: flex; align-items: center; justify-content: center;
+      padding: 12px; border-radius: 8px; border: 1px solid var(--gray);
+      background-color: var(--dark); color: var(--light);
+      font-size: 1rem; cursor: pointer; transition: all 0.3s ease;
+    }
+    .social-btn i { margin-right: 10px; font-size: 1.2rem; }
+    .social-btn.google {
+      background-color: #4285F4; color: white; border-color: #4285F4;
+    }
+    .social-btn.google:hover { background-color: #3367D6; }
+    
+    .auth-footer {
+      text-align: center; margin-top: 25px;
+      color: var(--light-gray); font-size: 0.85rem;
+    }
+    .auth-footer a { color: var(--secondary); text-decoration: none; }
+    .auth-footer p { margin-bottom: 8px; }
+
+    .legal-links { margin-top: 15px; font-size: 0.8rem; text-align: center; }
+    .legal-links a { color: var(--light-gray); margin: 0 8px; }
+
+    @media (max-width: 576px) {
+      .auth-container { padding: 30px 20px; }
+      .logo h1 { font-size: 1.5rem; }
+    }
+  </style>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+</head>
+<body>
+
+<div class="devtools-blocker" id="devtoolsBlocker">
+  <h1><i class="fas fa-ban"></i> ZOEZI LILIZUIWA</h1>
+  <p>Kufungua Developer Tools au kujaribu kunakili hadithi ni kinyume cha sheria.</p>
+  <p>Hatua za kisheria zitachukuliwa dhidi ya wanaoiba maudhui.</p>
+  <button onclick="location.reload()">Funga Ukurasa</button>
+</div>
+
+<div class="auth-container">
+  <div class="logo">
+    <img src="/Picsart_26-05-13_01-57-22-165.png" alt="SIMULIZI HOUSE Logo">
+    <h1>SIMULIZI HOUSE</h1>
+  </div>
+  
+  <div class="auth-form">
+    <h2>Ingia kwa Akaunti Yako</h2>
+    
+    <form id="loginForm">
+      <div class="form-group">
+        <label for="email">Barua Pepe <span style="color: red;">*</span></label>
+        <input type="email" id="email" name="email" required placeholder="mfano@email.com">
+      </div>
+      
+      <div class="form-group">
+        <label for="password">Nenosiri <span style="color: red;">*</span></label>
+        <input type="password" id="password" name="password" required placeholder="••••••••">
+        <i class="fas fa-eye password-toggle" id="passwordToggle"></i>
+      </div>
+
+      <div class="checkbox-group">
+        <input type="checkbox" id="terms" required>
+        <label for="terms">
+          Nakubali <a href="#" onclick="openTerms()">Masharti ya Huduma</a> na 
+          <a href="#" onclick="openPrivacy()">Sera ya Faragha</a>. Nina umri wa miaka 13 au zaidi.
+        </label>
+      </div>
+      
+      <button type="submit" class="btn" id="loginBtn" disabled>
+        <i class="fas fa-sign-in-alt"></i> Ingia
+      </button>
+    </form>
+    
+    <div class="divider">au</div>
+    
+    <div class="social-login">
+      <button type="button" class="social-btn google" onclick="loginWithGoogle()">
+        <i class="fab fa-google"></i> Ingia kwa Google
+      </button>
+    </div>
+    
+    <div class="auth-footer">
+      <p>Huna akaunti? <a href="signup.html">Jisajili hapa</a></p>
+      <p><a href="huduma.html">Umesahau nenosiri?</a></p>
+    </div>
+
+    <div class="legal-links">
+      <a href="#" onclick="openReaderRights()">Haki za Wasomaji</a> • 
+      <a href="#" onclick="openWriterRights()">Haki za Waandishi</a>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+    // ========== ULINZI WA DEVELOPER TOOLS ==========
+    (function antiDevTools() {
+        let devToolsOpen = false;
+        function blockDevTools() {
+            if (!devToolsOpen) {
+                devToolsOpen = true;
+                const blocker = document.getElementById('devtoolsBlocker');
+                if (blocker) { blocker.classList.add('show'); document.body.style.overflow = 'hidden'; }
+            }
+        }
+        window.addEventListener('keydown', function(e) {
+            if (e.key === 'F12' ||
+                (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i')) ||
+                (e.ctrlKey && e.shiftKey && (e.key === 'J' || e.key === 'j')) ||
+                (e.ctrlKey && e.shiftKey && (e.key === 'C' || e.key === 'c')) ||
+                (e.ctrlKey && (e.key === 'U' || e.key === 'u')) ||
+                (e.ctrlKey && (e.key === 'S' || e.key === 's')) ||
+                (e.ctrlKey && (e.key === 'P' || e.key === 'p')) ||
+                e.key === 'PrintScreen') {
+                e.preventDefault(); blockDevTools(); return false;
+            }
+        });
+        window.addEventListener('contextmenu', function(e) { e.preventDefault(); blockDevTools(); return false; });
+        setInterval(function() {
+            const start = performance.now(); debugger; const end = performance.now();
+            if (end - start > 100) blockDevTools();
+        }, 1000);
+        let lastWidth = window.outerWidth, lastHeight = window.outerHeight;
+        setInterval(function() {
+            const nw = window.outerWidth, nh = window.outerHeight;
+            if (Math.abs(nw - lastWidth) > 100 || Math.abs(nh - lastHeight) > 100) {
+                if (nw < lastWidth || nh < lastHeight) blockDevTools();
+            }
+            lastWidth = nw; lastHeight = nh;
+        }, 500);
+        console.log = function() {}; console.error = function() {};
+        console.warn = function() {}; console.info = function() {};
+    })();
+
+    // ========== KUGUNDUA KIFAA ==========
+    function detectDeviceFraud() {
+        const userAgent = navigator.userAgent;
+        if (navigator.webdriver === true) return 'AUTOMATION_TOOL_DETECTED';
+        const fakePatterns = ['HeadlessChrome','Headless','PhantomJS','Selenium','Puppeteer','Playwright','Cypress','Chrome-Lighthouse'];
+        for (let p of fakePatterns) { if (userAgent.includes(p)) return 'FAKE_USER_AGENT_DETECTED'; }
+        return 'CLEAN';
+    }
+
+    function isGenuineMobileDevice() {
+        const userAgent = navigator.userAgent;
+        const isMobileUA = /Mobi|Android|iPhone|iPad|iPod|BlackBerry|Windows Phone|Opera Mini|IEMobile|Mobile|mobi/i.test(userAgent);
+        const isMobileScreen = window.innerWidth <= 768;
+        const hasTouchScreen = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+        const isPCOS = /Mac|Win|Linux|X11/i.test(userAgent);
+        const hasOrientation = typeof window.orientation !== 'undefined';
+        const fraud = detectDeviceFraud();
+        if (fraud !== 'CLEAN') return { allowed: false, reason: fraud };
+        if (isPCOS && window.innerWidth >= 1024 && !hasTouchScreen && !isMobileUA)
+            return { allowed: false, reason: 'PC_NOT_ALLOWED' };
+        let m = 0;
+        if (isMobileUA) m++; if (isMobileScreen) m++;
+        if (hasTouchScreen) m++; if (hasOrientation) m++;
+        if (m >= 2) return { allowed: true, deviceType: 'MOBILE' };
+        return { allowed: false, reason: 'DEVICE_NOT_RECOGNIZED_AS_MOBILE' };
+    }
+
+    const deviceCheck = isGenuineMobileDevice();
+    if (!deviceCheck.allowed) {
+        let msg = deviceCheck.reason === 'PC_NOT_ALLOWED'
+            ? 'Tovuti hii inapatikana kwenye simu za mkononi pekee.'
+            : deviceCheck.reason === 'AUTOMATION_TOOL_DETECTED'
+            ? 'Zana za kiotomatiki haziruhusiwi.'
+            : 'Tafadhali tumia simu yako ya mkononi.';
+        document.body.innerHTML = `<div style="text-align:center;padding:50px;background:#121212;min-height:100vh;display:flex;align-items:center;justify-content:center;"><div style="background:#0A0A0A;padding:40px;border-radius:20px;border:2px solid #c62828;max-width:500px;"><h1 style="color:#c62828;margin-bottom:20px;">KIFAA KIMEZUIWA</h1><p style="color:#F5F5F5;line-height:1.6;">${msg}</p></div></div>`;
+        throw new Error(deviceCheck.reason);
+    }
+
+    // ========== SUPABASE ==========
+    const supabaseUrl = 'https://btnzevupmwsdubpgjpds.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ0bnpldnVwbXdzZHVicGdqcGRzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAyNDEyMzAsImV4cCI6MjA2NTgxNzIzMH0.Cn36rmP6IeSI-LfTUgViCcpBzeqlpplDbSPH3pXrCg4';
+    if (typeof window.supabaseLoginClient === 'undefined') {
+        window.supabaseLoginClient = window.supabase.createClient(supabaseUrl, supabaseKey);
+    }
+    const mySupabase = window.supabaseLoginClient;
+
+    // ========== PASSWORD TOGGLE ==========
+    const passwordInput = document.getElementById('password');
+    const passwordToggle = document.getElementById('passwordToggle');
+    if (passwordToggle) {
+        passwordToggle.addEventListener('click', () => {
+            const type = passwordInput.type === 'password' ? 'text' : 'password';
+            passwordInput.type = type;
+            passwordToggle.classList.toggle('fa-eye');
+            passwordToggle.classList.toggle('fa-eye-slash');
+        });
+    }
+
+    // ========== TERMS CHECKBOX ==========
+    document.getElementById('terms').addEventListener('change', function() {
+        document.getElementById('loginBtn').disabled = !this.checked;
+    });
+
+    // ========== FINGERPRINT ==========
+    async function generateFingerprint() {
+        try {
+            const canvas = document.createElement('canvas');
+            canvas.width = 200; canvas.height = 50;
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#000'; ctx.fillRect(0, 0, 200, 50);
+            ctx.font = '14px Arial'; ctx.fillStyle = '#fff';
+            ctx.fillText(navigator.userAgent.substring(0, 30), 10, 30);
+            const gl = canvas.getContext('webgl');
+            let webglInfo = '';
+            if (gl) {
+                const dbg = gl.getExtension('WEBGL_debug_renderer_info');
+                if (dbg) webglInfo = gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL) || '';
+            }
+            const data = [
+                navigator.userAgent, navigator.language,
+                screen.width + 'x' + screen.height, screen.colorDepth,
+                new Date().getTimezoneOffset(),
+                !!window.sessionStorage, !!window.localStorage,
+                webglInfo, canvas.toDataURL()
+            ].join('|');
+            let hash = 0;
+            for (let i = 0; i < data.length; i++) {
+                const c = data.charCodeAt(i);
+                hash = ((hash << 5) - hash) + c;
+                hash = hash & hash;
+            }
+            return Math.abs(hash).toString(16);
+        } catch(e) { return null; }
+    }
+
+    function getDeviceType() {
+        const ua = navigator.userAgent;
+        if (/tablet|ipad/i.test(ua)) return 'tablet';
+        if (/mobile|android|iphone/i.test(ua)) return 'mobile';
+        return 'unknown';
+    }
+
+    // ========== UPDATE USER TABLE BAADA YA LOGIN ==========
+    async function updateUserOnLogin(userId, email) {
+        try {
+            const fingerprint = await generateFingerprint();
+            const now = new Date().toISOString();
+            const userAgent = navigator.userAgent;
+            const deviceType = getDeviceType();
+
+            const { error } = await mySupabase
+                .from('users')
+                .update({
+                    last_sign_in_at: now,
+                    signin_date: now,
+                    last_seen: now,
+                    updated_at: now,
+                    is_active: true,
+                    status: 'active',
+                    device_fingerprint: fingerprint,
+                    last_user_agent: userAgent,
+                    device_type: deviceType,
+                    failed_login_attempts: 0
+                })
+                .eq('email', email);
+
+            if (error) {
+                // Ikiwa hakuna rekodi kwenye users table, iunda
+                if (error.code === 'PGRST116' || error.message.includes('No rows')) {
+                    await mySupabase.from('users').insert({
+                        id: userId,
+                        created_at: now,
+                        email: email,
+                        is_active: true,
+                        sign_in_method: 'email',
+                        provider: 'email',
+                        verified: false,
+                        status: 'active',
+                        signup_date: now,
+                        signin_date: now,
+                        last_sign_in_at: now,
+                        last_seen: now,
+                        updated_at: now,
+                        device_fingerprint: fingerprint,
+                        last_user_agent: userAgent,
+                        device_type: deviceType,
+                        failed_login_attempts: 0,
+                        is_blocked: false,
+                        suspicious_activity: false,
+                        total_stories_viewed: 0,
+                        total_time_spent: 0,
+                        role: 'user'
+                    });
+                }
+            }
+        } catch(e) {
+            // Hitilafu ya update haikatazi login
+        }
+    }
+
+    // ========== ANGALIA KAMA MTUMIAJI AMEZUIWA ==========
+    async function checkIfUserBlocked(email) {
+        try {
+            const { data, error } = await mySupabase
+                .from('users')
+                .select('is_blocked, block_reason, blocked_until, status')
+                .eq('email', email)
+                .maybeSingle();
+
+            if (error || !data) return { blocked: false };
+
+            if (data.is_blocked) {
+                // Angalia kama muda wa kuzuiwa umepita
+                if (data.blocked_until) {
+                    const now = new Date();
+                    const blockedUntil = new Date(data.blocked_until);
+                    if (now > blockedUntil) {
+                        // Muda umepita - fungua akaunti
+                        await mySupabase.from('users').update({
+                            is_blocked: false,
+                            block_reason: null,
+                            blocked_until: null,
+                            failed_login_attempts: 0
+                        }).eq('email', email);
+                        return { blocked: false };
+                    }
+                }
+                return {
+                    blocked: true,
+                    reason: data.block_reason || 'Akaunti yako imezuiwa.',
+                    until: data.blocked_until
+                };
+            }
+            return { blocked: false };
+        } catch(e) { return { blocked: false }; }
+    }
+
+    // ========== ONG'EZA MAJARIBIO YALIYOSHINDWA ==========
+    async function incrementFailedAttempts(email) {
+        try {
+            const { data } = await mySupabase
+                .from('users')
+                .select('failed_login_attempts')
+                .eq('email', email)
+                .maybeSingle();
+
+            if (data) {
+                const attempts = (data.failed_login_attempts || 0) + 1;
+                const updateData = { failed_login_attempts: attempts };
+
+                // Baada ya majaribio 5, zuia akaunti kwa saa 1
+                if (attempts >= 5) {
+                    const blockedUntil = new Date();
+                    blockedUntil.setHours(blockedUntil.getHours() + 1);
+                    updateData.is_blocked = true;
+                    updateData.block_reason = 'Majaribio mengi ya kuingia yameshindwa. Jaribu tena baada ya saa 1.';
+                    updateData.blocked_until = blockedUntil.toISOString();
+                    updateData.suspicious_activity = true;
+                    updateData.suspicious_reason = `Majaribio ${attempts} ya kuingia yameshindwa`;
+                }
+
+                await mySupabase.from('users').update(updateData).eq('email', email);
+            }
+        } catch(e) {}
+    }
+
+    // ========== GOOGLE LOGIN ==========
+    async function loginWithGoogle() {
+        if (!document.getElementById('terms').checked) {
+            Swal.fire({
+                title: 'Inahitajika',
+                text: 'Lazima ukubali Masharti ya Huduma na Sera ya Faragha kabla ya kuingia.',
+                icon: 'warning', confirmButtonColor: '#FF6B00',
+                background: '#121212', color: '#F5F5F5'
+            });
+            return;
+        }
+        try {
+            const { error } = await mySupabase.auth.signInWithOAuth({
+                provider: 'google',
+                options: { redirectTo: window.location.origin + '/index.html' }
+            });
+            if (error) throw error;
+            Swal.fire({
+                title: 'Inaelekeza...', text: 'Unasubiriwa kwenye Google...',
+                icon: 'info', showConfirmButton: false,
+                background: '#121212', color: '#F5F5F5', iconColor: '#FFD700'
+            });
+        } catch (error) {
+            Swal.fire({
+                title: 'Hitilafu!', text: error.message, icon: 'error',
+                confirmButtonColor: '#FF6B00', background: '#121212', color: '#F5F5F5'
+            });
+        }
+    }
+
+    // ========== FORM SUBMISSION ==========
+    document.getElementById('loginForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        if (!document.getElementById('terms').checked) {
+            Swal.fire({
+                title: 'Inahitajika', text: 'Lazima ukubali masharti kabla ya kuingia.',
+                icon: 'warning', confirmButtonColor: '#FF6B00',
+                background: '#121212', color: '#F5F5F5'
+            });
+            return;
+        }
+
+        const email = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value;
+
+        if (!email || !password) {
+            Swal.fire({
+                title: 'Hitilafu!', text: 'Jaza sehemu zote',
+                icon: 'error', confirmButtonColor: '#FF6B00',
+                background: '#121212', color: '#F5F5F5'
+            });
+            return;
+        }
+
+        Swal.fire({
+            title: 'Inakagua...', allowOutsideClick: false,
+            didOpen: () => Swal.showLoading(),
+            background: '#121212', color: '#F5F5F5'
+        });
+
+        try {
+            // Kwanza angalia kama akaunti imezuiwa
+            const blockCheck = await checkIfUserBlocked(email);
+            if (blockCheck.blocked) {
+                let blockMsg = blockCheck.reason;
+                if (blockCheck.until) {
+                    const until = new Date(blockCheck.until);
+                    blockMsg += ` Hadi: ${until.toLocaleString('sw-TZ')}`;
+                }
+                Swal.fire({
+                    title: 'Akaunti Imezuiwa!', text: blockMsg,
+                    icon: 'error', confirmButtonColor: '#FF6B00',
+                    background: '#121212', color: '#F5F5F5'
+                });
+                return;
+            }
+
+            // Jaribu kuingia
+            const { data, error } = await mySupabase.auth.signInWithPassword({ email, password });
+
+            if (error) {
+                // Ongeza majaribio yaliyoshindwa
+                await incrementFailedAttempts(email);
+
+                let errorMsg = 'Hitilafu imetokea. Jaribu tena.';
+                if (error.message.includes('Invalid login credentials')) {
+                    errorMsg = 'Barua pepe au nenosiri sio sahihi. Hakikisha taarifa zako ni sahihi.';
+                } else if (error.message.includes('Email not confirmed')) {
+                    errorMsg = 'Barua pepe yako haijathibitishwa. Angalia sanduku lako la barua pepe (au spam) na bofya kiungo cha uthibitisho.';
+                } else if (error.message.includes('Too many requests')) {
+                    errorMsg = 'Majaribio mengi mno. Tafadhali subiri dakika chache kisha jaribu tena.';
+                }
+
+                Swal.fire({
+                    title: 'Imeshindwa Kuingia!', text: errorMsg,
+                    icon: 'error', confirmButtonColor: '#FF6B00',
+                    background: '#121212', color: '#F5F5F5'
+                });
+                return;
+            }
+
+            // Login imefanikiwa - sasisha taarifa za mtumiaji
+            if (data.user) {
+                await updateUserOnLogin(data.user.id, data.user.email);
+            }
+
+            Swal.fire({
+                title: 'Karibu! 🎉',
+                text: 'Umeingia kikamilifu!',
+                icon: 'success',
+                confirmButtonText: 'Endelea',
+                confirmButtonColor: '#FF6B00',
+                background: '#121212', color: '#F5F5F5', iconColor: '#FFD700'
+            }).then(() => {
+                window.location.href = 'index.html';
+            });
+
+        } catch (error) {
+            Swal.fire({
+                title: 'Hitilafu!', text: error.message, icon: 'error',
+                confirmButtonColor: '#FF6B00', background: '#121212', color: '#F5F5F5'
+            });
+        }
+    });
+
+    // ========== LEGAL MODALS ==========
+    function openTerms() {
+        Swal.fire({
+            title: 'Masharti ya Huduma',
+            html: `<div style="text-align:left;font-size:0.9rem;">
+                <p><strong>1. Kukubali Masharti</strong><br>Kwa kutumia SIMULIZI HOUSE, unakubali masharti haya.</p><br>
+                <p><strong>2. Umri</strong><br>Lazima uwe na umri wa miaka 13 au zaidi.</p><br>
+                <p><strong>3. Maudhui</strong><br>Unawajibika kwa yaliyoandikwa na wewe.</p><br>
+                <p><strong>4. Haki za Maudhui</strong><br>Unahifadhi haki za hadithi zako.</p>
+            </div>`,
+            confirmButtonText: 'Nimekubali',
+            background: '#1a1a1a', color: '#f5f5f5', confirmButtonColor: '#FF6B00'
+        });
+    }
+
+    function openPrivacy() {
+        Swal.fire({
+            title: 'Sera ya Faragha',
+            html: `<div style="text-align:left;font-size:0.9rem;">
+                <p><strong>1. Data Tunayokusanya</strong><br>Barua pepe, jina la mtumiaji, IP, data ya matumizi.</p><br>
+                <p><strong>2. Matumizi ya Data</strong><br>Kuboresha huduma, kutuma arifa, kuzuia udanganyifu.</p><br>
+                <p><strong>3. Haki Zako</strong><br>Una haki ya kufuta akaunti yako wakati wowote.</p>
+            </div>`,
+            confirmButtonText: 'Sawa',
+            background: '#1a1a1a', color: '#f5f5f5', confirmButtonColor: '#FF6B00'
+        });
+    }
+
+    function openReaderRights() {
+        Swal.fire({
+            title: 'Haki za Wasomaji',
+            html: '<ul style="text-align:left;"><li>✔ Kusoma hadithi</li><li>✔ Kutoa maoni</li><li>✔ Kuripoti maudhui yanayokiuka</li></ul>',
+            icon: 'info', confirmButtonColor: '#FF6B00',
+            background: '#1a1a1a', color: '#f5f5f5'
+        });
+    }
+
+    function openWriterRights() {
+        Swal.fire({
+            title: 'Haki za Waandishi',
+            html: '<ul style="text-align:left;"><li>✔ Unahifadhi haki kamili za hadithi zako</li><li>✔ Unaweza kufuta au kubadilisha wakati wowote</li><li>✔ Jina lako litaonyeshwa kama mwandishi</li></ul>',
+            icon: 'info', confirmButtonColor: '#FFD700',
+            background: '#1a1a1a', color: '#f5f5f5'
+        });
+    }
+</script>
+</body>
+</html>

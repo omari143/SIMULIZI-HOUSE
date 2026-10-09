@@ -1,0 +1,2985 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard ya Muandishi — StoriesZone</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Exo+2:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    :root {
+      --accent:      #e67e22;
+      --accent2:     #c084fc;
+      --teal:        #2dd4bf;
+      --dark-bg:     #08090f;
+      --card-bg:     #0f1018;
+      --card-border: #1c1d2e;
+      --text-light:  #f0f0f5;
+      --text-muted:  #6b7280;
+      --success:     #10b981;
+      --warning:     #f59e0b;
+      --danger:      #ef4444;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Exo 2', sans-serif;
+      background: var(--dark-bg);
+      color: var(--text-light);
+      background-image:
+        radial-gradient(ellipse at 10% 0%, rgba(230,126,34,0.07) 0%, transparent 50%),
+        radial-gradient(ellipse at 90% 100%, rgba(192,132,252,0.05) 0%, transparent 50%);
+      min-height: 100vh;
+    }
+
+    /* ── CONSOLE PANEL ── */
+    #dev-console {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      height: 220px; background: #000;
+      border-top: 2px solid var(--accent);
+      z-index: 9000; display: none; flex-direction: column;
+      font-family: 'Courier New', monospace; font-size: 0.75rem;
+    }
+
+    #dev-console.open { display: flex; }
+
+    .console-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0.4rem 1rem; background: #111; border-bottom: 1px solid #333;
+      flex-shrink: 0;
+    }
+
+    .console-header span { color: var(--accent); font-weight: 700; letter-spacing: 1px; }
+
+    .console-header .con-btns { display: flex; gap: 0.5rem; }
+
+    .con-btn {
+      padding: 0.2rem 0.7rem; border-radius: 4px; border: none;
+      font-size: 0.7rem; cursor: pointer; font-family: 'Exo 2', sans-serif;
+    }
+
+    .con-btn.clear { background: #333; color: #aaa; }
+    .con-btn.close-con { background: rgba(239,68,68,0.2); color: var(--danger); border: 1px solid rgba(239,68,68,0.4); }
+
+    #console-log {
+      flex: 1; overflow-y: auto; padding: 0.5rem 1rem;
+    }
+
+    .log-line {
+      padding: 0.15rem 0;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      display: flex; gap: 0.8rem;
+    }
+
+    .log-time { color: #555; flex-shrink: 0; }
+    .log-info  .log-msg { color: #7dd3fc; }
+    .log-success .log-msg { color: var(--success); }
+    .log-warn .log-msg  { color: var(--warning); }
+    .log-error .log-msg { color: var(--danger); }
+    .log-debug .log-msg { color: #c084fc; }
+
+    /* Toggle button */
+    #console-toggle {
+      position: fixed; bottom: 0; right: 20px;
+      background: #111; border: 1px solid var(--accent);
+      border-bottom: none; border-radius: 6px 6px 0 0;
+      color: var(--accent); padding: 0.3rem 0.8rem;
+      font-size: 0.72rem; font-weight: 700; cursor: pointer;
+      z-index: 9001; font-family: 'Exo 2', sans-serif;
+      letter-spacing: 0.5px;
+      transition: background 0.2s;
+    }
+
+    #console-toggle:hover { background: rgba(230,126,34,0.15); }
+
+    /* ── HEADER ── */
+    header {
+      background: linear-gradient(135deg, #0d0d14, #130f1e);
+      border-bottom: 2px solid var(--accent);
+      padding: 1rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      box-shadow: 0 4px 30px rgba(230,126,34,0.12);
+    }
+
+    .logo {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 2px;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .header-right { display: flex; align-items: center; gap: 0.8rem; }
+
+    .author-chip {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      background: rgba(230,126,34,0.08);
+      border: 1px solid rgba(230,126,34,0.2);
+      border-radius: 30px;
+      padding: 0.35rem 1rem 0.35rem 0.35rem;
+    }
+
+    .author-chip-avatar {
+      width: 30px; height: 30px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--teal));
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 700; font-size: 0.9rem; color: #000;
+      overflow: hidden; flex-shrink: 0;
+    }
+
+    .author-chip-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .author-chip-name { font-size: 0.82rem; font-weight: 600; color: var(--text-light); }
+    .verified-badge { color: var(--teal); font-size: 0.75rem; }
+
+    .header-btn {
+      background: rgba(230,126,34,0.12);
+      border: 1px solid rgba(230,126,34,0.3);
+      color: var(--accent);
+      padding: 0.4rem 0.9rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.78rem;
+      font-family: 'Exo 2', sans-serif;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+
+    .header-btn:hover { background: rgba(230,126,34,0.22); }
+
+    .header-btn.danger-btn {
+      background: rgba(239,68,68,0.1);
+      border-color: rgba(239,68,68,0.3);
+      color: var(--danger);
+    }
+
+    /* ── LAYOUT ── */
+    .dashboard {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      min-height: calc(100vh - 64px);
+    }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      background: #0b0b14;
+      border-right: 1px solid var(--card-border);
+      padding: 1.5rem 0;
+      position: sticky;
+      top: 64px;
+      height: calc(100vh - 64px);
+      overflow-y: auto;
+    }
+
+    .sidebar-profile {
+      text-align: center;
+      padding: 1rem 1rem 1.5rem;
+      border-bottom: 1px solid var(--card-border);
+      margin-bottom: 1rem;
+    }
+
+    .sidebar-avatar-wrap { position: relative; display: inline-block; margin-bottom: 0.7rem; }
+
+    .sidebar-avatar {
+      width: 72px; height: 72px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--teal));
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.8rem; font-weight: 700; color: #000;
+      border: 3px solid rgba(230,126,34,0.4);
+      overflow: hidden; cursor: pointer;
+    }
+
+    .sidebar-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+    .sidebar-avatar-edit {
+      position: absolute; bottom: 2px; right: 2px;
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      background: var(--accent); border: none;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; font-size: 0.6rem; color: #000;
+    }
+
+    .sidebar-name {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1rem; font-weight: 700;
+      color: var(--text-light);
+      margin-bottom: 0.2rem;
+      display: flex; align-items: center; justify-content: center; gap: 0.4rem;
+    }
+
+    .sidebar-role { font-size: 0.72rem; color: var(--text-muted); letter-spacing: 0.5px; }
+
+    .sidebar-mini-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+
+    .sidebar-mini-stat {
+      background: rgba(255,255,255,0.03);
+      border-radius: 6px; padding: 0.4rem 0.2rem; text-align: center;
+    }
+
+    .sidebar-mini-stat-val {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1rem; font-weight: 700;
+      display: block; color: var(--accent);
+    }
+
+    .sidebar-mini-stat-lab {
+      font-size: 0.55rem;
+      text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted);
+    }
+
+    .sidebar-section { padding: 0 0.8rem; margin-bottom: 1rem; }
+
+    .sidebar-label {
+      font-size: 0.62rem; letter-spacing: 2px;
+      text-transform: uppercase; color: var(--text-muted);
+      padding: 0 0.6rem; margin-bottom: 0.4rem; display: block;
+    }
+
+    .sidebar-item {
+      display: flex; align-items: center; gap: 0.7rem;
+      padding: 0.65rem 0.8rem; border-radius: 8px;
+      color: var(--text-muted); font-size: 0.85rem; font-weight: 600;
+      cursor: pointer; transition: all 0.2s;
+      border: none; background: none; width: 100%; text-align: left;
+      font-family: 'Exo 2', sans-serif;
+    }
+
+    .sidebar-item i { width: 16px; text-align: center; font-size: 0.85rem; }
+
+    .sidebar-item:hover, .sidebar-item.active {
+      background: linear-gradient(135deg, rgba(230,126,34,0.15), rgba(192,132,252,0.08));
+      color: var(--accent); border-left: 3px solid var(--accent);
+    }
+
+    .sidebar-divider { height: 1px; background: var(--card-border); margin: 0.8rem; }
+
+    /* ── MAIN ── */
+    .main { padding: 2rem; overflow-y: auto; }
+
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* ── SECTION TITLE ── */
+    .section-title {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.15rem; letter-spacing: 1.5px; color: var(--accent);
+      display: flex; align-items: center; gap: 0.6rem;
+      border-bottom: 1px solid rgba(230,126,34,0.2);
+      padding-bottom: 0.5rem; margin-bottom: 1.2rem;
+    }
+
+    /* ── REVENUE BAR ── */
+    .revenue-bar {
+      background: linear-gradient(135deg, #12100a, #0e0b16);
+      border: 1px solid rgba(230,126,34,0.25);
+      border-radius: 12px; padding: 1.4rem 2rem; margin-bottom: 1.5rem;
+      display: flex; gap: 2.5rem; flex-wrap: wrap; align-items: center;
+    }
+
+    .rev-item { display: flex; flex-direction: column; }
+
+    .rev-label {
+      font-size: 0.68rem; letter-spacing: 1.5px; text-transform: uppercase;
+      color: var(--text-muted); margin-bottom: 0.2rem;
+      display: flex; align-items: center; gap: 0.3rem;
+    }
+
+    .rev-value {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.6rem; font-weight: 700; color: var(--success);
+    }
+
+    .rev-value.orange { color: var(--accent); }
+    .rev-value.purple { color: var(--accent2); }
+    .rev-value.gray   { color: #aaa; }
+    .rev-value.teal   { color: var(--teal); }
+
+    /* ── STATS GRID ── */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem; margin-bottom: 1.5rem;
+    }
+
+    .stat-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px; padding: 1.1rem 1.3rem;
+      position: relative; overflow: hidden;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .stat-card::before {
+      content: ''; position: absolute; top: 0; left: 0;
+      width: 100%; height: 3px; background: var(--accent);
+    }
+
+    .stat-card.teal::before   { background: var(--teal); }
+    .stat-card.purple::before { background: var(--accent2); }
+    .stat-card.green::before  { background: var(--success); }
+    .stat-card:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0,0,0,0.3); }
+    .stat-card-label { font-size: 0.68rem; letter-spacing: 1px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.3rem; }
+    .stat-card-value { font-family: 'Rajdhani', sans-serif; font-size: 1.9rem; font-weight: 700; color: var(--text-light); }
+    .stat-card-sub   { font-size: 0.72rem; color: var(--text-muted); margin-top: 0.1rem; }
+
+    /* ── SEARCH BAR ── */
+    .search-bar { display: flex; gap: 0.8rem; margin-bottom: 1.2rem; flex-wrap: wrap; }
+
+    .search-bar input, .search-bar select {
+      background: var(--card-bg); border: 1px solid var(--card-border);
+      color: var(--text-light); border-radius: 8px; padding: 0.6rem 1rem;
+      font-family: 'Exo 2', sans-serif; font-size: 0.85rem; outline: none; transition: border-color 0.2s;
+    }
+
+    .search-bar input { flex: 1; min-width: 180px; }
+    .search-bar input:focus, .search-bar select:focus { border-color: var(--accent); }
+
+    /* ── STORY ITEMS ── */
+    .story-item {
+      display: flex; gap: 1.2rem; padding: 1rem;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      border-radius: 8px; transition: background 0.2s;
+    }
+
+    .story-item:hover { background: rgba(255,255,255,0.02); }
+
+    .story-thumb {
+      width: 110px; height: 74px; border-radius: 6px; overflow: hidden;
+      flex-shrink: 0; border: 1px solid var(--card-border); background: #0d0d18;
+    }
+
+    .story-thumb img { width: 100%; height: 100%; object-fit: cover; }
+
+    .story-thumb-placeholder {
+      width: 100%; height: 100%; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; color: var(--text-muted); font-size: 0.7rem;
+    }
+
+    .story-thumb-placeholder i { font-size: 1.5rem; margin-bottom: 0.2rem; }
+
+    .story-detail-col { flex: 1; }
+
+    .story-title-text {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1rem; font-weight: 700; color: var(--accent); margin-bottom: 0.3rem;
+    }
+
+    .story-meta-row {
+      display: flex; flex-wrap: wrap; gap: 0.5rem;
+      font-size: 0.78rem; color: var(--text-muted);
+      margin-bottom: 0.5rem; align-items: center;
+    }
+
+    .cat-badge {
+      display: inline-block; padding: 0.15rem 0.55rem; border-radius: 4px;
+      font-size: 0.65rem; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase;
+    }
+
+    .cat-ujasusi  { background: rgba(230,126,34,0.15); color: var(--accent); }
+    .cat-huzuni   { background: rgba(52,152,219,0.15); color: #3498db; }
+    .cat-horror   { background: rgba(255,0,0,0.15); color: #ff4444; }
+    .cat-drama    { background: rgba(255,215,0,0.15); color: #ffd700; }
+    .cat-simulizi { background: rgba(155,89,182,0.15); color: #9b59b6; }
+    .cat-chombezo { background: rgba(255,69,0,0.15); color: #ff4500; }
+    .cat-video    { background: rgba(30,144,255,0.15); color: #1e90ff; }
+
+    .story-sales-row { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.5rem; }
+
+    .sales-chip {
+      display: inline-flex; align-items: center; gap: 0.3rem;
+      padding: 0.2rem 0.7rem; border-radius: 20px; font-size: 0.74rem; font-weight: 700;
+    }
+
+    .sales-chip.paid    { background: rgba(16,185,129,0.12); color: var(--success); border: 1px solid rgba(16,185,129,0.3); }
+    .sales-chip.revenue { background: rgba(230,126,34,0.12); color: var(--accent); border: 1px solid rgba(230,126,34,0.3); }
+    .sales-chip.pending { background: rgba(245,158,11,0.12); color: var(--warning); border: 1px solid rgba(245,158,11,0.3); }
+    .sales-chip.views   { background: rgba(192,132,252,0.1); color: var(--accent2); border: 1px solid rgba(192,132,252,0.25); }
+
+    .story-actions-row { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+
+    /* ── ACTION BUTTONS ── */
+    .action-btn {
+      padding: 0.4rem 0.85rem; border-radius: 6px; font-size: 0.77rem; font-weight: 600;
+      cursor: pointer; border: none; transition: all 0.2s;
+      display: inline-flex; align-items: center; gap: 0.3rem;
+      font-family: 'Exo 2', sans-serif;
+    }
+
+    .action-btn.primary { background: rgba(230,126,34,0.15); color: var(--accent); border: 1px solid rgba(230,126,34,0.35); }
+    .action-btn.info    { background: rgba(52,152,219,0.15); color: #3498db; border: 1px solid rgba(52,152,219,0.35); }
+    .action-btn.success { background: rgba(16,185,129,0.15); color: var(--success); border: 1px solid rgba(16,185,129,0.35); }
+    .action-btn.danger  { background: rgba(239,68,68,0.12); color: var(--danger); border: 1px solid rgba(239,68,68,0.3); }
+    .action-btn.purple  { background: rgba(192,132,252,0.12); color: var(--accent2); border: 1px solid rgba(192,132,252,0.3); }
+    .action-btn:hover   { opacity: 0.8; transform: translateY(-1px); }
+
+    /* ── UPLOAD TYPE SELECTION ── */
+    .upload-mode-selector {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .upload-mode-card {
+      background: var(--card-bg);
+      border: 2px solid var(--card-border);
+      border-radius: 12px;
+      padding: 1.8rem 1.5rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .upload-mode-card::before {
+      content: ''; position: absolute; top: 0; left: 0;
+      width: 100%; height: 3px; background: transparent;
+      transition: background 0.3s;
+    }
+
+    .upload-mode-card:hover, .upload-mode-card.selected {
+      border-color: var(--accent);
+      background: rgba(230,126,34,0.06);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 30px rgba(230,126,34,0.12);
+    }
+
+    .upload-mode-card:hover::before, .upload-mode-card.selected::before { background: var(--accent); }
+
+    .upload-mode-card.selected-series {
+      border-color: var(--accent2);
+      background: rgba(192,132,252,0.06);
+    }
+
+    .upload-mode-card.selected-series::before { background: var(--accent2); }
+
+    .upload-mode-icon {
+      font-size: 2.5rem; margin-bottom: 0.8rem; display: block;
+      color: var(--text-muted); transition: color 0.3s;
+    }
+
+    .upload-mode-card:hover .upload-mode-icon,
+    .upload-mode-card.selected .upload-mode-icon { color: var(--accent); }
+    .upload-mode-card.selected-series .upload-mode-icon { color: var(--accent2); }
+
+    .upload-mode-title {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.1rem; font-weight: 700; color: var(--text-light); margin-bottom: 0.3rem;
+    }
+
+    .upload-mode-desc { font-size: 0.78rem; color: var(--text-muted); line-height: 1.4; }
+
+    .upload-mode-check {
+      position: absolute; top: 12px; right: 12px;
+      width: 20px; height: 20px;
+      border-radius: 50%; background: var(--accent);
+      display: none; align-items: center; justify-content: center;
+      color: #000; font-size: 0.7rem;
+    }
+
+    .upload-mode-card.selected .upload-mode-check,
+    .upload-mode-card.selected-series .upload-mode-check { display: flex; }
+    .upload-mode-card.selected-series .upload-mode-check { background: var(--accent2); }
+
+    /* ── FORM CARD ── */
+    .form-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px; padding: 2rem;
+    }
+
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+
+    .form-group { margin-bottom: 0.2rem; }
+    .form-group.full { grid-column: 1 / -1; }
+
+    label {
+      display: block; margin-bottom: 0.4rem;
+      font-size: 0.78rem; font-weight: 600; color: var(--text-muted); letter-spacing: 0.3px;
+    }
+
+    input, select, textarea {
+      width: 100%; padding: 0.72rem 1rem;
+      background: #0b0b14; border: 1px solid var(--card-border);
+      border-radius: 8px; color: var(--text-light);
+      font-size: 0.9rem; font-family: 'Exo 2', sans-serif;
+      transition: border-color 0.2s; outline: none;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(230,126,34,0.1);
+    }
+
+    textarea { min-height: 110px; resize: vertical; }
+
+    .submit-btn {
+      background: linear-gradient(135deg, var(--accent), #d35400);
+      color: #000; border: none; padding: 0.82rem 2rem; border-radius: 8px;
+      font-weight: 700; font-size: 0.92rem; font-family: 'Exo 2', sans-serif;
+      cursor: pointer; display: block; margin: 1.5rem auto 0; transition: all 0.25s; letter-spacing: 0.5px;
+    }
+
+    .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(230,126,34,0.35); }
+    .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    /* ── FILE UPLOAD ── */
+    .file-upload { position: relative; width: 100%; }
+
+    .file-upload-box {
+      border: 2px dashed var(--card-border); border-radius: 8px; padding: 1.4rem;
+      text-align: center; color: var(--text-muted); cursor: pointer; transition: all 0.2s;
+    }
+
+    .file-upload-box:hover { border-color: var(--accent); background: rgba(230,126,34,0.04); }
+    .file-upload-box i { font-size: 1.6rem; margin-bottom: 0.4rem; display: block; }
+    .file-upload input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+
+    .preview-strip { display: flex; flex-wrap: wrap; gap: 0.8rem; margin-top: 0.8rem; }
+
+    .thumb-preview {
+      width: 120px; height: 80px; border-radius: 6px; overflow: hidden;
+      border: 1px solid var(--card-border); position: relative;
+    }
+
+    .thumb-preview img { width: 100%; height: 100%; object-fit: cover; }
+
+    .remove-preview {
+      position: absolute; top: 4px; right: 4px;
+      width: 20px; height: 20px; background: rgba(0,0,0,0.8);
+      border: none; border-radius: 50%; color: white; font-size: 0.65rem;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+    }
+
+    .upload-type-btns { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 0.8rem; }
+
+    .type-btn {
+      padding: 0.45rem 1rem; border-radius: 6px; background: var(--card-bg);
+      border: 1px solid var(--card-border); color: var(--text-muted);
+      font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: all 0.2s;
+      font-family: 'Exo 2', sans-serif;
+    }
+
+    .type-btn.active { background: var(--accent); color: #000; border-color: var(--accent); }
+
+    /* ── VIDEO / AUDIO PREVIEW ── */
+    .video-preview-wrap { margin-top: 0.8rem; border-radius: 8px; overflow: hidden; border: 1px solid var(--card-border); }
+    .video-preview-wrap video { width: 100%; display: block; max-height: 200px; }
+
+    .audio-preview-wrap {
+      margin-top: 0.8rem; background: #0b0b14; border: 1px solid var(--card-border);
+      border-radius: 8px; padding: 0.8rem; display: flex; align-items: center; gap: 0.8rem;
+    }
+
+    .audio-preview-wrap i { color: var(--accent); font-size: 1.2rem; }
+    .audio-preview-wrap audio { flex: 1; }
+
+    /* ── PROGRESS BAR ── */
+    .upload-progress-wrap {
+      display: none; margin-top: 1rem; background: #0b0b14;
+      border: 1px solid var(--card-border); border-radius: 8px; padding: 1rem;
+    }
+
+    .upload-progress-wrap.active { display: block; }
+    .upload-progress-bg { background: rgba(230,126,34,0.1); border-radius: 3px; overflow: hidden; margin-top: 0.5rem; }
+    .upload-progress-bar { width: 0%; height: 6px; background: var(--accent); border-radius: 3px; transition: width 0.3s; }
+    .upload-progress-label { font-size: 0.78rem; color: var(--text-muted); }
+
+    /* ── PAYMENTS TABLE ── */
+    .payments-table { width: 100%; border-collapse: collapse; font-size: 0.84rem; }
+
+    .payments-table th {
+      background: #0b0b14; padding: 0.8rem 1rem; text-align: left;
+      font-size: 0.68rem; letter-spacing: 1.2px; text-transform: uppercase;
+      color: var(--text-muted); border-bottom: 1px solid var(--card-border);
+    }
+
+    .payments-table td { padding: 0.8rem 1rem; border-bottom: 1px solid rgba(255,255,255,0.04); vertical-align: middle; }
+    .payments-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+    .status-badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 0.2rem 0.65rem; border-radius: 20px;
+      font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px;
+    }
+
+    .status-badge.paid    { background: rgba(16,185,129,0.12); color: var(--success); border: 1px solid rgba(16,185,129,0.3); }
+    .status-badge.pending { background: rgba(245,158,11,0.12); color: var(--warning); border: 1px solid rgba(245,158,11,0.3); }
+    .status-badge.failed  { background: rgba(239,68,68,0.12); color: var(--danger); border: 1px solid rgba(239,68,68,0.3); }
+
+    .table-wrapper { overflow-x: auto; }
+
+    /* ── SERIES GRID ── */
+    .series-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 1.4rem; }
+
+    .series-card {
+      background: var(--card-bg); border: 1px solid var(--card-border);
+      border-radius: 12px; overflow: hidden; transition: transform 0.3s, border-color 0.3s;
+    }
+
+    .series-card:hover { transform: translateY(-4px); border-color: rgba(230,126,34,0.3); }
+    .series-card-img { height: 140px; overflow: hidden; }
+    .series-card-img img { width: 100%; height: 100%; object-fit: cover; }
+    .series-card-body { padding: 1rem; }
+    .series-card-title { font-family: 'Rajdhani', sans-serif; font-size: 1rem; color: var(--accent); margin-bottom: 0.4rem; }
+    .series-card-meta { display: flex; gap: 0.8rem; font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.6rem; }
+    .series-card-desc { font-size: 0.77rem; color: var(--text-muted); margin-bottom: 0.8rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .series-card-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+
+    /* ── TOP STORIES ── */
+    .top-mini-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+
+    .top-mini-card {
+      background: var(--card-bg); border: 1px solid var(--card-border);
+      border-radius: 10px; overflow: hidden; position: relative;
+    }
+
+    .top-mini-rank {
+      position: absolute; top: 8px; left: 8px;
+      background: var(--accent); color: #000;
+      font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 0.9rem;
+      width: 26px; height: 26px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center; z-index: 2;
+    }
+
+    .top-mini-img { height: 110px; overflow: hidden; }
+    .top-mini-img img { width: 100%; height: 100%; object-fit: cover; }
+    .top-mini-body { padding: 0.8rem; }
+    .top-mini-title { font-family: 'Rajdhani', sans-serif; font-size: 0.9rem; color: var(--accent); margin-bottom: 0.5rem; }
+    .top-mini-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 0.4rem; }
+    .top-mini-stat { background: rgba(255,255,255,0.03); border: 1px solid var(--card-border); border-radius: 6px; padding: 0.35rem 0.4rem; text-align: center; }
+    .top-mini-stat-val { font-family: 'Rajdhani', sans-serif; font-size: 0.9rem; font-weight: 700; }
+    .top-mini-stat-lab { font-size: 0.55rem; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text-muted); }
+
+    /* ── PROFILE ── */
+    .profile-grid { display: grid; grid-template-columns: 200px 1fr; gap: 2rem; margin-bottom: 2rem; }
+    .profile-avatar-section { display: flex; flex-direction: column; align-items: center; gap: 1rem; }
+
+    .profile-avatar-large {
+      width: 140px; height: 140px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--teal));
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Rajdhani', sans-serif; font-size: 3rem; font-weight: 700; color: #000;
+      border: 4px solid rgba(230,126,34,0.4); overflow: hidden; position: relative;
+    }
+
+    .profile-avatar-large img { width: 100%; height: 100%; object-fit: cover; }
+
+    .profile-avatar-overlay {
+      position: absolute; inset: 0; background: rgba(0,0,0,0.6);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; transition: opacity 0.2s; cursor: pointer; border-radius: 50%;
+    }
+
+    .profile-avatar-large:hover .profile-avatar-overlay { opacity: 1; }
+
+    .verified-tag {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      background: rgba(45,212,191,0.12); border: 1px solid rgba(45,212,191,0.3);
+      color: var(--teal); padding: 0.25rem 0.8rem; border-radius: 20px;
+      font-size: 0.72rem; font-weight: 700;
+    }
+
+    .unverified-tag {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      background: rgba(107,114,128,0.12); border: 1px solid rgba(107,114,128,0.3);
+      color: var(--text-muted); padding: 0.25rem 0.8rem; border-radius: 20px;
+      font-size: 0.72rem; font-weight: 700;
+    }
+
+    /* ── FOLLOWERS BAR ── */
+    .followers-bar {
+      display: flex; gap: 2rem;
+      background: rgba(192,132,252,0.06); border: 1px solid rgba(192,132,252,0.2);
+      border-radius: 10px; padding: 1.2rem 1.5rem; margin-bottom: 1.5rem; flex-wrap: wrap;
+    }
+
+    .followers-item { display: flex; flex-direction: column; }
+    .followers-val { font-family: 'Rajdhani', sans-serif; font-size: 1.5rem; font-weight: 700; color: var(--accent2); }
+    .followers-lab { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); }
+
+    /* ── EPISODES LIST ── */
+    .episodes-list { margin-top: 1rem; }
+
+    .episode-item {
+      display: flex; align-items: center; gap: 1rem; padding: 0.8rem;
+      border-bottom: 1px solid rgba(255,255,255,0.04); border-radius: 6px; transition: background 0.2s;
+    }
+
+    .episode-item:hover { background: rgba(255,255,255,0.02); }
+    .episode-number { font-family: 'Rajdhani', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--accent); min-width: 40px; text-align: center; }
+    .episode-info { flex: 1; }
+    .episode-title { font-weight: 600; color: var(--text-light); font-size: 0.9rem; }
+    .episode-meta  { font-size: 0.73rem; color: var(--text-muted); }
+    .episode-price { font-family: 'Rajdhani', sans-serif; font-weight: 700; color: var(--success); font-size: 0.85rem; }
+
+    /* ── ALERT ── */
+    .custom-alert {
+      position: fixed; top: 80px; right: 20px;
+      padding: 12px 20px; border-radius: 10px;
+      display: flex; align-items: center; gap: 10px; z-index: 9999;
+      transform: translateX(120%); transition: transform 0.3s;
+      font-weight: 600; font-size: 0.86rem; max-width: 360px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+    }
+
+    .custom-alert.success { background: #0a2b1a; border: 1px solid var(--success); color: var(--success); }
+    .custom-alert.error   { background: #2b0a0a; border: 1px solid var(--danger); color: var(--danger); }
+    .custom-alert.info    { background: #0a1a2b; border: 1px solid #3498db; color: #3498db; }
+    .custom-alert.show    { transform: translateX(0); }
+
+    /* ── LOADER ── */
+    .loader-box { text-align: center; padding: 3rem; color: var(--text-muted); }
+    .spinner {
+      width: 30px; height: 30px; border: 3px solid rgba(230,126,34,0.1);
+      border-top-color: var(--accent); border-radius: 50%;
+      animation: spin 0.8s linear infinite; margin: 0 auto 1rem;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── EMPTY STATE ── */
+    .empty-state { text-align: center; padding: 3rem; color: var(--text-muted); }
+    .empty-state i { font-size: 2.5rem; margin-bottom: 1rem; display: block; }
+
+    /* ── MODAL ── */
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(6px); z-index: 500;
+      display: flex; align-items: flex-start; justify-content: center;
+      padding: 2rem; overflow-y: auto;
+      opacity: 0; visibility: hidden; transition: all 0.3s;
+    }
+
+    .modal-overlay.show { opacity: 1; visibility: visible; }
+
+    .modal-box {
+      background: var(--card-bg); border: 1px solid var(--card-border);
+      border-radius: 14px; width: 100%; max-width: 700px;
+      position: relative; animation: slideDown 0.3s ease;
+    }
+
+    @keyframes slideDown { from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+    .modal-header {
+      padding: 1.2rem 1.5rem; background: #0b0b14;
+      border-bottom: 1px solid var(--card-border); border-radius: 14px 14px 0 0;
+      display: flex; align-items: center; gap: 0.8rem;
+    }
+
+    .modal-title { font-family: 'Rajdhani', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--text-light); flex: 1; }
+
+    .modal-close {
+      background: none; border: none; color: var(--text-muted); font-size: 1.4rem;
+      cursor: pointer; transition: color 0.2s, transform 0.2s;
+    }
+
+    .modal-close:hover { color: var(--danger); transform: rotate(90deg); }
+    .modal-body { padding: 1.5rem; }
+
+    /* ── NOTIF DOT ── */
+    .notif-dot {
+      display: inline-block; width: 7px; height: 7px;
+      border-radius: 50%; background: var(--accent);
+      margin-left: 4px; vertical-align: middle;
+      animation: blink 2s infinite;
+    }
+
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+    /* ── SCROLLBAR ── */
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: var(--dark-bg); }
+    ::-webkit-scrollbar-thumb { background: var(--card-border); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      .dashboard { grid-template-columns: 1fr; }
+      .sidebar { display: none; }
+      .form-grid { grid-template-columns: 1fr; }
+      .profile-grid { grid-template-columns: 1fr; }
+      .upload-mode-selector { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 600px) {
+      .revenue-bar { gap: 1.5rem; padding: 1.2rem; }
+      .main { padding: 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── DEVELOPER CONSOLE ── -->
+<button id="console-toggle" onclick="toggleConsole()">
+  <i class="fas fa-terminal"></i> CONSOLE
+</button>
+
+<div id="dev-console">
+  <div class="console-header">
+    <span><i class="fas fa-terminal"></i> &nbsp;StoriesZone Dev Console</span>
+    <div class="con-btns">
+      <button class="con-btn clear" onclick="clearConsole()">Futa Logs</button>
+      <button class="con-btn close-con" onclick="toggleConsole()">Funga</button>
+    </div>
+  </div>
+  <div id="console-log"></div>
+</div>
+
+<!-- ── HEADER ── -->
+<header>
+  <div class="logo"><i class="fas fa-pen-nib"></i> StoriesZone</div>
+  <div class="header-right">
+    <div class="author-chip" id="header-author-chip">
+      <div class="author-chip-avatar" id="header-avatar-wrap">
+        <span id="header-avatar-letter">?</span>
+      </div>
+      <span class="author-chip-name" id="header-author-name">Inapakia...</span>
+      <i class="fas fa-check-circle verified-badge" id="header-verified" style="display:none;"></i>
+    </div>
+    <button class="header-btn" onclick="loadAllData()"><i class="fas fa-sync-alt"></i> Refresh</button>
+    <button class="header-btn danger-btn" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Toka</button>
+  </div>
+</header>
+
+<div class="dashboard">
+
+  <!-- ── SIDEBAR ── -->
+  <aside class="sidebar">
+    <div class="sidebar-profile">
+      <div class="sidebar-avatar-wrap">
+        <div class="sidebar-avatar" id="sidebar-avatar" onclick="showPanel('profile',null)">
+          <span id="sidebar-avatar-letter">?</span>
+        </div>
+        <button class="sidebar-avatar-edit" onclick="showPanel('profile',null)" title="Hariri Profaili">
+          <i class="fas fa-pen"></i>
+        </button>
+      </div>
+      <div class="sidebar-name" id="sidebar-name">Inapakia...</div>
+      <div class="sidebar-role" id="sidebar-verified-status">Muandishi</div>
+      <div class="sidebar-mini-stats">
+        <div class="sidebar-mini-stat">
+          <span class="sidebar-mini-stat-val" id="sb-stories">0</span>
+          <span class="sidebar-mini-stat-lab">Hadithi</span>
+        </div>
+        <div class="sidebar-mini-stat">
+          <span class="sidebar-mini-stat-val" id="sb-sales">0</span>
+          <span class="sidebar-mini-stat-lab">Mauzo</span>
+        </div>
+        <div class="sidebar-mini-stat">
+          <span class="sidebar-mini-stat-val" id="sb-followers">0</span>
+          <span class="sidebar-mini-stat-lab">Wafuasi</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <span class="sidebar-label">Muhtasari</span>
+      <button class="sidebar-item active" onclick="showPanel('overview', this)">
+        <i class="fas fa-chart-pie"></i> Muhtasari
+      </button>
+      <button class="sidebar-item" onclick="showPanel('mystories', this)">
+        <i class="fas fa-book-open"></i> Hadithi Zangu
+      </button>
+      <button class="sidebar-item" onclick="showPanel('earnings', this)">
+        <i class="fas fa-money-bill-wave"></i> Mapato Yangu <span class="notif-dot"></span>
+      </button>
+    </div>
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-section">
+      <span class="sidebar-label">Chapisha</span>
+      <button class="sidebar-item" onclick="showPanel('upload', this)">
+        <i class="fas fa-cloud-upload-alt"></i> Pakia Hadithi
+      </button>
+      <button class="sidebar-item" onclick="showPanel('series', this)">
+        <i class="fas fa-film"></i> Series Zangu
+      </button>
+    </div>
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-section">
+      <span class="sidebar-label">Akaunti</span>
+      <button class="sidebar-item" onclick="showPanel('profile', this)">
+        <i class="fas fa-user-edit"></i> Profaili Yangu
+      </button>
+      <button class="sidebar-item" onclick="showPanel('password', this)">
+        <i class="fas fa-lock"></i> Badilisha Nenosiri
+      </button>
+    </div>
+  </aside>
+
+  <!-- ── MAIN ── -->
+  <main class="main">
+
+    <!-- ════ OVERVIEW ════ -->
+    <div class="tab-panel active" id="panel-overview">
+      <div class="revenue-bar">
+        <div class="rev-item">
+          <span class="rev-label"><i class="fas fa-coins"></i> Mapato (Paid)</span>
+          <span class="rev-value" id="ov-revenue">0 TZS</span>
+        </div>
+        <div class="rev-item">
+          <span class="rev-label"><i class="fas fa-shopping-cart"></i> Mauzo</span>
+          <span class="rev-value orange" id="ov-sales">0</span>
+        </div>
+        <div class="rev-item">
+          <span class="rev-label"><i class="fas fa-clock"></i> Pending</span>
+          <span class="rev-value purple" id="ov-pending">0</span>
+        </div>
+        <div class="rev-item">
+          <span class="rev-label"><i class="fas fa-book"></i> Hadithi</span>
+          <span class="rev-value gray" id="ov-stories">0</span>
+        </div>
+        <div class="rev-item">
+          <span class="rev-label"><i class="fas fa-eye"></i> Views Jumla</span>
+          <span class="rev-value teal" id="ov-views">0</span>
+        </div>
+        <div class="rev-item">
+          <span class="rev-label"><i class="fas fa-users"></i> Wafuasi</span>
+          <span class="rev-value gray" id="ov-followers">0</span>
+        </div>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-card-label"><i class="fas fa-check-circle"></i> Mauzo Leo</div>
+          <div class="stat-card-value" id="st-today">0</div>
+          <div class="stat-card-sub" id="st-today-rev">0 TZS leo</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-card-label"><i class="fas fa-calendar-week"></i> Wiki Hii</div>
+          <div class="stat-card-value" id="st-week">0</div>
+          <div class="stat-card-sub" id="st-week-rev">0 TZS wiki hii</div>
+        </div>
+        <div class="stat-card teal">
+          <div class="stat-card-label"><i class="fas fa-eye"></i> Views (Hadithi Bora)</div>
+          <div class="stat-card-value" id="st-topviews">0</div>
+          <div class="stat-card-sub" id="st-topviews-title">—</div>
+        </div>
+        <div class="stat-card purple">
+          <div class="stat-card-label"><i class="fas fa-users"></i> Wafuasi</div>
+          <div class="stat-card-value" id="st-followers">0</div>
+          <div class="stat-card-sub">Jumla ya wafuasi</div>
+        </div>
+      </div>
+
+      <div class="section-title"><i class="fas fa-trophy"></i> Hadithi Zangu Bora (Mapato)</div>
+      <div class="top-mini-grid" id="top-stories-mini">
+        <div class="loader-box" style="grid-column:1/-1;"><div class="spinner"></div>Inapakia...</div>
+      </div>
+
+      <div class="section-title"><i class="fas fa-receipt"></i> Mauzo ya Hivi Karibuni</div>
+      <div class="table-wrapper">
+        <table class="payments-table">
+          <thead>
+            <tr><th>#</th><th>Hadithi</th><th>Kiasi</th><th>Simu</th><th>Tarehe</th><th>Hali</th></tr>
+          </thead>
+          <tbody id="recent-payments-tbody">
+            <tr><td colspan="6" class="loader-box">Inapakia...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ════ MY STORIES ════ -->
+    <div class="tab-panel" id="panel-mystories">
+      <div class="section-title"><i class="fas fa-book-open"></i> Hadithi Zangu Zote</div>
+      <div class="search-bar">
+        <input type="text" id="stories-search" placeholder="Tafuta hadithi yako..." oninput="filterMyStories()">
+        <select id="stories-cat-filter" onchange="filterMyStories()">
+          <option value="">Kategoria Zote</option>
+          <option value="ujasusi">Ujasusi</option>
+          <option value="huzuni">Huzuni</option>
+          <option value="horror">Horror</option>
+          <option value="drama">Drama</option>
+          <option value="simulizi">Simulizi</option>
+          <option value="chombezo">Chombezo</option>
+          <option value="video">Video</option>
+        </select>
+      </div>
+      <div id="my-stories-container">
+        <div class="loader-box"><div class="spinner"></div>Inapakia hadithi zako...</div>
+      </div>
+    </div>
+
+    <!-- ════ EARNINGS ════ -->
+    <div class="tab-panel" id="panel-earnings">
+      <div class="section-title"><i class="fas fa-money-bill-wave"></i> Mapato Kwa Kila Hadithi</div>
+      <div id="earnings-per-story-container">
+        <div class="loader-box"><div class="spinner"></div>Inapakia...</div>
+      </div>
+      <div class="section-title" style="margin-top:2rem;"><i class="fas fa-list-alt"></i> Muamala Wote wa Malipo</div>
+      <div class="search-bar">
+        <input type="text" id="pay-search" placeholder="Tafuta kwa ref au simu..." oninput="filterEarnings()">
+        <select id="pay-status-filter" onchange="filterEarnings()">
+          <option value="">Hali Zote</option>
+          <option value="paid">Paid</option>
+          <option value="pending">Pending</option>
+          <option value="failed">Failed</option>
+        </select>
+      </div>
+      <div class="table-wrapper">
+        <table class="payments-table">
+          <thead>
+            <tr><th>#</th><th>Hadithi</th><th>Kiasi</th><th>Simu</th><th>Ref</th><th>Tarehe</th><th>Hali</th></tr>
+          </thead>
+          <tbody id="earnings-tbody">
+            <tr><td colspan="7" class="loader-box">Inapakia...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ════ UPLOAD PANEL ════ -->
+    <div class="tab-panel" id="panel-upload">
+      <div class="section-title"><i class="fas fa-cloud-upload-alt"></i> Pakia Hadithi Mpya</div>
+
+      <!-- STEP 1 -->
+      <div id="upload-mode-step">
+        <p style="color:var(--text-muted);font-size:0.88rem;margin-bottom:1.2rem;text-align:center;">
+          Chagua aina ya hadithi unayotaka kupakia:
+        </p>
+        <div class="upload-mode-selector">
+          <div class="upload-mode-card" id="mode-standalone" onclick="selectUploadMode('standalone')">
+            <div class="upload-mode-check"><i class="fas fa-check"></i></div>
+            <i class="fas fa-book upload-mode-icon"></i>
+            <div class="upload-mode-title">Hadithi Huru</div>
+            <div class="upload-mode-desc">Hadithi moja inayosimama peke yake, haihusiani na series yoyote.</div>
+          </div>
+          <div class="upload-mode-card" id="mode-series" onclick="selectUploadMode('series')">
+            <div class="upload-mode-check"><i class="fas fa-check"></i></div>
+            <i class="fas fa-film upload-mode-icon"></i>
+            <div class="upload-mode-title">Episode ya Series</div>
+            <div class="upload-mode-desc">Sehemu ya mfululizo wa hadithi (series). Series lazima iwepo kwanza.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 2a: Hadithi Huru -->
+      <div id="upload-standalone-form" style="display:none;">
+        <div style="display:flex;align-items:center;gap:0.8rem;margin-bottom:1.5rem;">
+          <button class="action-btn info" onclick="resetUploadMode()"><i class="fas fa-arrow-left"></i> Rudi</button>
+          <span style="color:var(--accent);font-family:'Rajdhani',sans-serif;font-weight:700;font-size:1rem;">
+            <i class="fas fa-book"></i> Hadithi Huru
+          </span>
+        </div>
+        <div class="form-card">
+          <form id="uploadStandaloneForm">
+            <div class="form-grid">
+
+              <div class="form-group">
+                <label>Jina la Hadithi <span style="color:var(--danger)">*</span></label>
+                <input type="text" id="up-title" required placeholder="Weka jina la hadithi">
+              </div>
+
+              <div class="form-group">
+                <label>Aina ya Hadithi <span style="color:var(--danger)">*</span></label>
+                <select id="up-category" required>
+                  <option value="">-- Chagua aina --</option>
+                  <option value="ujasusi">Ujasusi</option>
+                  <option value="huzuni">Huzuni</option>
+                  <option value="horror">Horror</option>
+                  <option value="drama">Drama</option>
+                  <option value="simulizi">Simulizi</option>
+                  <option value="chombezo">Chombezo</option>
+                  <option value="ujasusi-simulizi">Ujasusi Simulizi</option>
+                  <option value="huzuni-simulizi">Huzuni Simulizi</option>
+                  <option value="horror-simulizi">Horror Simulizi</option>
+                  <option value="drama-simulizi">Drama Simulizi</option>
+                  <option value="video">Video</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label>Aina ya Ofa <span style="color:var(--danger)">*</span></label>
+                <select id="up-offer" required onchange="togglePriceField()">
+                  <option value="price">Bei (Kulipwa)</option>
+                  <option value="free">Bure</option>
+                </select>
+              </div>
+
+              <div class="form-group" id="up-price-group">
+                <label>Bei (TZS) <span style="color:var(--danger)">*</span></label>
+                <input type="number" id="up-price" value="2000" min="100">
+              </div>
+
+              <div class="form-group full">
+                <label>Muhtasari wa Hadithi <span style="color:var(--danger)">*</span></label>
+                <textarea id="up-summary" required placeholder="Andika muhtasari wa kuvutia..."></textarea>
+              </div>
+
+              <!-- Picha ya Cover -->
+              <div class="form-group full">
+                <label>Picha ya Hadithi (Cover) <span style="color:var(--danger)">*</span></label>
+                <div class="file-upload" style="position:relative;">
+                  <div class="file-upload-box" id="thumb-drop-box">
+                    <i class="fas fa-image"></i>
+                    <p style="font-size:0.82rem;">Bonyeza au buruta picha hapa</p>
+                    <small style="font-size:0.7rem;">800×450px inashauriwa • JPG, PNG, WEBP</small>
+                  </div>
+                  <input type="file" id="up-thumbnail" accept="image/*" style="position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;" onchange="previewThumb('up-thumbnail','up-thumb-prev')">
+                </div>
+                <div class="preview-strip" id="up-thumb-prev"></div>
+              </div>
+
+              <!-- Aina ya Maudhui -->
+              <div class="form-group full">
+                <label>Aina ya Maudhui <span style="color:var(--danger)">*</span></label>
+                <div class="upload-type-btns">
+                  <button type="button" class="type-btn active" id="btn-text" onclick="setUploadType('text')">
+                    <i class="fas fa-book"></i> Maandishi
+                  </button>
+                  <button type="button" class="type-btn" id="btn-video" onclick="setUploadType('video')">
+                    <i class="fas fa-video"></i> Video
+                  </button>
+                  <button type="button" class="type-btn" id="btn-audio" onclick="setUploadType('audio')">
+                    <i class="fas fa-microphone"></i> Audio/Simulizi
+                  </button>
+                </div>
+              </div>
+
+              <div class="form-group full" id="up-text-group">
+                <label>Hadithi Kamili <span style="color:var(--danger)">*</span></label>
+                <textarea id="up-content" placeholder="Andika hadithi kamili hapa..." style="min-height:280px;"></textarea>
+              </div>
+
+              <div class="form-group full" id="up-video-group" style="display:none;">
+                <label>Pakia Video <span style="color:var(--danger)">*</span></label>
+                <div class="file-upload" style="position:relative;">
+                  <div class="file-upload-box">
+                    <i class="fas fa-video"></i>
+                    <p style="font-size:0.82rem;">Bonyeza au buruta video</p>
+                    <small style="font-size:0.7rem;">MP4, MOV, AVI • Kikomo: 500MB</small>
+                  </div>
+                  <input type="file" id="up-video" accept="video/*" style="position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;" onchange="previewVideo('up-video','up-video-prev')">
+                </div>
+                <div id="up-video-prev"></div>
+              </div>
+
+              <div class="form-group full" id="up-audio-group" style="display:none;">
+                <label>Pakia Simulizi (Audio) <span style="color:var(--danger)">*</span></label>
+                <div class="file-upload" style="position:relative;">
+                  <div class="file-upload-box">
+                    <i class="fas fa-microphone"></i>
+                    <p style="font-size:0.82rem;">Bonyeza au buruta faili ya sauti</p>
+                    <small style="font-size:0.7rem;">MP3, WAV, M4A, OGG</small>
+                  </div>
+                  <input type="file" id="up-audio" accept="audio/*" style="position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;" onchange="previewAudio('up-audio','up-audio-prev')">
+                </div>
+                <div id="up-audio-prev"></div>
+              </div>
+
+            </div>
+            <button type="submit" class="submit-btn" id="up-submit-btn">
+              <i class="fas fa-upload"></i> Chapisha Hadithi
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- STEP 2b: Episode ya Series -->
+      <div id="upload-series-form" style="display:none;">
+        <div style="display:flex;align-items:center;gap:0.8rem;margin-bottom:1.5rem;">
+          <button class="action-btn info" onclick="resetUploadMode()"><i class="fas fa-arrow-left"></i> Rudi</button>
+          <span style="color:var(--accent2);font-family:'Rajdhani',sans-serif;font-weight:700;font-size:1rem;">
+            <i class="fas fa-film"></i> Episode ya Series
+          </span>
+        </div>
+
+        <div id="no-series-notice" style="display:none;">
+          <div class="empty-state">
+            <i class="fas fa-film"></i>
+            <p>Huna series bado. Unda series kwanza, kisha upake episode.</p>
+            <button class="action-btn primary" onclick="showPanel('series',null)" style="margin-top:1rem;">
+              <i class="fas fa-plus"></i> Unda Series Mpya
+            </button>
+          </div>
+        </div>
+
+        <div id="series-episode-form-wrapper" style="display:none;">
+          <div class="form-card" style="margin-bottom:1.5rem;">
+            <div class="form-group">
+              <label>Chagua Series <span style="color:var(--danger)">*</span></label>
+              <select id="ep-series-select" required onchange="onSeriesSelectChange()">
+                <option value="">-- Chagua series --</option>
+              </select>
+            </div>
+            <div id="selected-series-info" style="display:none;margin-top:0.8rem;padding:0.8rem;background:rgba(192,132,252,0.06);border:1px solid rgba(192,132,252,0.2);border-radius:8px;">
+              <div style="font-family:'Rajdhani',sans-serif;color:var(--accent2);font-weight:700;" id="sel-series-title">—</div>
+              <div style="font-size:0.75rem;color:var(--text-muted);margin-top:0.2rem;" id="sel-series-meta">—</div>
+            </div>
+          </div>
+
+          <div class="form-card">
+            <form id="uploadEpisodeForm">
+              <div class="form-grid">
+                <div class="form-group">
+                  <label>Season <span style="color:var(--danger)">*</span></label>
+                  <input type="number" id="ep-season" min="1" value="1" required>
+                </div>
+                <div class="form-group">
+                  <label>Namba ya Episode <span style="color:var(--danger)">*</span></label>
+                  <input type="number" id="ep-number" min="1" required placeholder="1">
+                </div>
+                <div class="form-group full">
+                  <label>Jina la Episode <span style="color:var(--danger)">*</span></label>
+                  <input type="text" id="ep-title" required placeholder="Jina la episode hii">
+                </div>
+                <div class="form-group">
+                  <label>Aina ya Ofa <span style="color:var(--danger)">*</span></label>
+                  <select id="ep-offer" onchange="toggleEpisodePrice()">
+                    <option value="price">Bei (Kulipwa)</option>
+                    <option value="free">Bure</option>
+                  </select>
+                </div>
+                <div class="form-group" id="ep-price-group">
+                  <label>Bei (TZS)</label>
+                  <input type="number" id="ep-price" value="2000" min="100">
+                </div>
+                <div class="form-group full">
+                  <label>Aina ya Maudhui <span style="color:var(--danger)">*</span></label>
+                  <div class="upload-type-btns">
+                    <button type="button" class="type-btn active" id="ep-btn-text" onclick="setEpType('text')">
+                      <i class="fas fa-book"></i> Maandishi
+                    </button>
+                    <button type="button" class="type-btn" id="ep-btn-video" onclick="setEpType('video')">
+                      <i class="fas fa-video"></i> Video
+                    </button>
+                    <button type="button" class="type-btn" id="ep-btn-audio" onclick="setEpType('audio')">
+                      <i class="fas fa-microphone"></i> Audio
+                    </button>
+                  </div>
+                </div>
+                <div class="form-group full" id="ep-text-group">
+                  <label>Hadithi Kamili ya Episode <span style="color:var(--danger)">*</span></label>
+                  <textarea id="ep-content" placeholder="Andika episode hapa..." style="min-height:200px;"></textarea>
+                </div>
+                <div class="form-group full" id="ep-video-group" style="display:none;">
+                  <label>Pakia Video <span style="color:var(--danger)">*</span></label>
+                  <div class="file-upload" style="position:relative;">
+                    <div class="file-upload-box">
+                      <i class="fas fa-video"></i>
+                      <p style="font-size:0.82rem;">Bonyeza au buruta video</p>
+                    </div>
+                    <input type="file" id="ep-video" accept="video/*" style="position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;" onchange="previewVideo('ep-video','ep-video-prev')">
+                  </div>
+                  <div id="ep-video-prev"></div>
+                </div>
+                <div class="form-group full" id="ep-audio-group" style="display:none;">
+                  <label>Pakia Audio <span style="color:var(--danger)">*</span></label>
+                  <div class="file-upload" style="position:relative;">
+                    <div class="file-upload-box">
+                      <i class="fas fa-microphone"></i>
+                      <p style="font-size:0.82rem;">Bonyeza au buruta audio</p>
+                    </div>
+                    <input type="file" id="ep-audio" accept="audio/*" style="position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;" onchange="previewAudio('ep-audio','ep-audio-prev')">
+                  </div>
+                  <div id="ep-audio-prev"></div>
+                </div>
+                <div class="form-group full">
+                  <label>Thumbnail ya Episode (Hiari)</label>
+                  <div class="file-upload" style="position:relative;">
+                    <div class="file-upload-box">
+                      <i class="fas fa-image"></i>
+                      <p style="font-size:0.82rem;">Picha ya episode (hiari)</p>
+                    </div>
+                    <input type="file" id="ep-thumb" accept="image/*" style="position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;" onchange="previewThumb('ep-thumb','ep-thumb-prev')">
+                  </div>
+                  <div class="preview-strip" id="ep-thumb-prev"></div>
+                </div>
+              </div>
+              <button type="submit" class="submit-btn" id="ep-submit-btn">
+                <i class="fas fa-save"></i> Chapisha Episode
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════ SERIES PANEL ════ -->
+    <div class="tab-panel" id="panel-series">
+      <div class="section-title"><i class="fas fa-film"></i> Series Zangu</div>
+      <button class="action-btn primary" style="margin-bottom:1.5rem;" onclick="openSeriesModal()">
+        <i class="fas fa-plus"></i> Ongeza Series Mpya
+      </button>
+      <div class="series-grid" id="series-grid">
+        <div class="loader-box" style="grid-column:1/-1;"><div class="spinner"></div>Inapakia...</div>
+      </div>
+    </div>
+
+    <!-- ════ PROFILE PANEL ════ -->
+    <div class="tab-panel" id="panel-profile">
+      <div class="section-title"><i class="fas fa-user-edit"></i> Profaili Yangu</div>
+      <div class="form-card">
+        <div class="followers-bar">
+          <div class="followers-item">
+            <span class="followers-val" id="pf-followers">0</span>
+            <span class="followers-lab">Wafuasi</span>
+          </div>
+          <div class="followers-item">
+            <span class="followers-val" id="pf-stories">0</span>
+            <span class="followers-lab">Hadithi</span>
+          </div>
+          <div class="followers-item">
+            <span class="followers-val" id="pf-views">0</span>
+            <span class="followers-lab">Views Jumla</span>
+          </div>
+          <div class="followers-item">
+            <span class="followers-val" id="pf-revenue">0 TZS</span>
+            <span class="followers-lab">Mapato</span>
+          </div>
+          <div style="margin-left:auto;" id="pf-verified-tag"></div>
+        </div>
+
+        <div class="profile-grid">
+          <div class="profile-avatar-section">
+            <div class="profile-avatar-large" id="profile-avatar-large">
+              <span id="profile-avatar-letter-lg">?</span>
+              <div class="profile-avatar-overlay" onclick="document.getElementById('avatar-upload').click()">
+                <div style="text-align:center;color:#fff;">
+                  <i class="fas fa-camera" style="font-size:1.5rem;display:block;margin-bottom:0.3rem;"></i>
+                  <span style="font-size:0.75rem;">Badilisha</span>
+                </div>
+              </div>
+            </div>
+            <input type="file" id="avatar-upload" accept="image/*" style="display:none;" onchange="uploadAvatar(this)">
+            <p style="font-size:0.72rem;color:var(--text-muted);text-align:center;">Bonyeza picha kubadilisha</p>
+          </div>
+
+          <div>
+            <form id="profileForm">
+              <div class="form-group" style="margin-bottom:1rem;">
+                <label>Jina la Muandishi</label>
+                <input type="text" id="pf-name" required placeholder="Jina lako la kuandika">
+              </div>
+              <div class="form-group" style="margin-bottom:1rem;">
+                <label>Barua Pepe</label>
+                <input type="email" id="pf-email" readonly style="opacity:0.6;">
+              </div>
+              <div class="form-group" style="margin-bottom:1rem;">
+                <label>Wasifu Wako (Bio)</label>
+                <textarea id="pf-bio" placeholder="Jibu: Ni nani wewe?..." style="min-height:130px;"></textarea>
+              </div>
+              <div class="form-group" style="margin-bottom:1rem;">
+                <label>Tovuti / Mtandao (Hiari)</label>
+                <input type="url" id="pf-website" placeholder="https://...">
+              </div>
+              <button type="submit" class="submit-btn" style="margin:0;">
+                <i class="fas fa-save"></i> Hifadhi Mabadiliko
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════ PASSWORD PANEL ════ -->
+    <div class="tab-panel" id="panel-password">
+      <div class="section-title"><i class="fas fa-lock"></i> Badilisha Nenosiri</div>
+      <div class="form-card" style="max-width:480px;">
+        <form id="passwordForm">
+          <div class="form-group" style="margin-bottom:1rem;">
+            <label>Nenosiri Jipya</label>
+            <input type="password" id="pw-new" required placeholder="Angalau herufi 8">
+          </div>
+          <div class="form-group" style="margin-bottom:1rem;">
+            <label>Thibitisha Nenosiri Jipya</label>
+            <input type="password" id="pw-confirm" required placeholder="Rudia nenosiri">
+          </div>
+          <button type="submit" class="submit-btn" style="margin:0;">
+            <i class="fas fa-lock"></i> Badilisha Nenosiri
+          </button>
+        </form>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- ════ SERIES MODAL ════ -->
+<div class="modal-overlay" id="seriesModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <i class="fas fa-film" style="color:var(--accent);"></i>
+      <div class="modal-title">Ongeza Series Mpya</div>
+      <button class="modal-close" onclick="closeSeriesModal()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <form id="seriesForm">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Jina la Series</label>
+            <input type="text" id="sr-title" required placeholder="Jina la series yako">
+          </div>
+          <div class="form-group">
+            <label>Idadi ya Seasons</label>
+            <input type="number" id="sr-seasons" min="1" value="1" required>
+          </div>
+          <div class="form-group">
+            <label>Jumla ya Episodes (Iliyopangwa)</label>
+            <input type="number" id="sr-episodes" min="1" required placeholder="Mfano: 12">
+          </div>
+          <div class="form-group">
+            <label>Kategoria</label>
+            <select id="sr-category" required>
+              <option value="">-- Chagua --</option>
+              <option value="ujasusi">Ujasusi</option>
+              <option value="huzuni">Huzuni</option>
+              <option value="horror">Horror</option>
+              <option value="drama">Drama</option>
+              <option value="simulizi">Simulizi</option>
+              <option value="chombezo">Chombezo</option>
+            </select>
+          </div>
+          <div class="form-group full">
+            <label>Maelezo ya Series</label>
+            <textarea id="sr-summary" required placeholder="Elezea series yako..."></textarea>
+          </div>
+          <div class="form-group full">
+            <label>Thumbnail ya Series</label>
+            <div class="file-upload" style="position:relative;">
+              <div class="file-upload-box">
+                <i class="fas fa-image"></i>
+                <p style="font-size:0.82rem;">Bonyeza au buruta picha</p>
+              </div>
+              <input type="file" id="sr-thumb" accept="image/*" style="position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;" onchange="previewThumb('sr-thumb','sr-thumb-prev')">
+            </div>
+            <div class="preview-strip" id="sr-thumb-prev"></div>
+          </div>
+        </div>
+        <button type="submit" class="submit-btn"><i class="fas fa-save"></i> Tengeneza Series</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ════ VIEW EPISODES MODAL ════ -->
+<div class="modal-overlay" id="episodesModal">
+  <div class="modal-box" style="max-width:640px;">
+    <div class="modal-header">
+      <i class="fas fa-list" style="color:var(--accent);"></i>
+      <div class="modal-title" id="episodes-modal-title">Orodha ya Episodes</div>
+      <button class="modal-close" onclick="closeEpisodesModal()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="episodes-list" id="episodes-list-container">
+        <div class="loader-box"><div class="spinner"></div>Inapakia...</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ DELETE CONFIRM MODAL ════ -->
+<div class="modal-overlay" id="deleteModal">
+  <div class="modal-box" style="max-width:400px;">
+    <div class="modal-header" style="background:rgba(239,68,68,0.08);border-bottom-color:rgba(239,68,68,0.3);">
+      <i class="fas fa-exclamation-triangle" style="color:var(--danger);"></i>
+      <div class="modal-title" style="color:var(--danger);">Thibitisha Kufuta</div>
+      <button class="modal-close" onclick="closeDeleteModal()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <p style="color:var(--text-muted);margin-bottom:1rem;font-size:0.88rem;">
+        Je, una uhakika unataka kufuta hadithi hii? Hatua hii haiwezi kurejeshwa.
+      </p>
+      <p id="delete-story-name" style="color:var(--accent);font-weight:700;margin-bottom:1.5rem;font-family:'Rajdhani',sans-serif;"></p>
+      <button class="action-btn danger" id="confirm-delete-btn" style="width:100%;justify-content:center;padding:0.75rem;">
+        <i class="fas fa-trash"></i> Ndio, Futa Hadithi
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ════ ALERT ════ -->
+<div class="custom-alert" id="customAlert"></div>
+
+<script>
+// ══════════════════════════════════════════════════════════════════
+//  DEV CONSOLE
+// ══════════════════════════════════════════════════════════════════
+let consoleOpen = false;
+
+function toggleConsole() {
+  consoleOpen = !consoleOpen;
+  const el = document.getElementById('dev-console');
+  if (consoleOpen) {
+    el.classList.add('open');
+    document.getElementById('console-toggle').innerHTML = '<i class="fas fa-times"></i> FUNGA';
+    // Adjust main padding
+    document.querySelector('.main').style.paddingBottom = '240px';
+  } else {
+    el.classList.remove('open');
+    document.getElementById('console-toggle').innerHTML = '<i class="fas fa-terminal"></i> CONSOLE';
+    document.querySelector('.main').style.paddingBottom = '';
+  }
+}
+
+function clearConsole() {
+  document.getElementById('console-log').innerHTML = '';
+}
+
+function devLog(type, ...args) {
+  const logEl = document.getElementById('console-log');
+  if (!logEl) return;
+
+  const time = new Date().toLocaleTimeString('sw', { hour12: false });
+  const msg  = args.map(a => {
+    if (typeof a === 'object') {
+      try { return JSON.stringify(a, null, 2); }
+      catch { return String(a); }
+    }
+    return String(a);
+  }).join(' ');
+
+  const line = document.createElement('div');
+  line.className = `log-line log-${type}`;
+  line.innerHTML = `<span class="log-time">${time}</span><span class="log-msg">${msg}</span>`;
+  logEl.appendChild(line);
+  logEl.scrollTop = logEl.scrollHeight;
+
+  // Also send to browser console
+  const fn = type === 'error' ? console.error : type === 'warn' ? console.warn : console.log;
+  fn(`[StoriesZone ${type.toUpperCase()}]`, ...args);
+}
+
+// Override console for catching all logs
+const _origLog   = console.log.bind(console);
+const _origWarn  = console.warn.bind(console);
+const _origError = console.error.bind(console);
+
+// ══════════════════════════════════════════════════════════════════
+//  CONFIG
+// ══════════════════════════════════════════════════════════════════
+const SUPABASE_URL = 'https://ifpntbnrwgsooqqkoefk.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlmcG50Ym5yd2dzb29xcWtvZWZrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg5MzE4MzMsImV4cCI6MjA5NDUwNzgzM30.m0ggLnB8ywRNNRSJv3YsJaKZ5g8a0VDIN6mQzM-BAwM';
+const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// ══════════════════════════════════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════════════════════════════════
+let currentUser    = null;
+let authorProfile  = null;
+let myStories      = [];
+let myPayments     = [];
+let mySeries       = [];
+let storyToDelete  = null;
+let uploadType     = 'text';
+let epUploadType   = 'text';
+let currentViewSeriesId = null;
+
+// ══════════════════════════════════════════════════════════════════
+//  HELPERS
+// ══════════════════════════════════════════════════════════════════
+function safeText(id, val) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = val;
+}
+
+function safeHTML(id, val) {
+  const el = document.getElementById(id);
+  if (el) el.innerHTML = val;
+}
+
+function showAlert(type, message) {
+  const el = document.getElementById('customAlert');
+  const icons = { success:'fa-check-circle', error:'fa-exclamation-circle', info:'fa-info-circle' };
+  el.className = `custom-alert ${type}`;
+  el.innerHTML = `<i class="fas ${icons[type]||'fa-info-circle'}"></i><span>${message}</span>`;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 4500);
+  devLog(type === 'error' ? 'error' : type === 'success' ? 'success' : 'info', `[ALERT] ${message}`);
+}
+
+function catName(c) {
+  if (!c) return 'N/A';
+  const m = {
+    ujasusi:'Ujasusi', huzuni:'Huzuni', horror:'Horror', drama:'Drama',
+    simulizi:'Simulizi', chombezo:'Chombezo', video:'Video',
+    'ujasusi-simulizi':'Ujasusi Simulizi','huzuni-simulizi':'Huzuni Simulizi',
+    'horror-simulizi':'Horror Simulizi','drama-simulizi':'Drama Simulizi'
+  };
+  return m[c.toLowerCase()] || c;
+}
+
+function payStats(storyId) {
+  const txs  = myPayments.filter(p => p.story_id === storyId);
+  const paid = txs.filter(p => (p.status||'').toLowerCase() === 'paid');
+  const pend = txs.filter(p => (p.status||'').toLowerCase() === 'pending');
+  return {
+    paid:    paid.length,
+    pending: pend.length,
+    failed:  txs.filter(p => (p.status||'').toLowerCase() === 'failed').length,
+    revenue: paid.reduce((s,p) => s + (parseFloat(p.amount)||0), 0),
+  };
+}
+
+function fmtDate(d) {
+  if (!d) return '—';
+  return new Date(d).toLocaleDateString('sw', {day:'2-digit',month:'2-digit',year:'2-digit'});
+}
+
+function isToday(d)    {
+  const t=new Date(), dt=new Date(d);
+  return t.toDateString()===dt.toDateString();
+}
+
+function isThisWeek(d) {
+  const t=new Date(), dt=new Date(d), sw=new Date(t);
+  sw.setDate(t.getDate()-t.getDay());
+  return dt>=sw;
+}
+
+// ── Sanitize filename (remove special characters) ─────────────────
+function sanitizeFilename(name) {
+  return name.replace(/[^a-zA-Z0-9._-]/g, '_');
+}
+
+// ── Upload file to Supabase Storage with error handling ───────────
+async function uploadFile(bucket, path, file) {
+  devLog('info', `📤 Inapakia faili: bucket="${bucket}" path="${path}" size=${(file.size/1024/1024).toFixed(2)}MB type="${file.type}"`);
+
+  // Try upload
+  let { data, error } = await db.storage.from(bucket).upload(path, file, {
+    cacheControl: '3600',
+    upsert: false,
+    contentType: file.type
+  });
+
+  if (error) {
+    devLog('warn', `⚠️ Upload bila upsert imeshindwa: ${error.message} — jaribu na upsert=true`);
+    // Retry with upsert
+    const res = await db.storage.from(bucket).upload(path, file, {
+      cacheControl: '3600',
+      upsert: true,
+      contentType: file.type
+    });
+    data  = res.data;
+    error = res.error;
+  }
+
+  if (error) {
+    devLog('error', `❌ Upload imeshindwa kabisa: ${error.message}`, error);
+    throw new Error(`Hitilafu ya upload (${bucket}): ${error.message}`);
+  }
+
+  const { data: urlData } = db.storage.from(bucket).getPublicUrl(data.path);
+  devLog('success', `✅ Faili imepakiwa: ${urlData.publicUrl}`);
+  return urlData.publicUrl;
+}
+
+// ══════════════════════════════════════════════════════════════════
+//  PANEL NAVIGATION
+// ══════════════════════════════════════════════════════════════════
+function showPanel(name, btn) {
+  devLog('debug', `📄 Badilisha panel: ${name}`);
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.sidebar-item').forEach(b => b.classList.remove('active'));
+  const panel = document.getElementById(`panel-${name}`);
+  if (panel) panel.classList.add('active');
+  if (btn) btn.classList.add('active');
+  if (name === 'mystories') renderMyStories(myStories);
+  if (name === 'earnings')  { renderEarningsPerStory(); renderEarningsTable(myPayments); }
+  if (name === 'series')    loadMySeries();
+  if (name === 'profile')   renderProfilePanel();
+  if (name === 'overview')  renderOverview();
+  if (name === 'upload')    { resetUploadMode(); populateSeriesDropdown(); }
+}
+
+async function logout() {
+  devLog('info', '🚪 Kuondoka...');
+  await db.auth.signOut();
+  window.location.href = 'author_login.html';
+}
+
+// ══════════════════════════════════════════════════════════════════
+//  LOAD ALL DATA
+// ══════════════════════════════════════════════════════════════════
+async function loadAllData() {
+  devLog('info', '🔄 Inapakia data yote...');
+  try {
+    const { data: { user }, error: userErr } = await db.auth.getUser();
+    if (userErr) { devLog('error', 'Auth error:', userErr); }
+    if (!user) {
+      devLog('warn', 'Mtumiaji hajapatikana — rudi kwenye login');
+      window.location.href = 'author_login.html';
+      return;
+    }
+
+    currentUser = user;
+    devLog('success', `✅ User amepatikana: ${user.id} (${user.email})`);
+
+    // ── Fetch or create author profile ─────────────────────────────
+    let { data: prof, error: profErr } = await db
+      .from('author_profiles')
+      .select('*')
+      .eq('user_id', user.id)
+      .single();
+
+    if (profErr) {
+      devLog('warn', `Profaili haikupatikana (${profErr.message}) — itaundwa upya`);
+      prof = null;
+    }
+
+    if (!prof) {
+      devLog('info', 'Inaunda profaili mpya...');
+      const { data: userData } = await db.from('users').select('full_name,email').eq('id', user.id).single();
+      const name = userData?.full_name || user.email.split('@')[0];
+
+      const { data: newProf, error: pErr } = await db.from('author_profiles').insert({
+        user_id:         user.id,
+        name,
+        bio:             '',
+        is_verified:     false,
+        followers_count: 0,
+        stories_count:   0,
+        created_at:      new Date().toISOString(),
+        updated_at:      new Date().toISOString()
+      }).select().single();
+
+      if (pErr) {
+        devLog('error', 'Hitilafu ya kuunda profaili:', pErr);
+        throw pErr;
+      }
+      prof = newProf;
+      devLog('success', '✅ Profaili mpya imeundwa:', prof.id);
+    } else {
+      devLog('success', `✅ Profaili imepatikana: ${prof.id} (${prof.name})`);
+    }
+
+    authorProfile = prof;
+
+    // ── Fetch stories ──────────────────────────────────────────────
+    devLog('info', `🔍 Inatafuta hadithi za user_id=${user.id} au author_id=${prof.id}`);
+    const { data: stories, error: storiesErr } = await db
+      .from('stories')
+      .select('*')
+      .or(`user_id.eq.${user.id},author_id.eq.${prof.id}`)
+      .order('created_at', { ascending: false });
+
+    if (storiesErr) {
+      devLog('error', 'Hitilafu ya hadithi:', storiesErr);
+    }
+
+    myStories = stories || [];
+    devLog('success', `✅ Hadithi ${myStories.length} zimepatikana`);
+
+    // ── Fetch payments ─────────────────────────────────────────────
+    const storyIds = myStories.map(s => s.id);
+    devLog('info', `🔍 Inatafuta malipo ya hadithi ${storyIds.length}`);
+
+    let payments = [];
+    if (storyIds.length > 0) {
+      const { data: pays, error: paysErr } = await db
+        .from('payments')
+        .select('*')
+        .in('story_id', storyIds)
+        .order('created_at', { ascending: false });
+
+      if (paysErr) {
+        devLog('error', 'Hitilafu ya malipo:', paysErr);
+      } else {
+        payments = pays || [];
+        devLog('success', `✅ Malipo ${payments.length} yamepatikana`);
+      }
+    }
+    myPayments = payments;
+
+    // ── Fetch series ───────────────────────────────────────────────
+    const { data: series, error: seriesErr } = await db
+      .from('series')
+      .select('*')
+      .eq('author_id', prof.id)
+      .order('created_at', { ascending: false });
+
+    if (seriesErr) {
+      devLog('error', 'Hitilafu ya series:', seriesErr);
+    }
+
+    mySeries = series || [];
+    devLog('success', `✅ Series ${mySeries.length} zimepatikana`);
+
+    updateHeaderAndSidebar();
+    renderOverview();
+    populateSeriesDropdown();
+    devLog('success', '🎉 Data yote imepakiwa vizuri!');
+
+  } catch (err) {
+    devLog('error', '❌ loadAllData() hitilafu:', err);
+    showAlert('error', `Hitilafu ya mfumo: ${err.message}`);
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════
+//  HEADER & SIDEBAR
+// ══════════════════════════════════════════════════════════════════
+function updateHeaderAndSidebar() {
+  if (!authorProfile) return;
+  const name      = authorProfile.name || 'Muandishi';
+  const initial   = name.charAt(0).toUpperCase();
+  const verified  = authorProfile.is_verified;
+  const followers = authorProfile.followers_count || 0;
+  const totalPaid = myPayments.filter(p => (p.status||'').toLowerCase()==='paid').length;
+
+  safeText('header-author-name', name);
+
+  const headerWrap = document.getElementById('header-avatar-wrap');
+  if (headerWrap) {
+    if (authorProfile.avatar_url) {
+      headerWrap.innerHTML = `<img src="${authorProfile.avatar_url}" alt="${name}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+    } else {
+      headerWrap.innerHTML = `<span id="header-avatar-letter">${initial}</span>`;
+    }
+  }
+
+  const headerVerified = document.getElementById('header-verified');
+  if (headerVerified) headerVerified.style.display = verified ? 'inline' : 'none';
+
+  const sidebarNameEl = document.getElementById('sidebar-name');
+  if (sidebarNameEl) {
+    sidebarNameEl.innerHTML = name + (verified ? ' <i class="fas fa-check-circle" style="color:var(--teal);font-size:0.75rem;"></i>' : '');
+  }
+
+  const sidebarAv = document.getElementById('sidebar-avatar');
+  if (sidebarAv) {
+    if (authorProfile.avatar_url) {
+      sidebarAv.innerHTML = `<img src="${authorProfile.avatar_url}" alt="${name}">`;
+    } else {
+      sidebarAv.innerHTML = `<span id="sidebar-avatar-letter">${initial}</span>`;
+    }
+  }
+
+  safeText('sidebar-verified-status', verified ? '✓ Muandishi Aliyethibitishwa' : 'Muandishi');
+  safeText('sb-stories',   String(myStories.length));
+  safeText('sb-sales',     String(totalPaid));
+  safeText('sb-followers', String(followers));
+}
+
+// ══════════════════════════════════════════════════════════════════
+//  OVERVIEW
+// ══════════════════════════════════════════════════════════════════
+function renderOverview() {
+  const paid    = myPayments.filter(p => (p.status||'').toLowerCase()==='paid');
+  const pending = myPayments.filter(p => (p.status||'').toLowerCase()==='pending');
+  const revenue = paid.reduce((s,p) => s + (parseFloat(p.amount)||0), 0);
+  const totalViews = myStories.reduce((s,st) => s + (st.views||0), 0);
+
+  safeText('ov-revenue',   revenue.toLocaleString('sw') + ' TZS');
+  safeText('ov-sales',     String(paid.length));
+  safeText('ov-pending',   String(pending.length));
+  safeText('ov-stories',   String(myStories.length));
+  safeText('ov-views',     String(totalViews));
+  safeText('ov-followers', String(authorProfile?.followers_count || 0));
+  safeText('st-followers', String(authorProfile?.followers_count || 0));
+
+  const todayPaid = paid.filter(p => isToday(p.created_at));
+  const weekPaid  = paid.filter(p => isThisWeek(p.created_at));
+  const todayRev  = todayPaid.reduce((s,p) => s + (parseFloat(p.amount)||0), 0);
+  const weekRev   = weekPaid.reduce((s,p)  => s + (parseFloat(p.amount)||0), 0);
+
+  safeText('st-today',     String(todayPaid.length));
+  safeText('st-today-rev', todayRev.toLocaleString('sw') + ' TZS leo');
+  safeText('st-week',      String(weekPaid.length));
+  safeText('st-week-rev',  weekRev.toLocaleString('sw') + ' TZS wiki hii');
+
+  const topByViews = [...myStories].sort((a,b) => (b.views||0)-(a.views||0))[0];
+  safeText('st-topviews',       String(topByViews ? (topByViews.views||0) : 0));
+  safeText('st-topviews-title', topByViews ? topByViews.title : '—');
+
+  const top3 = [...myStories]
+    .map(s => ({...s, stats: payStats(s.id)}))
+    .sort((a,b) => b.stats.revenue - a.stats.revenue)
+    .slice(0, 3);
+
+  const topMini = document.getElementById('top-stories-mini');
+  if (topMini) {
+    topMini.innerHTML = top3.length ? top3.map((s,i) => `
+      <div class="top-mini-card">
+        <span class="top-mini-rank">${i+1}</span>
+        <div class="top-mini-img">
+          <img src="${s.thumbnail_url||''}" onerror="this.style.display='none'" alt="${s.title}">
+        </div>
+        <div class="top-mini-body">
+          <div class="top-mini-title">${s.title}</div>
+          <div class="top-mini-stats">
+            <div class="top-mini-stat">
+              <div class="top-mini-stat-val" style="color:var(--success);">${s.stats.paid}</div>
+              <div class="top-mini-stat-lab">Mauzo</div>
+            </div>
+            <div class="top-mini-stat">
+              <div class="top-mini-stat-val" style="color:var(--accent);">${s.stats.revenue.toLocaleString('sw')}</div>
+              <div class="top-mini-stat-lab">TZS</div>
+            </div>
+            <div class="top-mini-stat">
+              <div class="top-mini-stat-val" style="color:var(--accent2);">${s.views||0}</div>
+              <div class="top-mini-stat-lab">Views</div>
+            </div>
+            <div class="top-mini-stat">
+              <div class="top-mini-stat-val" style="color:var(--warning);">${s.stats.pending}</div>
+              <div class="top-mini-stat-lab">Pending</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    `).join('') : `<div class="empty-state" style="grid-column:1/-1;">
+      <i class="fas fa-book-open"></i>
+      <p>Hujapakia hadithi bado.</p>
+      <button class="action-btn primary" onclick="showPanel('upload',null)" style="margin-top:1rem;">
+        <i class="fas fa-plus"></i> Pakia Hadithi ya Kwanza
+      </button>
+    </div>`;
+  }
+
+  const recent5 = myPayments.slice(0, 5);
+  const recentTbody = document.getElementById('recent-payments-tbody');
+  if (recentTbody) {
+    recentTbody.innerHTML = recent5.length ? recent5.map((p,i) => {
+      const story  = myStories.find(s => s.id === p.story_id);
+      const status = (p.status||'pending').toLowerCase();
+      return `<tr>
+        <td style="color:var(--text-muted);">${i+1}</td>
+        <td style="font-weight:600;">${story ? story.title : '—'}</td>
+        <td style="font-family:'Rajdhani',sans-serif;font-weight:700;color:var(--success);">${parseFloat(p.amount||0).toLocaleString('sw')} TZS</td>
+        <td style="color:var(--text-muted);">${p.phone_number||'—'}</td>
+        <td style="color:var(--text-muted);font-size:0.8rem;">${fmtDate(p.created_at)}</td>
+        <td><span class="status-badge ${status}">
+          <i class="fas fa-${status==='paid'?'check-circle':status==='failed'?'times-circle':'clock'}"></i>
+          ${status.charAt(0).toUpperCase()+status.slice(1)}
+        </span></td>
+      </tr>`;
+    }).join('') : '<tr><td colspan="6" class="empty-state" style="padding:2rem;">Bado hakuna mauzo.</td></tr>';
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════
+//  MY STORIES
+// ══════════════════════════════════════════════════════════════════
+function renderMyStories(stories) {
+  const container = document.getElementById('my-stories-container');
+  if (!container) return;
+  if (!stories.length) {
+    container.innerHTML = `<div class="empty-state">
+      <i class="fas fa-book-open"></i>
+      <p>Hujapakia hadithi yoyote bado.</p>
+      <button class="action-btn primary" onclick="showPanel('upload',null)" style="margin-top:1rem;">
+        <i class="fas fa-plus"></i> Chapisha Hadithi ya Kwanza
+      </button>
+    </div>`;
+    return;
+  }
+
+  container.innerHTML = stories.map(s => {
+    const st = payStats(s.id);
+    return `<div class="story-item" data-title="${(s.title||'').toLowerCase()}" data-cat="${(s.category||'').toLowerCase()}">
+      <div class="story-thumb">
+        ${s.thumbnail_url
+          ? `<img src="${s.thumbnail_url}" alt="${s.title}" onerror="this.style.display='none'">`
+          : `<div class="story-thumb-placeholder"><i class="fas fa-${s.audio_url?'music':s.video_url?'video':'book'}"></i></div>`
+        }
+      </div>
+      <div class="story-detail-col">
+        <div class="story-title-text">${s.title}</div>
+        <div class="story-meta-row">
+          <span class="cat-badge cat-${(s.category||'').split('-')[0]}">${catName(s.category)}</span>
+          <span><i class="fas fa-eye"></i> ${s.views||0}</span>
+          <span style="color:${s.offer_type==='free'?'var(--text-muted)':'var(--success)'};">
+            ${s.offer_type==='free'?'BURE':`${s.price||0} TZS`}
+          </span>
+          <span style="font-size:0.72rem;">${fmtDate(s.created_at)}</span>
+        </div>
+        <div class="story-sales-row">
+          <span class="sales-chip paid"><i class="fas fa-check-circle"></i> Mauzo: ${st.paid}</span>
+          <span class="sales-chip revenue"><i class="fas fa-coins"></i> ${st.revenue.toLocaleString('sw')} TZS</span>
+          ${st.pending > 0 ? `<span class="sales-chip pending"><i class="fas fa-clock"></i> Pending: ${st.pending}</span>` : ''}
+          <span class="sales-chip views"><i class="fas fa-eye"></i> ${s.views||0} views</span>
+        </div>
+        <div class="story-actions-row">
+          <button class="action-btn primary" onclick="window.open('story.html?id=${s.id}','_blank')"><i class="fas fa-eye"></i> Tazama</button>
+          <button class="action-btn danger" onclick="openDeleteModal('${s.id}','${(s.title||'').replace(/'/g,"\\'").replace(/"/g,'&quot;')}')"><i class="fas fa-trash"></i> Futa</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function filterMyStories() {
+  const q   = (document.getElementById('stories-search')?.value||'').toLowerCase();
+  const cat = (document.getElementById('stories-cat-filter')?.value||'').toLowerCase();
+  document.querySelectorAll('#my-stories-container .story-item').forEach(el => {
+    const titleMatch = (el.dataset.title||'').includes(q);
+    const catMatch   = !cat || (el.dataset.cat||'').includes(cat);
+    el.style.display = titleMatch && catMatch ? '' : 'none';
+  });
+}
+
+// ══════════════════════════════════════════════════════════════════
+//  EARNINGS
+// ══════════════════════════════════════════════════════════════════
+function renderEarningsPerStory() {
+  const container = document.getElementById('earnings-per-story-container');
+  if (!container) return;
+  const storiesWithPay = myStories
+    .map(s => ({...s, st: payStats(s.id)}))
+    .filter(s => s.st.paid > 0 || s.st.pending > 0)
+    .sort((a,b) => b.st.revenue - a.st.revenue);
+
+  if (!storiesWithPay.length) {
+    container.innerHTML = '<div class="empty-state"><i class="fas fa-inbox"></i>Bado hakuna malipo yaliyofanyika.</div>';
+    return;
+  }
+
+  container.innerHTML = storiesWithPay.map(s => `
+    <div style="display:flex;align-items:center;gap:1.2rem;padding:1rem;border-bottom:1px solid rgba(255,255,255,0.04);border-radius:8px;" onmouseover="this.style.background='rgba(255,255,255,0.02)'" onmouseout="this.style.background=''">
+      <div class="story-thumb" style="flex-shrink:0;">
+        ${s.thumbnail_url ? `<img src="${s.thumbnail_url}" alt="">` : `<div class="story-thumb-placeholder"><i class="fas fa-book"></i></div>`}
+      </div>
+      <div style="flex:1;">
+        <div style="font-family:'Rajdhani',sans-serif;font-size:0.95rem;font-weight:700;color:var(--accent);margin-bottom:0.2rem;">${s.title}</div>
+        <span class="cat-badge cat-${(s.category||'').split('-')[0]}">${catName(s.category)}</span>
+      </div>
+      <div style="display:flex;gap:1rem;flex-shrink:0;flex-wrap:wrap;">
+        <div style="text-align:center;min-width:60px;">
+          <div style="font-family:'Rajdhani',sans-serif;font-size:1.3rem;font-weight:700;color:var(--success);">${s.st.paid}</div>
+          <div style="font-size:0.6rem;text-transform:uppercase;letter-spacing:0.8px;color:var(--text-muted);">Paid</div>
+        </div>
+        <div style="text-align:center;min-width:90px;">
+          <div style="font-family:'Rajdhani',sans-serif;font-size:1.3rem;font-weight:700;color:var(--accent);">${s.st.revenue.toLocaleString('sw')}</div>
+          <div style="font-size:0.6rem;text-transform:uppercase;letter-spacing:0.8px;color:var(--text-muted);">TZS Mapato</div>
+        </div>
+        <div style="text-align:center;min-width:60px;">
+          <div style="font-family:'Rajdhani',sans-serif;font-size:1.3rem;font-weight:700;color:var(--warning);">${s.st.pending}</div>
+          <div style="font-size:0.6rem;text-transform:uppercase;letter-spacing:0.8px;color:var(--text-muted);">Pending</div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderEarningsTable(payments) {
+  const tbody = document.getElementById('earnings-tbody');
+  if (!tbody) return;
+  if (!payments.length) {
+    tbody.innerHTML = '<tr><td colspan="7" class="empty-state" style="padding:2rem;">Hakuna muamala wa malipo.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = payments.map((p,i) => {
+    const story  = myStories.find(s => s.id === p.story_id);
+    const status = (p.status||'pending').toLowerCase();
+    const ref    = p.reference_code ? p.reference_code.substring(0,12)+'…' : '—';
+    return `<tr>
+      <td style="color:var(--text-muted);">${i+1}</td>
+      <td style="font-weight:600;">${story ? story.title : '—'}</td>
+      <td style="font-family:'Rajdhani',sans-serif;font-weight:700;color:var(--success);">${parseFloat(p.amount||0).toLocaleString('sw')} TZS</td>
+      <td style="color:var(--text-muted);">${p.phone_number||'—'}</td>
+      <td style="font-family:monospace;font-size:0.75rem;color:var(--text-muted);">${ref}</td>
+      <td style="color:var(--text-muted);font-size:0.8rem;">${fmtDate(p.created_at)}</td>
+      <td><span class="status-badge ${status}">
+        <i class="fas fa-${status==='paid'?'check-circle':status==='failed'?'times-circle':'clock'}"></i>
+        ${status.charAt(0).toUpperCase()+status.slice(1)}
+      </span></td>
+    </tr>`;
+  }).join('');
+}
+
+function filterEarnings() {
+  const q      = (document.getElementById('pay-search')?.value||'').toLowerCase();
+  const status = (document.getElementById('pay-status-filter')?.value||'').toLowerCase();
+  let filtered = myPayments;
+  if (q)      filtered = filtered.filter(p => (p.reference_code||'').toLowerCase().includes(q) || (p.phone_number||'').includes(q));
+  if (status) filtered = filtered.filter(p => (p.status||'').toLowerCase() === status);
+  renderEarningsTable(filtered);
+}
+
+// ══════════════════════════════════════════════════════════════════
+//  UPLOAD MODE
+// ══════════════════════════════════════════════════════════════════
+function selectUploadMode(mode) {
+  devLog('info', `📤 Upload mode: ${mode}`);
+  document.getElementById('upload-mode-step').style.display = 'none';
+
+  if (mode === 'standalone') {
+    document.getElementById('mode-standalone').classList.add('selected');
+    document.getElementById('mode-series').classList.remove('selected','selected-series');
+    document.getElementById('upload-standalone-form').style.display = 'block';
+    document.getElementById('upload-series-form').style.display = 'none';
+  } else {
+    document.getElementById('mode-series').classList.add('selected-series');
+    document.getElementById('mode-standalone').classList.remove('selected');
+    document.getElementById('upload-series-form').style.display = 'block';
+    document.getElementById('upload-standalone-form').style.display = 'none';
+    loadSeriesForUpload();
+  }
+}
+
+function resetUploadMode() {
+  document.getElementById('upload-mode-step').style.display = 'block';
+  document.getElementById('upload-standalone-form').style.display = 'none';
+  document.getElementById('upload-series-form').style.display = 'none';
+  document.getElementById('mode-standalone').classList.remove('selected');
+  document.getElementById('mode-series').classList.remove('selected','selected-series');
+}
+
+function loadSeriesForUpload() {
+  const noSeriesDiv = document.getElementById('no-series-notice');
+  const formWrapper = document.getElementById('series-episode-form-wrapper');
+  const sel = document.getElementById('ep-series-select');
+
+  if (!mySeries.length) {
+    devLog('warn', 'Hakuna series — onyesha ujumbe');
+    noSeriesDiv.style.display = 'block';
+    formWrapper.style.display = 'none';
+  } else {
+    noSeriesDiv.style.display = 'none';
+    formWrapper.style.display = 'block';
+    sel.innerHTML = '<option value="">-- Chagua series --</option>' +
+      mySeries.map(s => `<option value="${s.id}">${s.title}</option>`).join('');
+    devLog('info', `Series ${mySeries.length} zimewekwa kwenye dropdown`);
+  }
+}
+
+function onSeriesSelectChange() {
+  const sel = document.getElementById('ep-series-select');
+  const info = document.getElementById('selected-series-info');
+  const seriesId = sel.value;
+
+  if (!seriesId) { info.style.display = 'none'; return; }
+
+  const series = mySeries.find(s => s.id === seriesId);
+  if (series) {
+    info.style.display = 'block';
+    document.getElementById('sel-series-title').textContent = series.title;
+    document.getElementById('sel-series-meta').textContent =
+      `${series.seasons} Season(s) • ${series.total_episodes} Episodes Zilizopangwa • ${catName(series.category)}`;
+    devLog('info', `Series imechaguliwa: ${series.title}`);
+  }
+}
+
+function togglePriceField() {
+  const val = document.getElementById('up-offer')?.value;
+  const pg  = document.getElementById('up-price-group');
+  if (pg) pg.style.display = val === 'free' ? 'none' : '';
+}
+
+function setUploadType(type) {
+  uploadType = type;
+  devLog('info', `📝 Upload type: ${type}`);
+  ['text','video','audio'].forEach(t => {
+    const btn = document.getElementById(`btn-${t}`);
+    const grp = document.getElementById(`up-${t}-group`);
+    if (btn) btn.classList.toggle('active', t === type);
+    if (grp) grp.style.display = t === type ? '' : 'none';
+  });
+}
+
+// ══════════════════════════════════════════════════════════════════
+//  UPLOAD STANDALONE STORY — IMEFANYIWA UKARABATI KAMILI
+// ══════════════════════════════════════════════════════════════════
+document.getElementById('uploadStandaloneForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  devLog('info', '🚀 Kuanza kupakia hadithi huru...');
+
+  const submitBtn = document.getElementById('up-submit-btn');
+  if (submitBtn) {
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Inapakia...';
+  }
+
+  try {
+    // ── 1. Thibitisha session ──────────────────────────────────────
+    devLog('info', '🔐 Kuthibitisha session...');
+    const { data: { session }, error: sessErr } = await db.auth.getSession();
+    if (sessErr) throw new Error(`Session hitilafu: ${sessErr.message}`);
+    if (!session) throw new Error('Tafadhali ingia upya kwenye akaunti yako.');
+    devLog('success', `✅ Session sawa. User: ${session.user.id}`);
+
+    // ── 2. Validate form fields ───────────────────────────────────
+    const title     = document.getElementById('up-title')?.value.trim();
+    const category  = document.getElementById('up-category')?.value;
+    const summary   = document.getElementById('up-summary')?.value.trim();
+    const offerType = document.getElementById('up-offer')?.value || 'price';
+
+    devLog('debug', 'Form data:', { title, category, offerType, uploadType });
+
+    if (!title)    throw new Error('Jaza jina la hadithi.');
+    if (!category) throw new Error('Chagua kategoria ya hadithi.');
+    if (!summary)  throw new Error('Andika muhtasari wa hadithi.');
+
+    // ── 3. Upload thumbnail ───────────────────────────────────────
+    const thumbFile = document.getElementById('up-thumbnail')?.files[0];
+    devLog('debug', `Thumbnail: ${thumbFile ? `${thumbFile.name} (${(thumbFile.size/1024).toFixed(1)}KB)` : 'HAIKUCHAGULIWA'}`);
+    if (!thumbFile) throw new Error('Tafadhali chagua picha ya cover (thumbnail).');
+
+    showAlert('info', 'Inapakia picha ya cover...');
+
+    const thumbPath = `stories/${session.user.id}/${Date.now()}_${sanitizeFilename(thumbFile.name)}`;
+    devLog('info', `📸 Inapakia thumbnail: ${thumbPath}`);
+    const thumbnailUrl = await uploadFile('thumbnails', thumbPath, thumbFile);
+    devLog('success', `✅ Thumbnail URL: ${thumbnailUrl}`);
+
+    // ── 4. Upload media (video/audio) ─────────────────────────────
+    let videoUrl = null;
+    let audioUrl = null;
+
+    if (uploadType === 'video') {
+      const vf = document.getElementById('up-video')?.files[0];
+      devLog('debug', `Video: ${vf ? `${vf.name} (${(vf.size/1024/1024).toFixed(2)}MB)` : 'HAIKUCHAGULIWA'}`);
+      if (!vf) throw new Error('Tafadhali chagua faili ya video.');
+      showAlert('info', 'Inapakia video — subiri kidogo...');
+      const vPath = `stories/${session.user.id}/${Date.now()}_${sanitizeFilename(vf.name)}`;
+      devLog('info', `🎬 Inapakia video: ${vPath}`);
+      videoUrl = await uploadFile('videos', vPath, vf);
+      devLog('success', `✅ Video URL: ${videoUrl}`);
+
+    } else if (uploadType === 'audio') {
+      const af = document.getElementById('up-audio')?.files[0];
+      devLog('debug', `Audio: ${af ? `${af.name} (${(af.size/1024/1024).toFixed(2)}MB)` : 'HAIKUCHAGULIWA'}`);
+      if (!af) throw new Error('Tafadhali chagua faili ya audio/simulizi.');
+      showAlert('info', 'Inapakia audio...');
+      const aPath = `stories/${session.user.id}/${Date.now()}_${sanitizeFilename(af.name)}`;
+      devLog('info', `🎵 Inapakia audio: ${aPath}`);
+      audioUrl = await uploadFile('audio', aPath, af);
+      devLog('success', `✅ Audio URL: ${audioUrl}`);
+
+    } else {
+      // Text content
+      const content = document.getElementById('up-content')?.value.trim();
+      devLog('debug', `Content maandishi: ${content ? `${content.length} herufi` : 'TUPU'}`);
+      if (!content) throw new Error('Andika hadithi kamili (maandishi) hapo juu.');
+    }
+
+    // ── 5. Prepare story record ───────────────────────────────────
+    const price = offerType === 'free'
+      ? 0
+      : parseInt(document.getElementById('up-price')?.value || '0');
+
+    const storyContent = uploadType === 'text'
+      ? (document.getElementById('up-content')?.value || '')
+      : null;
+
+    const storyRecord = {
+      title,
+      category,
+      offer_type:    offerType,
+      price,
+      summary,
+      story_content: storyContent,
+      thumbnail_url: thumbnailUrl,
+      video_url:     videoUrl,
+      audio_url:     audioUrl,
+      views:         0,
+      user_id:       session.user.id,
+      author_id:     authorProfile.id,
+      author_name:   authorProfile.name || '',
+      author_avatar: authorProfile.avatar_url || null,
+      series_id:     null,
+      is_published:  true,
+      created_at:    new Date().toISOString(),
+      updated_at:    new Date().toISOString()
+    };
+
+    devLog('info', '💾 Inahifadhi hadithi kwenye database...', storyRecord);
+    showAlert('info', 'Inahifadhi hadithi kwenye database...');
+
+    // ── 6. Insert into stories table ──────────────────────────────
+    const { data: insertedStory, error: insErr } = await db
+      .from('stories')
+      .insert(storyRecord)
+      .select()
+      .single();
+
+    if (insErr) {
+      devLog('error', '❌ Insert ya hadithi imeshindwa:', insErr);
+
+      // Try inserting without optional fields that might not exist
+      devLog('warn', '⚠️ Jaribu insert bila fields za ziada...');
+      const minimalRecord = {
+        title,
+        category,
+        offer_type:    offerType,
+        price,
+        summary,
+        story_content: storyContent,
+        thumbnail_url: thumbnailUrl,
+        video_url:     videoUrl,
+        audio_url:     audioUrl,
+        views:         0,
+        user_id:       session.user.id,
+        author_id:     authorProfile.id,
+        author_name:   authorProfile.name || '',
+        created_at:    new Date().toISOString()
+      };
+
+      devLog('info', 'Jaribu na record ndogo:', minimalRecord);
+      const { data: ins2, error: insErr2 } = await db
+        .from('stories')
+        .insert(minimalRecord)
+        .select()
+        .single();
+
+      if (insErr2) {
+        devLog('error', '❌ Insert ndogo pia imeshindwa:', insErr2);
+        throw new Error(`Hitilafu ya database: ${insErr2.message} (code: ${insErr2.code})`);
+      }
+      devLog('success', '✅ Insert ndogo imefanikiwa:', ins2);
+    } else {
+      devLog('success', '✅ Hadithi imehifadhiwa:', insertedStory?.id);
+    }
+
+    // ── 7. Update author stories_count ────────────────────────────
+    try {
+      await db.from('author_profiles').update({
+        stories_count: (authorProfile.stories_count || 0) + 1,
+        updated_at:    new Date().toISOString()
+      }).eq('id', authorProfile.id);
+      devLog('success', '✅ stories_count imesasishwa');
+    } catch (countErr) {
+      devLog('warn', '⚠️ Kushindwa kusasisha stories_count:', countErr.message);
+      // Not critical — continue
+    }
+
+    showAlert('success', '🎉 Hadithi yako imechapishwa kikamilifu!');
+    devLog('success', '🎉 Upload imefanikiwa!');
+
+    // ── 8. Reset form ─────────────────────────────────────────────
+    this.reset();
+    ['up-thumb-prev','up-video-prev','up-audio-prev'].forEach(id => safeHTML(id, ''));
+    setUploadType('text');
+    togglePriceField();
+    await loadAllData();
+    resetUploadMode();
+
+  } catch (err) {
+    devLog('error', '❌ Upload imeshindwa:', err.message, err);
+    showAlert('error', `Hitilafu: ${err.message}`);
+  } finally {
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = '<i class="fas fa-upload"></i> Chapisha Hadithi';
+    }
+  }
+});
+
+// ══════════════════════════════════════════════════════════════════
+//  UPLOAD EPISODE
+// ══════════════════════════════════════════════════════════════════
+function toggleEpisodePrice() {
+  const val = document.getElementById('ep-offer')?.value;
+  const pg  = document.getElementById('ep-price-group');
+  if (pg) pg.style.display = val === 'free' ? 'none' : '';
+}
+
+function setEpType(type) {
+  epUploadType = type;
+  devLog('info', `📝 Episode type: ${type}`);
+  ['text','video','audio'].forEach(t => {
+    const btn = document.getElementById(`ep-btn-${t}`);
+    const grp = document.getElementById(`ep-${t}-group`);
+    if (btn) btn.classList.toggle('active', t === type);
+    if (grp) grp.style.display = t === type ? '' : 'none';
+  });
+}
+
+document.getElementById('uploadEpisodeForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const seriesId = document.getElementById('ep-series-select')?.value;
+  if (!seriesId) { showAlert('error', 'Chagua series kwanza.'); return; }
+
+  devLog('info', `🚀 Kuanza kupakia episode ya series ${seriesId}...`);
+
+  const submitBtn = document.getElementById('ep-submit-btn');
+  if (submitBtn) {
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Inapakia...';
+  }
+
+  try {
+    const { data: { session }, error: sessErr } = await db.auth.getSession();
+    if (sessErr || !session) throw new Error('Tafadhali ingia upya.');
+    devLog('success', `✅ Session sawa: ${session.user.id}`);
+
+    let videoUrl = null, audioUrl = null, thumbUrl = null;
+
+    // Thumbnail (optional)
+    const tf = document.getElementById('ep-thumb')?.files[0];
+    if (tf) {
+      const tPath = `episodes/${session.user.id}/${Date.now()}_${sanitizeFilename(tf.name)}`;
+      devLog('info', `📸 Inapakia episode thumbnail: ${tPath}`);
+      thumbUrl = await uploadFile('thumbnails', tPath, tf);
+    }
+
+    if (epUploadType === 'video') {
+      const vf = document.getElementById('ep-video')?.files[0];
+      if (!vf) throw new Error('Pakia video ya episode.');
+      showAlert('info', 'Inapakia video...');
+      const vPath = `episodes/${session.user.id}/${Date.now()}_${sanitizeFilename(vf.name)}`;
+      videoUrl = await uploadFile('videos', vPath, vf);
+
+    } else if (epUploadType === 'audio') {
+      const af = document.getElementById('ep-audio')?.files[0];
+      if (!af) throw new Error('Pakia audio ya episode.');
+      const aPath = `episodes/${session.user.id}/${Date.now()}_${sanitizeFilename(af.name)}`;
+      audioUrl = await uploadFile('audio', aPath, af);
+
+    } else {
+      const cnt = document.getElementById('ep-content')?.value.trim();
+      if (!cnt) throw new Error('Andika hadithi kamili ya episode.');
+    }
+
+    const offerType = document.getElementById('ep-offer')?.value;
+    const price     = offerType === 'free' ? 0 : parseInt(document.getElementById('ep-price')?.value || '0');
+    const epTitle   = document.getElementById('ep-title')?.value.trim();
+    const epSeason  = parseInt(document.getElementById('ep-season')?.value);
+    const epNumber  = parseInt(document.getElementById('ep-number')?.value);
+
+    if (!epTitle)  throw new Error('Jaza jina la episode.');
+    if (!epSeason) throw new Error('Weka namba ya season.');
+    if (!epNumber) throw new Error('Weka namba ya episode.');
+
+    const epRecord = {
+      series_id:      seriesId,
+      season:         epSeason,
+      episode_number: epNumber,
+      title:          epTitle,
+      offer_type:     offerType,
+      price,
+      content_type:   epUploadType,
+      text_content:   epUploadType === 'text' ? (document.getElementById('ep-content')?.value || '') : null,
+      video_url:      videoUrl,
+      audio_url:      audioUrl,
+      thumbnail_url:  thumbUrl,
+      views:          0,
+      created_at:     new Date().toISOString()
+    };
+
+    devLog('info', '💾 Inahifadhi episode:', epRecord);
+
+    const { data: insertedEp, error: epErr } = await db
+      .from('episodes')
+      .insert(epRecord)
+      .select()
+      .single();
+
+    if (epErr) {
+      devLog('error', '❌ Insert ya episode imeshindwa:', epErr);
+      throw new Error(`Database hitilafu: ${epErr.message}`);
+    }
+
+    devLog('success', '✅ Episode imehifadhiwa:', insertedEp?.id);
+    showAlert('success', '🎉 Episode imechapishwa!');
+
+    this.reset();
+    ['ep-thumb-prev','ep-video-prev','ep-audio-prev'].forEach(id => safeHTML(id, ''));
+    setEpType('text');
+    toggleEpisodePrice();
+    resetUploadMode();
+
+  } catch (err) {
+    devLog('error', '❌ Episode upload imeshindwa:', err.message, err);
+    showAlert('error', `Hitilafu: ${err.message}`);
+  } finally {
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = '<i class="fas fa-save"></i> Chapisha Episode';
+    }
+  }
+});
+
+// ══════════════════════════════════════════════════════════════════
+//  FILE PREVIEWS
+// ══════════════════════════════════════════════════════════════════
+function previewThumb(inputId, previewId) {
+  const input = document.getElementById(inputId);
+  const prev  = document.getElementById(previewId);
+  if (!input || !prev) return;
+  prev.innerHTML = '';
+  if (input.files?.[0]) {
+    devLog('debug', `Thumbnail imechaguliwa: ${input.files[0].name} (${(input.files[0].size/1024).toFixed(1)}KB)`);
+    const r = new FileReader();
+    r.onload = e => {
+      prev.innerHTML = `<div class="thumb-preview">
+        <img src="${e.target.result}">
+        <button class="remove-preview" type="button" onclick="document.getElementById('${inputId}').value='';document.getElementById('${previewId}').innerHTML='';">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>`;
+    };
+    r.readAsDataURL(input.files[0]);
+  }
+}
+
+function previewVideo(inputId, previewId) {
+  const input = document.getElementById(inputId);
+  const prev  = document.getElementById(previewId);
+  if (!input || !prev) return;
+  prev.innerHTML = '';
+  if (input.files?.[0]) {
+    devLog('debug', `Video imechaguliwa: ${input.files[0].name} (${(input.files[0].size/1024/1024).toFixed(2)}MB)`);
+    const url    = URL.createObjectURL(input.files[0]);
+    const sizeMB = (input.files[0].size / 1024 / 1024).toFixed(1);
+    prev.innerHTML = `<div class="video-preview-wrap"><video controls src="${url}"></video></div>
+    <p style="font-size:0.75rem;color:var(--text-muted);margin-top:0.4rem;"><i class="fas fa-info-circle"></i> Ukubwa: ${sizeMB} MB</p>`;
+  }
+}
+
+function previewAudio(inputId, previewId) {
+  const input = document.getElementById(inputId);
+  const prev  = document.getElementById(previewId);
+  if (!input || !prev) return;
+  prev.innerHTML = '';
+  if (input.files?.[0]) {
+    devLog('debug', `Audio imechaguliwa: ${input.files[0].name} (${(input.files[0].size/1024/1024).toFixed(2)}MB)`);
+    const url    = URL.createObjectURL(input.files[0]);
+    const sizeMB = (input.files[0].size / 1024 / 1024).toFixed(1);
+    prev.innerHTML = `<div class="audio-preview-wrap">
+      <i class="fas fa-music"></i>
+      <audio controls src="${url}" style="flex:1;"></audio>
+    </div>
+    <p style="font-size:0.75rem;color:var(--text-muted);margin-top:0.4rem;"><i class="fas fa-info-circle"></i> ${input.files[0].name} • ${sizeMB} MB</p>`;
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════
+//  DELETE STORY
+// ══════════════════════════════════════════════════════════════════
+function openDeleteModal(storyId, storyTitle) {
+  storyToDelete = storyId;
+  safeText('delete-story-name', `"${storyTitle}"`);
+  document.getElementById('deleteModal')?.classList.add('show');
+}
+
+function closeDeleteModal() {
+  document.getElementById('deleteModal')?.classList.remove('show');
+  storyToDelete = null;
+}
+
+document.getElementById('confirm-delete-btn')?.addEventListener('click', async function() {
+  if (!storyToDelete) return;
+  devLog('warn', `🗑️ Kufuta hadithi: ${storyToDelete}`);
+  try {
+    const { error } = await db.from('stories').delete().eq('id', storyToDelete);
+    if (error) throw error;
+    showAlert('success', 'Hadithi imefutwa!');
+    devLog('success', `✅ Hadithi ${storyToDelete} imefutwa`);
+    closeDeleteModal();
+    await loadAllData();
+    renderMyStories(myStories);
+  } catch (e) {
+    devLog('error', '❌ Kufuta kumeshindwa:', e);
+    showAlert('error', e.message);
+  }
+});
+
+// ══════════════════════════════════════════════════════════════════
+//  PROFILE
+// ══════════════════════════════════════════════════════════════════
+function renderProfilePanel() {
+  if (!authorProfile) return;
+  const name      = authorProfile.name || '';
+  const initial   = name.charAt(0).toUpperCase() || '?';
+  const followers  = authorProfile.followers_count || 0;
+  const totalViews = myStories.reduce((s,st) => s + (st.views||0), 0);
+  const revenue    = myPayments.filter(p => (p.status||'').toLowerCase()==='paid')
+                      .reduce((s,p) => s + (parseFloat(p.amount)||0), 0);
+
+  safeText('pf-followers', String(followers));
+  safeText('pf-stories',   String(myStories.length));
+  safeText('pf-views',     String(totalViews));
+  safeText('pf-revenue',   revenue.toLocaleString('sw') + ' TZS');
+
+  const verifiedTag = document.getElementById('pf-verified-tag');
+  if (verifiedTag) {
+    verifiedTag.innerHTML = authorProfile.is_verified
+      ? '<div class="verified-tag"><i class="fas fa-check-circle"></i> Muandishi Aliyethibitishwa</div>'
+      : '<div class="unverified-tag"><i class="fas fa-clock"></i> Subiri Uthibitisho</div>';
+  }
+
+  const avatarEl = document.getElementById('profile-avatar-large');
+  if (avatarEl) {
+    if (authorProfile.avatar_url) {
+      avatarEl.innerHTML = `<img src="${authorProfile.avatar_url}" alt="${name}">
+        <div class="profile-avatar-overlay" onclick="document.getElementById('avatar-upload').click()">
+          <div style="text-align:center;color:#fff;">
+            <i class="fas fa-camera" style="font-size:1.5rem;display:block;margin-bottom:0.3rem;"></i>
+            <span style="font-size:0.75rem;">Badilisha</span>
+          </div>
+        </div>`;
+    } else {
+      avatarEl.innerHTML = `<span id="profile-avatar-letter-lg">${initial}</span>
+        <div class="profile-avatar-overlay" onclick="document.getElementById('avatar-upload').click()">
+          <div style="text-align:center;color:#fff;">
+            <i class="fas fa-camera" style="font-size:1.5rem;display:block;margin-bottom:0.3rem;"></i>
+            <span style="font-size:0.75rem;">Pakia Picha</span>
+          </div>
+        </div>`;
+    }
+  }
+
+  const pfName    = document.getElementById('pf-name');
+  const pfEmail   = document.getElementById('pf-email');
+  const pfBio     = document.getElementById('pf-bio');
+  const pfWebsite = document.getElementById('pf-website');
+  if (pfName)    pfName.value    = authorProfile.name    || '';
+  if (pfEmail)   pfEmail.value   = currentUser?.email    || '';
+  if (pfBio)     pfBio.value     = authorProfile.bio     || '';
+  if (pfWebsite) pfWebsite.value = authorProfile.website || '';
+}
+
+async function uploadAvatar(input) {
+  if (!input.files[0]) return;
+  try {
+    const f = input.files[0];
+    devLog('info', `📸 Kupakia avatar: ${f.name}`);
+    showAlert('info', 'Inapakia picha...');
+
+    const avatarPath = `avatars/${currentUser.id}_${Date.now()}_${sanitizeFilename(f.name)}`;
+    const avatarUrl  = await uploadFile('thumbnails', avatarPath, f);
+
+    const { error: updateErr } = await db.from('author_profiles')
+      .update({ avatar_url: avatarUrl, updated_at: new Date().toISOString() })
+      .eq('id', authorProfile.id);
+
+    if (updateErr) throw updateErr;
+
+    authorProfile.avatar_url = avatarUrl;
+    showAlert('success', 'Picha imebadilishwa!');
+    devLog('success', '✅ Avatar imesasishwa');
+    renderProfilePanel();
+    updateHeaderAndSidebar();
+  } catch (e) {
+    devLog('error', '❌ Avatar upload imeshindwa:', e);
+    showAlert('error', `Picha: ${e.message}`);
+  }
+}
+
+document.getElementById('profileForm')?.addEventListener('submit', async function(e) {
+  e.preventDefault();
+  try {
+    const name    = document.getElementById('pf-name')?.value.trim();
+    const bio     = document.getElementById('pf-bio')?.value.trim();
+    const website = document.getElementById('pf-website')?.value.trim();
+
+    if (!name) { showAlert('error', 'Jaza jina lako.'); return; }
+
+    devLog('info', `💾 Kusasisha profaili: name=${name}`);
+
+    const { error } = await db.from('author_profiles').update({
+      name, bio, website, updated_at: new Date().toISOString()
+    }).eq('id', authorProfile.id);
+
+    if (error) throw error;
+
+    // Update author_name on stories
+    try {
+      await db.from('stories').update({ author_name: name })
+        .or(`user_id.eq.${currentUser.id},author_id.eq.${authorProfile.id}`);
+    } catch (stErr) {
+      devLog('warn', '⚠️ Kushindwa kusasisha jina kwenye hadithi:', stErr.message);
+    }
+
+    authorProfile.name    = name;
+    authorProfile.bio     = bio;
+    authorProfile.website = website;
+
+    showAlert('success', 'Profaili imehifadhiwa!');
+    devLog('success', '✅ Profaili imesasishwa');
+    updateHeaderAndSidebar();
+  } catch (e) {
+    devLog('error', '❌ Profaili update imeshindwa:', e);
+    showAlert('error', e.message);
+  }
+});
+
+document.getElementById('passwordForm')?.addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const np = document.getElementById('pw-new')?.value;
+  const cp = document.getElementById('pw-confirm')?.value;
+  if (np !== cp)     { showAlert('error', 'Nenosiri hazifanani!'); return; }
+  if (np.length < 8) { showAlert('error', 'Nenosiri iwe na herufi 8 au zaidi!'); return; }
+  try {
+    const { error } = await db.auth.updateUser({ password: np });
+    if (error) throw error;
+    showAlert('success', 'Nenosiri limebadilishwa!');
+    devLog('success', '✅ Nenosiri limebadilishwa');
+    this.reset();
+  } catch (e) {
+    devLog('error', '❌ Kubadilisha nenosiri kumeshindwa:', e);
+    showAlert('error', e.message);
+  }
+});
+
+// ══════════════════════════════════════════════════════════════════
+//  SERIES
+// ══════════════════════════════════════════════════════════════════
+function openSeriesModal()  { document.getElementById('seriesModal')?.classList.add('show'); }
+function closeSeriesModal() {
+  document.getElementById('seriesModal')?.classList.remove('show');
+  document.getElementById('seriesForm')?.reset();
+  safeHTML('sr-thumb-prev', '');
+}
+
+document.getElementById('seriesForm')?.addEventListener('submit', async function(e) {
+  e.preventDefault();
+  devLog('info', '🚀 Kuunda series mpya...');
+  try {
+    let thumbUrl = null;
+    const tf = document.getElementById('sr-thumb')?.files[0];
+    if (tf) {
+      const tPath = `series/${currentUser.id}/${Date.now()}_${sanitizeFilename(tf.name)}`;
+      devLog('info', `📸 Inapakia series thumbnail: ${tPath}`);
+      thumbUrl = await uploadFile('thumbnails', tPath, tf);
+    }
+
+    const srTitle    = document.getElementById('sr-title')?.value.trim();
+    const srSeasons  = parseInt(document.getElementById('sr-seasons')?.value);
+    const srEpisodes = parseInt(document.getElementById('sr-episodes')?.value);
+    const srCategory = document.getElementById('sr-category')?.value;
+    const srSummary  = document.getElementById('sr-summary')?.value.trim();
+
+    if (!srTitle)    throw new Error('Jaza jina la series.');
+    if (!srCategory) throw new Error('Chagua kategoria ya series.');
+    if (!srSummary)  throw new Error('Andika maelezo ya series.');
+
+    const seriesRecord = {
+      title:          srTitle,
+      seasons:        srSeasons || 1,
+      total_episodes: srEpisodes || 1,
+      category:       srCategory,
+      summary:        srSummary,
+      thumbnail_url:  thumbUrl,
+      author_id:      authorProfile.id,
+      author_name:    authorProfile.name,
+      views:          0,
+      created_at:     new Date().toISOString()
+    };
+
+    devLog('info', '💾 Inahifadhi series:', seriesRecord);
+
+    const { data: insertedSeries, error: serErr } = await db
+      .from('series')
+      .insert(seriesRecord)
+      .select()
+      .single();
+
+    if (serErr) {
+      devLog('error', '❌ Insert ya series imeshindwa:', serErr);
+      throw new Error(`Database hitilafu: ${serErr.message}`);
+    }
+
+    devLog('success', '✅ Series imeundwa:', insertedSeries?.id);
+    showAlert('success', 'Series imeundwa!');
+    closeSeriesModal();
+    await loadMySeries();
+    populateSeriesDropdown();
+  } catch (e) {
+    devLog('error', '❌ Series create imeshindwa:', e);
+    showAlert('error', e.message);
+  }
+});
+
+async function loadMySeries() {
+  try {
+    devLog('info', `🔍 Inapakia series za author_id=${authorProfile.id}`);
+    const { data: series, error } = await db
+      .from('series')
+      .select('*')
+      .eq('author_id', authorProfile.id)
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+    mySeries = series || [];
+    devLog('success', `✅ Series ${mySeries.length} zimepatikana`);
+    renderSeriesGrid(mySeries);
+  } catch (e) {
+    devLog('error', '❌ Kupakia series kumeshindwa:', e);
+    showAlert('error', e.message);
+  }
+}
+
+function renderSeriesGrid(series) {
+  const grid = document.getElementById('series-grid');
+  if (!grid) return;
+  if (!series.length) {
+    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1;">
+      <i class="fas fa-film"></i>
+      <p>Huna series bado. Unda series yako ya kwanza!</p>
+    </div>`;
+    return;
+  }
+
+  grid.innerHTML = series.map(s => `
+    <div class="series-card">
+      <div class="series-card-img">
+        <img src="${s.thumbnail_url||''}" onerror="this.style.display='none'" alt="${s.title}">
+      </div>
+      <div class="series-card-body">
+        <div class="series-card-title">${s.title}</div>
+        <div class="series-card-meta">
+          <span><i class="fas fa-layer-group"></i> ${s.seasons||1} Season</span>
+          <span><i class="fas fa-film"></i> ${s.total_episodes||0} Ep</span>
+          <span><i class="fas fa-eye"></i> ${s.views||0}</span>
+        </div>
+        <div class="series-card-desc">${s.summary||'Hakuna maelezo.'}</div>
+        <div class="series-card-actions">
+          <button class="action-btn info" onclick="viewSeriesEpisodes('${s.id}','${(s.title||'').replace(/'/g,"\\'")}')">
+            <i class="fas fa-list"></i> Episodes
+          </button>
+          <button class="action-btn danger" onclick="deleteSeries('${s.id}')">
+            <i class="fas fa-trash"></i> Futa
+          </button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function populateSeriesDropdown() {
+  const sel = document.getElementById('ep-series-select');
+  if (!sel) return;
+  sel.innerHTML = '<option value="">-- Chagua series --</option>'
+    + mySeries.map(s => `<option value="${s.id}">${s.title}</option>`).join('');
+  devLog('debug', `Series dropdown: ${mySeries.length} series`);
+}
+
+async function deleteSeries(id) {
+  if (!confirm('Futa series hii na episodes zake zote?')) return;
+  devLog('warn', `🗑️ Kufuta series: ${id}`);
+  try {
+    await db.from('episodes').delete().eq('series_id', id);
+    const { error } = await db.from('series').delete().eq('id', id);
+    if (error) throw error;
+    showAlert('success', 'Series imefutwa!');
+    devLog('success', `✅ Series ${id} imefutwa`);
+    loadMySeries();
+  } catch (e) {
+    devLog('error', '❌ Kufuta series kumeshindwa:', e);
+    showAlert('error', e.message);
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════
+//  EPISODES
+// ══════════════════════════════════════════════════════════════════
+async function viewSeriesEpisodes(seriesId, seriesTitle) {
+  currentViewSeriesId = seriesId;
+  const titleEl = document.getElementById('episodes-modal-title');
+  if (titleEl) titleEl.textContent = seriesTitle;
+  document.getElementById('episodesModal')?.classList.add('show');
+  devLog('info', `📋 Kuona episodes za series: ${seriesId}`);
+
+  try {
+    const { data: eps, error } = await db
+      .from('episodes')
+      .select('*')
+      .eq('series_id', seriesId)
+      .order('season')
+      .order('episode_number');
+
+    if (error) throw error;
+    devLog('success', `✅ Episodes ${eps?.length||0} zimepatikana`);
+
+    const container = document.getElementById('episodes-list-container');
+    if (!container) return;
+
+    if (!eps?.length) {
+      container.innerHTML = '<div class="empty-state"><i class="fas fa-film"></i><p>Hakuna episodes bado.</p></div>';
+      return;
+    }
+
+    container.innerHTML = eps.map(ep => `
+      <div class="episode-item">
+        <div class="episode-number">S${ep.season}E${ep.episode_number}</div>
+        <div class="episode-info">
+          <div class="episode-title">${ep.title}</div>
+          <div class="episode-meta">
+            <i class="fas fa-eye"></i> ${ep.views||0} views &nbsp;|&nbsp;
+            ${ep.content_type||'text'} &nbsp;|&nbsp;
+            ${fmtDate(ep.created_at)}
+          </div>
+        </div>
+        <div class="episode-price">${ep.offer_type==='free'?'BURE':`${ep.price||0} TZS`}</div>
+        <button class="action-btn danger" onclick="deleteEpisode('${ep.id}','${seriesId}','${(seriesTitle||'').replace(/'/g,"\\'")}')">
+          <i class="fas fa-trash"></i>
+        </button>
+      </div>
+    `).join('');
+  } catch (e) {
+    devLog('error', '❌ Kupakia episodes kumeshindwa:', e);
+    showAlert('error', e.message);
+  }
+}
+
+function closeEpisodesModal() {
+  document.getElementById('episodesModal')?.classList.remove('show');
+}
+
+async function deleteEpisode(epId, seriesId, seriesTitle) {
+  if (!confirm('Futa episode hii?')) return;
+  devLog('warn', `🗑️ Kufuta episode: ${epId}`);
+  try {
+    const { error } = await db.from('episodes').delete().eq('id', epId);
+    if (error) throw error;
+    showAlert('success', 'Episode imefutwa!');
+    devLog('success', `✅ Episode ${epId} imefutwa`);
+    viewSeriesEpisodes(seriesId, seriesTitle);
+  } catch (e) {
+    devLog('error', '❌ Kufuta episode kumeshindwa:', e);
+    showAlert('error', e.message);
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════
+//  MODAL: Close on overlay click
+// ══════════════════════════════════════════════════════════════════
+['seriesModal','episodesModal','deleteModal'].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) {
+    el.addEventListener('click', function(e) {
+      if (e.target === this) {
+        this.classList.remove('show');
+        if (id === 'deleteModal') storyToDelete = null;
+      }
+    });
+  }
+});
+
+// ══════════════════════════════════════════════════════════════════
+//  AUTH STATE
+// ══════════════════════════════════════════════════════════════════
+db.auth.onAuthStateChange((event, session) => {
+  devLog('info', `🔐 Auth state: ${event}`);
+  if (event === 'SIGNED_OUT') {
+    window.location.href = 'author.html';
+  }
+});
+
+// ══════════════════════════════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════════════════════════════
+window.addEventListener('DOMContentLoaded', () => {
+  devLog('info', '🌟 StoriesZone Dashboard imeanza!');
+  devLog('info', `📅 Tarehe: ${new Date().toLocaleString('sw')}`);
+  devLog('info', `🌐 URL: ${window.location.href}`);
+  loadAllData();
+});
+</script>
+</body>
+</html>

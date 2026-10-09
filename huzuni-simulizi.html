@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STORIES ZONE | Hadithi za Huzuni Simulizi</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #0d0d0d;
+            color: #f5f5f5;
+            overflow-x: hidden;
+        }
+        
+        header {
+            background-color: #3498db;
+            padding: 0.5rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .logo-container img {
+            height: 30px;
+            width: auto;
+        }
+        
+        .logo-text {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #000;
+            margin-left: 10px;
+        }
+        
+        nav {
+            margin-top: 10px;
+            display: flex;
+            justify-content: center;
+        }
+        
+        nav a {
+            color: #000;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 5px 10px;
+            margin: 0 5px;
+        }
+        
+        .marquee-container {
+            width: 100%;
+            overflow: hidden;
+            background-color: #1a1a1a;
+            padding: 0.3rem 0;
+            border-top: 1px solid #3498db;
+            border-bottom: 1px solid #3498db;
+        }
+        
+        .marquee-content {
+            color: #3498db;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            animation: marquee 20s linear infinite;
+        }
+        
+        @keyframes marquee {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+        
+        .main-container {
+            padding: 10px;
+            margin-bottom: 50px;
+        }
+        
+        .search-container {
+            margin: 10px auto;
+            width: 90%;
+            max-width: 500px;
+        }
+        
+        #search-input {
+            width: 100%;
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #3498db;
+            background-color: #1a1a1a;
+            color: white;
+        }
+        
+        .videos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 10px;
+            padding: 10px;
+        }
+        
+        .video-item {
+            background-color: #1a1a1a;
+            border-radius: 5px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.2s;
+            border: 1px solid #3498db40;
+        }
+        
+        .video-item:hover {
+            transform: scale(1.03);
+            box-shadow: 0 0 10px #3498db80;
+        }
+        
+        .video-thumbnail {
+            position: relative;
+            width: 100%;
+            padding-top: 56.25%;
+        }
+        
+        .video-thumbnail img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .play-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 2rem;
+            opacity: 0.8;
+        }
+        
+        .video-info {
+            padding: 8px;
+        }
+        
+        .video-title {
+            font-size: 0.8rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: #3498db;
+        }
+        
+        .video-duration {
+            font-size: 0.7rem;
+            color: #aaa;
+            margin-top: 3px;
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        
+        .page-btn {
+            padding: 5px 10px;
+            margin: 5px;
+            background-color: #1a1a1a;
+            border: 1px solid #3498db;
+            color: #3498db;
+            border-radius: 3px;
+            cursor: pointer;
+            min-width: 30px;
+            text-align: center;
+        }
+        
+        .page-btn.active {
+            background-color: #3498db;
+            color: #000;
+        }
+        
+        .page-btn.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .video-player-container {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.9);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .video-player {
+            width: 95%;
+            max-width: 800px;
+            position: relative;
+        }
+        
+        .close-player {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            z-index: 1001;
+        }
+        
+        .service-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #ff0000;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            cursor: pointer;
+        }
+        
+        footer {
+            background-color: #000;
+            color: #999;
+            text-align: center;
+            padding: 0.5rem;
+            font-size: 0.7rem;
+            border-top: 1px solid #3498db;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #3498db;
+        }
+        
+        #payment-prompt {
+            display: none;
+            text-align: center;
+            padding: 20px;
+            background: #1a1a1a;
+            border-radius: 10px;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        
+        #payment-prompt h3 {
+            color: #3498db;
+            margin-top: 0;
+        }
+        
+        #payment-prompt p {
+            margin-bottom: 20px;
+        }
+        
+        .payment-methods {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        
+        .payment-btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            min-width: 120px;
+            justify-content: center;
+        }
+        
+        .payment-btn i {
+            margin-right: 8px;
+        }
+        
+        .payment-btn.tigo {
+            background: #ff6600;
+        }
+        
+        .payment-note {
+            font-size: 0.8rem;
+            color: #aaa;
+            margin-top: 15px;
+        }
+        
+        .payment-instructions {
+            background: #1a1a1a;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+            text-align: left;
+        }
+        
+        .payment-number {
+            font-weight: bold;
+            color: #ff6600;
+            font-size: 1.2rem;
+            margin: 10px 0;
+        }
+        
+        .payment-steps {
+            margin-top: 10px;
+            padding-left: 20px;
+        }
+        
+        .payment-steps li {
+            margin-bottom: 8px;
+        }
+        
+        .tigo-color {
+            color: #ff6600;
+        }
+
+        /* Payment status indicators */
+        .payment-status {
+            display: none;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+            text-align: center;
+        }
+        
+        .payment-status.success {
+            background-color: rgba(46, 204, 113, 0.2);
+            border: 1px solid #2ecc71;
+            color: #2ecc71;
+            display: block;
+        }
+        
+        .payment-status.error {
+            background-color: rgba(231, 76, 60, 0.2);
+            border: 1px solid #e74c3c;
+            color: #e74c3c;
+            display: block;
+        }
+
+        /* Custom Alert Styles */
+        .custom-alert {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #2ecc71;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 1000;
+            transform: translateX(120%);
+            transition: transform 0.3s ease-out;
+        }
+
+        .custom-alert.show {
+            transform: translateX(0);
+        }
+
+        .custom-alert.error {
+            background-color: #ff0000;
+        }
+
+        .custom-alert i {
+            font-size: 1.5rem;
+        }
+
+        .custom-alert .close-btn {
+            margin-left: 15px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        /* Payment Form Styles */
+        .payment-form {
+            display: none;
+            margin-top: 15px;
+        }
+
+        .payment-form input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #3498db;
+            border-radius: 5px;
+            background-color: #0d0d0d;
+            color: white;
+        }
+
+        .payment-form button {
+            background: #ff6600;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        @media (max-width: 600px) {
+            .videos-grid {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            }
+            
+            .payment-methods {
+                flex-direction: column;
+            }
+            
+            .payment-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo-container">
+            <div class="logo-text">STORIES ZONE</div>
+        </div>
+        <nav>
+            <a href="#">Nyumbani</a>
+            <a href="#">Huduma</a>
+        </nav>
+    </header>
+    
+    <div class="marquee-container">
+        <div class="marquee-content">
+            ✨ HADITHI ZA HUZUNI ZINAZOVUTIA MIOYO ✨ | SIKILIZA STORIA ZA MAISHA YALIYOKUWA MAGUMU ✨ | SHARE NA MARAFIKI ✨
+        </div>
+    </div>
+    
+    <div class="main-container">
+        <div class="search-container">
+            <input type="text" id="search-input" placeholder="Tafuta video...">
+        </div>
+        
+        <div id="loading" class="loading">
+            <i class="fas fa-spinner fa-spin"></i> Inapakia video...
+        </div>
+        
+        <div class="videos-grid" id="videos-container"></div>
+        
+        <div class="pagination" id="pagination"></div>
+    </div>
+    
+    <div id="video-player" class="video-player-container">
+        <div class="video-player">
+            <span class="close-player" onclick="closeVideo()"><i class="fas fa-times"></i></span>
+            
+            <div id="payment-prompt">
+                <h3>Malipo ya Video</h3>
+                <p>Unahitaji kulipa TZS <span id="payment-amount"></span> kwa video hii. Baada ya malipo, utaweza kuiona mara nyingine bila kulipa tena.</p>
+                
+                <div class="payment-instructions">
+                    <p>Tafadhali fanya malipo ya TZS <span id="payment-amount-instructions"></span> kwa:</p>
+                    <div class="payment-number">22258408 (Tigo Pesa)</div>
+                    <p>Mfumo wetu utathibitisha malipo yako moja kwa moja.</p>
+                    
+                    <ol class="payment-steps">
+                        <li>Nenda kwenye Tigo Pesa yako</li>
+                        <li>Chagua "Lipa kwa Namba"</li>
+                        <li>Weka namba: <strong class="tigo-color">22258408</strong></li>
+                        <li>Weka kiasi: <strong class="tigo-color" id="payment-amount-step"></strong></li>
+                        <li>Weka nenosiri lako</li>
+                        <li>Thibitisha jina "<strong>OMARI SHOP10</strong>"</li>
+                        <li>Bonyeza kutuma</li>
+                    </ol>
+                </div>
+                
+                <div class="payment-methods">
+                    <button class="payment-btn tigo" onclick="showPaymentForm()">
+                        <i class="fas fa-mobile-alt"></i> Lipa kwa Tigo Pesa
+                    </button>
+                </div>
+                
+                <p class="payment-note">Thibitisha malipo yako kwa kupiga *150*01#</p>
+
+                <div id="payment-status" class="payment-status"></div>
+                <div id="payment-form" class="payment-form">
+                    <input type="tel" id="tigo-number" placeholder="Weka namba ya Tigo (065, 067, 071)" required>
+                    <button onclick="initiateTigoPesaPayment()">Tuma Malipo</button>
+                </div>
+            </div>
+            
+            <video controls autoplay id="main-video" style="width:100%; display:none;">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+    </div>
+    
+    <footer>
+        © <span id="current-year"></span> STORIES ZONE - Hadithi za Huzuni Simulizi
+    </footer>
+
+    <script>
+        // Supabase Configuration
+        const supabaseUrl = 'https://vknaovalrilbpfgveqnj.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZrbmFvdmFscmlsYnBmZ3ZlcW5qIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkwMzQ2NjAsImV4cCI6MjA2NDYxMDY2MH0.uIKjFXMbKg0l0bIxTZpMF0QRh1BsDdPWsWK0G2kzqT8';
+        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+        // Configuration
+        const VIDEOS_PER_PAGE = 20;
+        const TIGO_PESA_LIPA_NAMBER = '22258408';
+        
+        // State
+        let currentPage = 1;
+        let totalVideos = 0;
+        let allVideos = [];
+        let currentVideoId = null;
+        let currentVideoUrl = null;
+        let currentVideoTitle = null;
+        let currentVideoPrice = 0;
+        
+        // DOM Elements
+        const videosContainer = document.getElementById('videos-container');
+        const paginationElement = document.getElementById('pagination');
+        const searchInput = document.getElementById('search-input');
+        const loadingElement = document.getElementById('loading');
+        const currentYearElement = document.getElementById('current-year');
+        const paymentPrompt = document.getElementById('payment-prompt');
+        const videoElement = document.getElementById('main-video');
+        const paymentStatusElement = document.getElementById('payment-status');
+        const paymentForm = document.getElementById('payment-form');
+        const paymentAmount = document.getElementById('payment-amount');
+        const paymentAmountInstructions = document.getElementById('payment-amount-instructions');
+        const paymentAmountStep = document.getElementById('payment-amount-step');
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            currentYearElement.textContent = new Date().getFullYear();
+            loadVideos();
+        });
+        
+        // Function to show custom alert
+        function showCustomAlert(type, message) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `custom-alert ${type}`;
+            alertDiv.innerHTML = `
+                <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i>
+                <span>${message}</span>
+                <span class="close-btn" onclick="this.parentElement.remove()">×</span>
+            `;
+            
+            document.body.appendChild(alertDiv);
+            
+            setTimeout(() => {
+                alertDiv.classList.add('show');
+            }, 10);
+            
+            setTimeout(() => {
+                alertDiv.classList.remove('show');
+                setTimeout(() => {
+                    alertDiv.remove();
+                }, 300);
+            }, 5000);
+        }
+
+        // Function to load videos from Supabase
+        async function loadVideos() {
+            try {
+                loadingElement.style.display = 'block';
+                videosContainer.innerHTML = '';
+                
+                const { data: videos, error } = await supabase
+                    .from('videos')
+                    .select('*')
+                    .eq('category', 'huzuni-simulizi')
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                allVideos = videos.map(video => ({
+                    id: video.id,
+                    title: video.title,
+                    thumbnailUrl: video.thumbnail_url || 'https://via.placeholder.com/300x169?text=No+Thumbnail',
+                    videoUrl: video.video_url,
+                    duration: video.duration || 0,
+                    price: video.price || 0
+                }));
+
+                totalVideos = allVideos.length;
+                displayVideos(allVideos, currentPage);
+                loadingElement.style.display = 'none';
+            } catch (error) {
+                console.error('Error fetching videos:', error);
+                videosContainer.innerHTML = '<p style="color:red; text-align:center; grid-column:1/-1;">Hitilafu katika kupakia video. Tafadhali jaribu tena baadaye.</p>';
+                loadingElement.style.display = 'none';
+            }
+        }
+        
+        // Display videos in grid
+        function displayVideos(videos, page) {
+            videosContainer.innerHTML = '';
+            const start = (page - 1) * VIDEOS_PER_PAGE;
+            const end = start + VIDEOS_PER_PAGE;
+            const paginatedVideos = videos.slice(start, end);
+            
+            if (paginatedVideos.length === 0) {
+                videosContainer.innerHTML = '<p style="text-align:center; grid-column:1/-1;">Hakuna video zilizopatikana.</p>';
+                return;
+            }
+            
+            paginatedVideos.forEach(async video => {
+                const videoItem = document.createElement('div');
+                videoItem.className = 'video-item';
+                
+                const isPaid = await hasPaidForVideo(video.id);
+                
+                videoItem.innerHTML = `
+                    <div class="video-thumbnail" onclick="playVideo('${video.id}', '${video.videoUrl}', '${video.title.replace(/'/g, "\\'")}', ${video.price})">
+                        <img src="${video.thumbnailUrl}" alt="${video.title}" onerror="this.src='https://via.placeholder.com/300x169?text=No+Thumbnail'">
+                        <div class="play-icon"><i class="fas fa-play"></i></div>
+                        ${isPaid ? '<div style="position:absolute; top:5px; right:5px; background:green; color:white; padding:2px 5px; border-radius:3px; font-size:0.7rem;">ImeLipwa</div>' : ''}
+                    </div>
+                    <div class="video-info">
+                        <div class="video-title" title="${video.title}">${video.title}</div>
+                        <div class="video-duration">${formatDuration(video.duration)}</div>
+                        ${!isPaid && video.price > 0 ? `<div style="color:#3498db; font-size:0.7rem; margin-top:3px;">TZS ${video.price.toLocaleString()}</div>` : ''}
+                    </div>
+                `;
+                
+                videosContainer.appendChild(videoItem);
+            });
+            
+            setupPagination(videos.length, page);
+        }
+        
+        // Format duration (seconds to MM:SS)
+        function formatDuration(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins}:${secs.toString().padStart(2, '0')}`;
+        }
+        
+        // Setup pagination
+        function setupPagination(totalVideos, currentPage) {
+            paginationElement.innerHTML = '';
+            const pageCount = Math.ceil(totalVideos / VIDEOS_PER_PAGE);
+            const maxVisiblePages = 5;
+            
+            const prevBtn = document.createElement('button');
+            prevBtn.className = `page-btn ${currentPage === 1 ? 'disabled' : ''}`;
+            prevBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
+            prevBtn.onclick = () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    displayVideos(allVideos, currentPage);
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+            };
+            paginationElement.appendChild(prevBtn);
+            
+            const startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+            const endPage = Math.min(pageCount, startPage + maxVisiblePages - 1);
+            
+            for (let i = startPage; i <= endPage; i++) {
+                const pageBtn = document.createElement('button');
+                pageBtn.className = `page-btn ${i === currentPage ? 'active' : ''}`;
+                pageBtn.textContent = i;
+                pageBtn.onclick = () => {
+                    currentPage = i;
+                    displayVideos(allVideos, currentPage);
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                };
+                paginationElement.appendChild(pageBtn);
+            }
+            
+            const nextBtn = document.createElement('button');
+            nextBtn.className = `page-btn ${currentPage === pageCount ? 'disabled' : ''}`;
+            nextBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
+            nextBtn.onclick = () => {
+                if (currentPage < pageCount) {
+                    currentPage++;
+                    displayVideos(allVideos, currentPage);
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+            };
+            paginationElement.appendChild(nextBtn);
+        }
+        
+        // Check if video is paid for in Supabase
+        async function hasPaidForVideo(videoId) {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (!user) return false;
+
+            const { data, error } = await supabase
+                .from('payments')
+                .select('*')
+                .eq('user_id', user.id)
+                .eq('video_id', videoId)
+                .eq('status', 'paid')
+                .single();
+
+            return !error && data;
+        }
+        
+        // Mark video as paid in Supabase
+        async function markVideoAsPaid(videoId, userId) {
+            const { error } = await supabase
+                .from('payments')
+                .insert({
+                    user_id: userId,
+                    video_id: videoId,
+                    amount: currentVideoPrice,
+                    status: 'paid',
+                    created_at: new Date().toISOString()
+                });
+
+            if (error) {
+                throw error;
+            }
+        }
+        
+        // Play video function
+        async function playVideo(videoId, videoUrl, videoTitle, price) {
+            currentVideoId = videoId;
+            currentVideoUrl = videoUrl;
+            currentVideoTitle = videoTitle;
+            currentVideoPrice = price;
+            const playerContainer = document.getElementById('video-player');
+            
+            paymentAmount.textContent = price.toLocaleString();
+            paymentAmountInstructions.textContent = price.toLocaleString();
+            paymentAmountStep.textContent = price.toLocaleString();
+
+            const isPaid = await hasPaidForVideo(videoId);
+            
+            if (isPaid) {
+                paymentPrompt.style.display = 'none';
+                videoElement.style.display = 'block';
+                videoElement.src = videoUrl;
+                playerContainer.style.display = 'flex';
+                videoElement.play().catch(e => console.error('Video play failed:', e));
+            } else if (price > 0) {
+                paymentPrompt.style.display = 'block';
+                videoElement.style.display = 'none';
+                playerContainer.style.display = 'flex';
+                paymentStatusElement.className = 'payment-status';
+                paymentStatusElement.textContent = '';
+                paymentForm.style.display = 'none';
+            } else {
+                paymentPrompt.style.display = 'none';
+                videoElement.style.display = 'block';
+                videoElement.src = videoUrl;
+                playerContainer.style.display = 'flex';
+                videoElement.play().catch(e => console.error('Video play failed:', e));
+            }
+        }
+        
+        // Show payment form
+        function showPaymentForm() {
+            paymentForm.style.display = 'block';
+        }
+
+        // Initiate Tigo Pesa payment
+        async function initiateTigoPesaPayment() {
+            const phoneNumber = document.getElementById('tigo-number').value;
+
+            if (!phoneNumber) {
+                showPaymentStatus("Tafadhali ingiza namba yako ya Tigo Pesa.", "error");
+                return;
+            }
+            
+            if (!/^(065|067|071)\d{7}$/.test(phoneNumber)) {
+                showPaymentStatus("Namba ya simu si sahihi. Tafadhali tumia namba ya Tigo Pesa (065, 067, 071).", "error");
+                return;
+            }
+            
+            try {
+                paymentPrompt.innerHTML = `
+                    <h3 class="tigo-color">Inatuma ombi la malipo...</h3>
+                    <p>Tafadhali subiri, mfumo unatuma ombi la malipo kwenye Tigo Pesa yako</p>
+                    <div style="margin: 20px 0;">
+                        <i class="fas fa-spinner fa-spin fa-2x tigo-color"></i>
+                    </div>
+                    <p>Unaweza kupokea ujumbe kutoka Tigo Pesa kwa thibitisho</p>
+                    <div id="payment-status" class="payment-status"></div>
+                `;
+                
+                const { data: { user } } = await supabase.auth.getUser();
+                if (!user) {
+                    showPaymentStatus("Tafadhali ingia kwanza ili uweze kulipa.", "error");
+                    return;
+                }
+
+                const paymentResponse = await simulateTigoPesaPayment(phoneNumber);
+                
+                if (paymentResponse.success) {
+                    await markVideoAsPaid(currentVideoId, user.id);
+                    completePayment();
+                    showCustomAlert('success', '🎉 Malipo yako yamefanikiwa! Video imefunguliwa.');
+                } else {
+                    showPaymentStatus(paymentResponse.message || "Malipo yamesitishwa. Tafadhali jaribu tena.", "error");
+                }
+            } catch (error) {
+                console.error("Payment error:", error);
+                showPaymentStatus("Kuna hitilafu katika mchakato wa malipo. Tafadhali jaribu tena.", "error");
+            }
+        }
+        
+        // Show payment status
+        function showPaymentStatus(message, type) {
+            paymentStatusElement.className = `payment-status ${type}`;
+            paymentStatusElement.textContent = message;
+            paymentStatusElement.style.display = 'block';
+        }
+        
+        // Simulate Tigo Pesa API (replace with real API in production)
+        async function simulateTigoPesaPayment(phoneNumber) {
+            return new Promise(resolve => {
+                setTimeout(() => {
+                    resolve({
+                        success: true,
+                        transactionId: 'TIGO' + Math.random().toString(36).substr(2, 9).toUpperCase(),
+                        message: "Malipo yamefanikiwa"
+                    });
+                }, 3000);
+            });
+        }
+        
+        // Complete payment process
+        function completePayment() {
+            paymentPrompt.style.display = 'none';
+            videoElement.style.display = 'block';
+            videoElement.src = currentVideoUrl;
+            videoElement.play().catch(e => console.error('Video play failed:', e));
+        }
+        
+        // Close video player
+        function closeVideo() {
+            const playerContainer = document.getElementById('video-player');
+            videoElement.pause();
+            videoElement.src = '';
+            playerContainer.style.display = 'none';
+            
+            paymentPrompt.innerHTML = `
+                <h3>Malipo ya Video</h3>
+                <p>Unahitaji kulipa TZS <span id="payment-amount">${currentVideoPrice.toLocaleString()}</span> kwa video hii. Baada ya malipo, utaweza kuiona mara nyingine bila kulipa tena.</p>
+                
+                <div class="payment-instructions">
+                    <p>Tafadhali fanya malipo ya TZS <span id="payment-amount-instructions">${currentVideoPrice.toLocaleString()}</span> kwa:</p>
+                    <div class="payment-number">22258408 (Tigo Pesa)</div>
+                    <p>Mfumo wetu utathibitisha malipo yako moja kwa moja.</p>
+                    
+                    <ol class="payment-steps">
+                        <li>Nenda kwenye Tigo Pesa yako</li>
+                        <li>Chagua "Lipa kwa Namba"</li>
+                        <li>Weka namba: <strong class="tigo-color">22258408</strong></li>
+                        <li>Weka kiasi: <strong class="tigo-color" id="payment-amount-step">${currentVideoPrice.toLocaleString()}</strong></li>
+                        <li>Weka nenosiri lako</li>
+                        <li>Thibitisha jina "<strong>OMARI SHOP10</strong>"</li>
+                        <li>Bonyeza kutuma</li>
+                    </ol>
+                </div>
+                
+                <div class="payment-methods">
+                    <button class="payment-btn tigo" onclick="showPaymentForm()">
+                        <i class="fas fa-mobile-alt"></i> Lipa kwa Tigo Pesa
+                    </button>
+                </div>
+                
+                <p class="payment-note">Thibitisha malipo yako kwa kupiga *150*01#</p>
+                <div id="payment-status" class="payment-status"></div>
+                <div id="payment-form" class="payment-form">
+                    <input type="tel" id="tigo-number" placeholder="Weka namba ya Tigo (065, 067, 071)" required>
+                    <button onclick="initiateTigoPesaPayment()">Tuma Malipo</button>
+                </div>
+            `;
+        }
+        
+        // Search functionality
+        searchInput.addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase().trim();
+            
+            if (searchTerm === '') {
+                displayVideos(allVideos, 1);
+                currentPage = 1;
+                return;
+            }
+            
+            const filteredVideos = allVideos.filter(video => 
+                video.title.toLowerCase().includes(searchTerm)
+            );
+            
+            currentPage = 1;
+            displayVideos(filteredVideos, currentPage);
+        });
+        
+        // Close video player when clicking outside
+        document.getElementById('video-player').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeVideo();
+            }
+        });
+
+        // Make functions available globally
+        window.playVideo = playVideo;
+        window.initiateTigoPesaPayment = initiateTigoPesaPayment;
+        window.closeVideo = closeVideo;
+        window.showPaymentForm = showPaymentForm;
+    </script>
+</body>
+</html>

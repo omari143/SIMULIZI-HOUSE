@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trending Videos - SIMULIZI HOUSE</title>
+  <style>
+    :root {
+      --primary: #FF3D81;
+      --secondary: #00F0FF;
+      --dark: #0A0A12;
+      --darker: #05050A;
+      --light: #E6E6FA;
+      --gray: #1F1F2E;
+      --light-gray: #A0A0C0;
+      --whatsapp-green: #25D366;
+      --neon-pink: #FF1F8A;
+      --neon-cyan: #00F0FF;
+      --header-bg-start: #1B0034;
+      --header-bg-end: #3A006F;
+      --accent-purple: #8A2BE2;
+      --accent-blue: #1E90FF;
+      --transition: all 0.4s ease;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+      overflow-x: hidden;
+      font-family: 'Poppins', 'Inter', 'Nunito Sans', sans-serif;
+      background: linear-gradient(180deg, #FFFFFF 0%, #F5F5F5 100%);
+      color: #000000;
+      scroll-behavior: smooth;
+      user-select: none;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+    }
+
+    body.dark-theme {
+      background: linear-gradient(180deg, var(--dark) 0%, var(--darker) 100%);
+      color: var(--light);
+    }
+
+    /* Header Styles */
+    header {
+      background: linear-gradient(135deg, #FFFFFF, #F0F0F0);
+      padding: 0.5rem 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    body.dark-theme header {
+      background: linear-gradient(135deg, var(--header-bg-start), var(--header-bg-end));
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-container img {
+      height: 60px;
+      border-radius: 50%;
+      border: 2px solid var(--neon-cyan);
+      box-shadow: 0 0 10px var(--neon-pink);
+      animation: spinGlow 3s linear infinite;
+      transition: var(--transition);
+    }
+
+    .logo-container img:hover {
+      transform: scale(1.1);
+    }
+
+    @keyframes spinGlow {
+      0% { box-shadow: 0 0 10px var(--neon-pink); }
+      50% { box-shadow: 0 0 15px var(--neon-cyan); }
+      100% { box-shadow: 0 0 10px var(--neon-pink); }
+    }
+
+    .logo-text {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--neon-pink);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      text-shadow: 0 0 5px rgba(255, 31, 138, 0.3);
+      line-height: 1;
+    }
+
+    body.dark-theme .logo-text {
+      color: var(--secondary);
+    }
+
+    .nav-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .nav-btn {
+      background: var(--neon-pink);
+      color: #FFFFFF;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      box-shadow: 0 0 10px rgba(255, 31, 138, 0.3);
+      animation: pulse 2s infinite ease-in-out;
+    }
+
+    .nav-btn:hover {
+      background: var(--neon-cyan);
+      box-shadow: 0 0 15px rgba(0, 240, 255, 0.5);
+      transform: scale(1.1);
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 0 10px rgba(255, 31, 138, 0.3);
+      }
+      50% {
+        transform: scale(1.05);
+        box-shadow: 0 0 15px rgba(0, 240, 255, 0.5);
+      }
+    }
+
+    .back-btn {
+      background: var(--neon-cyan);
+      color: #000000;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      box-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
+    }
+
+    .back-btn:hover {
+      background: var(--neon-pink);
+      color: #FFFFFF;
+      box-shadow: 0 0 15px rgba(255, 31, 138, 0.5);
+      transform: scale(1.1);
+    }
+
+    /* Page Header */
+    .page-header {
+      background: linear-gradient(135deg, var(--neon-pink), var(--neon-cyan));
+      color: #000000;
+      text-align: center;
+      padding: 3rem 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .page-title {
+      font-size: 3rem;
+      font-weight: 800;
+      margin-bottom: 1rem;
+      text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+    }
+
+    .page-subtitle {
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+
+    /* Main Container */
+    .main-container {
+      padding: 2rem;
+      max-width: 1600px;
+      margin: 0 auto;
+    }
+
+    /* Video Grid */
+    .videos-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 2rem;
+      margin-bottom: 2rem;
+      animation: fadeIn 0.6s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .video-card {
+      background: #FFFFFF;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      transition: var(--transition);
+      cursor: pointer;
+      position: relative;
+      border: 1px solid #E0E0E0;
+    }
+
+    body.dark-theme .video-card {
+      background: linear-gradient(135deg, rgba(31, 31, 46, 0.9), rgba(10, 10, 18, 0.95));
+      border-color: rgba(0, 240, 255, 0.3);
+    }
+
+    .video-card:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 12px 30px rgba(255, 31, 138, 0.4), 0 0 20px rgba(0, 240, 255, 0.4);
+      border-color: var(--neon-pink);
+    }
+
+    .video-thumbnail {
+      width: 100%;
+      position: relative;
+      overflow: hidden;
+      background: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 200px;
+    }
+
+    .video-thumbnail img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      transition: transform 0.4s ease;
+    }
+
+    .video-card:hover .video-thumbnail img {
+      transform: scale(1.1);
+      filter: brightness(1.2);
+    }
+
+    .play-overlay {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(255, 31, 138, 0.8);
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #FFFFFF;
+      font-size: 1.5rem;
+      transition: var(--transition);
+      opacity: 0.9;
+    }
+
+    .video-card:hover .play-overlay {
+      background: rgba(0, 240, 255, 0.9);
+      transform: translate(-50%, -50%) scale(1.1);
+    }
+
+    .video-badge {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: linear-gradient(135deg, var(--neon-pink), var(--neon-cyan));
+      color: #000;
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 0.7rem;
+      font-weight: 800;
+      z-index: 10;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+      text-transform: uppercase;
+    }
+
+    .video-duration {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      background: rgba(0, 0, 0, 0.8);
+      color: #FFFFFF;
+      padding: 2px 6px;
+      border-radius: 8px;
+      font-size: 0.7rem;
+      font-weight: 600;
+    }
+
+    .video-content {
+      padding: 1rem;
+    }
+
+    .video-title {
+      font-size: 1rem;
+      margin: 0;
+      color: #000000;
+      font-weight: 700;
+      line-height: 1.3;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      margin-bottom: 0.5rem;
+    }
+
+    body.dark-theme .video-title {
+      color: var(--neon-cyan);
+      text-shadow: 0 0 5px rgba(0, 240, 255, 0.3);
+    }
+
+    .video-description {
+      font-size: 0.8rem;
+      color: #666666;
+      line-height: 1.4;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      margin-bottom: 1rem;
+    }
+
+    body.dark-theme .video-description {
+      color: var(--light-gray);
+    }
+
+    .video-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .video-price {
+      font-weight: 800;
+      font-size: 0.8rem;
+      background: linear-gradient(135deg, var(--neon-pink), var(--neon-cyan));
+      color: #000;
+      padding: 4px 8px;
+      border-radius: 10px;
+      transition: var(--transition);
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    }
+
+    .video-price:hover {
+      transform: scale(1.08);
+    }
+
+    .video-category {
+      padding: 0.3rem 0.6rem;
+      border-radius: 10px;
+      font-size: 0.7rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      background: var(--accent-blue);
+      color: #FFFFFF;
+    }
+
+    .video-stats {
+      display: flex;
+      gap: 15px;
+      align-items: center;
+      padding: 0.5rem 0;
+      border-top: 1px solid rgba(160, 160, 192, 0.2);
+      margin-top: 0.5rem;
+    }
+
+    .video-stat {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.75rem;
+      color: #666666;
+    }
+
+    body.dark-theme .video-stat {
+      color: var(--light-gray);
+    }
+
+    .video-actions {
+      display: flex;
+      justify-content: space-between;
+      gap: 0.5rem;
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid rgba(160, 160, 192, 0.2);
+    }
+
+    .watch-btn {
+      background: linear-gradient(135deg, var(--neon-pink), var(--accent-purple));
+      color: #FFF;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: var(--transition);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      box-shadow: 0 2px 8px rgba(255, 31, 138, 0.4);
+      flex: 1;
+    }
+
+    .watch-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 12px rgba(0, 240, 255, 0.6);
+      background: linear-gradient(135deg, var(--neon-cyan), var(--neon-pink));
+    }
+
+    .share-btn {
+      background: var(--whatsapp-green);
+      color: #FFFFFF;
+      border: none;
+      padding: 0.5rem;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .share-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Loading Spinner */
+    .loading-spinner {
+      text-align: center;
+      padding: 3rem;
+      grid-column: 1 / -1;
+    }
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid rgba(0, 240, 255, 0.3);
+      border-top-color: var(--neon-pink);
+      border-radius: 50%;
+      animation: spin 1s ease-in-out infinite;
+      margin: 0 auto 1rem;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Footer */
+    footer {
+      background: #F5F5F5;
+      color: #666666;
+      text-align: center;
+      padding: 1.5rem;
+      font-size: 0.8rem;
+      border-top: 2px solid var(--neon-pink);
+      margin-top: 3rem;
+    }
+
+    body.dark-theme footer {
+      background: var(--darker);
+      color: var(--light-gray);
+    }
+
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .social-links {
+      color: #000000;
+      font-size: 1.5rem;
+      transition: var(--transition);
+      margin: 0 15px;
+    }
+
+    body.dark-theme .social-links {
+      color: var(--light);
+    }
+
+    .social-links a:hover {
+      color: var(--neon-cyan);
+      transform: scale(1.2);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .page-title {
+        font-size: 2rem;
+      }
+
+      .page-subtitle {
+        font-size: 1rem;
+      }
+
+      .videos-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 1.5rem;
+      }
+
+      .main-container {
+        padding: 1rem;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .videos-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+
+      .page-header {
+        padding: 2rem 1rem;
+      }
+
+      .page-title {
+        font-size: 1.8rem;
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=Inter:wght@400;600;700;800&family=Nunito+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+  <header>
+    <div class="logo-container">
+      <img src="/Picsart_26-05-13_01-57-22-165.png" alt="SIMULIZI HOUSE Logo">
+      <div class="logo-text">SIMULIZI HOUSE</div>
+    </div>
+    <div class="nav-container">
+      <a href="index.html" class="back-btn">
+        <i class="fas fa-arrow-left"></i> Nyumbani
+      </a>
+    </div>
+  </header>
+
+  <div class="page-header">
+    <h1 class="page-title">Trending Videos</h1>
+    <p class="page-subtitle">Video Zilizovutia Zaidi Kwa Sasa</p>
+  </div>
+
+  <div class="main-container">
+    <div class="videos-grid" id="trendingVideosGrid">
+      <div class="loading-spinner">
+        <div class="spinner"></div>
+        <p>Inapakia video...</p>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-content">
+      <div class="social-links">
+        <a href="https://www.facebook.com/profile.php?id=100079473949932" target="_blank"><i class="fab fa-facebook"></i></a>
+        <a href="https://x.com/storieszone" target="_blank"><i class="fab fa-twitter"></i></a>
+        <a href="https://instagram.com/storieszone" target="_blank"><i class="fab fa-instagram"></i></a>
+        <a href="https://youtube.com/@storieszone" target="_blank"><i class="fab fa-youtube"></i></a>
+      </div>
+      <p>© <span id="current-year"></span> SIMULIZI HOUSE- Hadithi za Kisasa</p>
+      <p>Haki Zote Zimehifadhiwa</p>
+    </div>
+  </footer>
+
+  <script>
+    // Initialize Supabase with different variable name to avoid CDN conflict
+    const supabaseUrl = 'https://btnzevupmwsdubpgjpds.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ0bnpldnVwbXdzZHVicGdqcGRzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAyNDEyMzAsImV4cCI6MjA2NTgxNzIzMH0.Cn36rmP6IeSI-LfTUgViCcpBzeqlpplDbSPH3pXrCg4';
+    const _supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+    let user = null;
+    let userPaidStories = new Set();
+    let commentsCountCache = new Map();
+
+    document.addEventListener('DOMContentLoaded', function() {
+      document.getElementById('current-year').textContent = new Date().getFullYear();
+      checkAuthAndLoadVideos();
+    });
+
+    async function checkAuthAndLoadVideos() {
+      const { data: { user: currentUser } } = await _supabaseClient.auth.getUser();
+      user = currentUser;
+      
+      if (!user) {
+        showCustomAlert('error', 'Tafadhali ingia kwanza ili uweze kuona video.');
+        setTimeout(() => window.location.href = 'login.html', 2000);
+        return;
+      }
+
+      await loadUserPaidStories();
+      await loadCommentsCount();
+      await loadTrendingVideos();
+    }
+
+    async function loadUserPaidStories() {
+      if (!user) return;
+      
+      try {
+        const { data: payments, error } = await _supabaseClient
+          .from('payments')
+          .select('story_id')
+          .eq('user_id', user.id)
+          .eq('status', 'paid');
+
+        if (!error && payments) {
+          userPaidStories = new Set(payments.map(p => p.story_id));
+        }
+      } catch (error) {
+        console.error('Error loading paid stories:', error);
+      }
+    }
+
+    async function loadCommentsCount() {
+      try {
+        const { data: allComments, error } = await _supabaseClient
+          .from('comments')
+          .select('story_id');
+
+        if (error) {
+          console.error('Error loading comments count:', error);
+          return;
+        }
+
+        commentsCountCache.clear();
+
+        if (allComments && allComments.length > 0) {
+          allComments.forEach(comment => {
+            const currentCount = commentsCountCache.get(comment.story_id) || 0;
+            commentsCountCache.set(comment.story_id, currentCount + 1);
+          });
+        }
+      } catch (error) {
+        console.error('Error in loadCommentsCount:', error);
+      }
+    }
+
+    async function loadTrendingVideos() {
+      const grid = document.getElementById('trendingVideosGrid');
+      
+      try {
+        const { data: stories, error } = await _supabaseClient
+          .from('stories')
+          .select('*')
+          .eq('category', 'video')
+          .order('views', { ascending: false })
+          .limit(50);
+
+        if (error) {
+          grid.innerHTML = `<p style="text-align: center; padding: 1.5rem; grid-column: 1 / -1;">Hitilafu: ${error.message}</p>`;
+          return;
+        }
+
+        if (!stories || stories.length === 0) {
+          grid.innerHTML = '<p style="text-align: center; padding: 1.5rem; grid-column: 1 / -1;">Hakuna video kwa sasa.</p>';
+          return;
+        }
+
+        grid.innerHTML = stories.map(story => createVideoCard(story)).join('');
+        
+      } catch (error) {
+        grid.innerHTML = `<p style="text-align: center; padding: 1.5rem; grid-column: 1 / -1;">Hitilafu ya mtandao: ${error.message}</p>`;
+      }
+    }
+
+    function createVideoCard(story) {
+      const imageUrl = story.thumbnail_url || 'https://via.placeholder.com/300x200';
+      const shareUrl = `https://storieszone.site/story.html?id=${story.id}`;
+      const price = story.price || 0;
+      const views = story.views || 0;
+      const likes = story.likes || 0;
+      const comments = commentsCountCache.get(story.id) || 0;
+      const isPaid = price === 0 || userPaidStories.has(story.id);
+      const hasVideo = !!story.video_url;
+      
+      return `
+        <div class="video-card">
+          <div class="video-thumbnail" onclick="handleVideoClick('${story.id}', ${price}, ${isPaid}, ${hasVideo})">
+            <img src="${imageUrl}" alt="${story.title}" loading="lazy">
+            <div class="play-overlay">
+              <i class="fas fa-play"></i>
+            </div>
+            ${price > 0 ? `<div class="video-badge">${isPaid ? 'IMEFUNGULIWA' : `TZS ${price}`}</div>` : '<div class="video-badge">BURE</div>'}
+            <div class="video-duration" id="duration-${story.id}">--:--</div>
+          </div>
+          <div class="video-content">
+            <h3 class="video-title">${story.title}</h3>
+            <p class="video-description">${story.summary || 'Video ya kuvutia inayokusimulia hadithi ya kusisimua.'}</p>
+            
+            <div class="video-meta">
+              <span class="video-category">${story.category}</span>
+              <span class="video-price">${price > 0 ? (isPaid ? 'Imefunguliwa' : `TZS ${price}`) : 'BURE'}</span>
+            </div>
+            
+            <div class="video-stats">
+              <div class="video-stat">
+                <i class="fas fa-eye"></i>
+                <span>${views} views</span>
+              </div>
+              <div class="video-stat">
+                <i class="fas fa-heart"></i>
+                <span>${likes} likes</span>
+              </div>
+              <div class="video-stat">
+                <i class="fas fa-comments"></i>
+                <span>${comments} maoni</span>
+              </div>
+            </div>
+            
+            <div class="video-actions">
+              <button class="watch-btn" onclick="handleVideoClick('${story.id}', ${price}, ${isPaid}, ${hasVideo})">
+                <i class="fas fa-play"></i> Tazama Sasa
+              </button>
+              <button class="share-btn" onclick="shareVideo('${story.title}', '${shareUrl}')">
+                <i class="fab fa-whatsapp"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function handleVideoClick(storyId, price, isPaid, hasVideo) {
+      if (!user) {
+        showCustomAlert('warning', 'Tafadhali ingia kwanza ili uweze kutazama video.');
+        return;
+      }
+
+      if (!hasVideo) {
+        showCustomAlert('warning', 'Hakuna video inapatikana kwa hadithi hii.');
+        return;
+      }
+
+      if (price > 0 && !isPaid) {
+        showCustomAlert('info', `Malipo yanahitajika: TZS ${price}. Nenda kwenye ukurasa kuu kwa maelekezo ya malipo.`);
+        setTimeout(() => {
+          window.location.href = `story.html?id=${storyId}`;
+        }, 1500);
+        return;
+      }
+
+      // Redirect to story.html with the story ID
+      window.location.href = `story.html?id=${storyId}`;
+    }
+
+    function shareVideo(title, url) {
+      const shareText = `Tazama video ya kuvutia: ${title} - ${url}`;
+      const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareText)}`;
+      window.open(whatsappUrl, '_blank');
+    }
+
+    function showCustomAlert(type, message) {
+      const alertDiv = document.createElement('div');
+      alertDiv.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: ${type === 'error' ? '#FF3F3F' : type === 'warning' ? '#FFA500' : '#00F0FF'};
+        color: ${type === 'warning' ? '#000' : '#FFF'};
+        padding: 1rem 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        z-index: 1000;
+        max-width: 300px;
+        word-wrap: break-word;
+      `;
+      alertDiv.textContent = message;
+      document.body.appendChild(alertDiv);
+      
+      setTimeout(() => {
+        alertDiv.remove();
+      }, 5000);
+    }
+
+    // Make functions globally accessible
+    window.handleVideoClick = handleVideoClick;
+    window.shareVideo = shareVideo;
+  </script>
+</body>
+</html>

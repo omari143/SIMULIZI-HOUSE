@@ -1,0 +1,2295 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard ya Admin - SIMULIZI HOUSE</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Exo+2:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    :root {
+      --ujasusi-color: #e67e22;
+      --huzuni-color: #3498db;
+      --horror-color: #ff0000;
+      --drama-color: #ffd700;
+      --simulizi-color: #9b59b6;
+      --chombezo-color: #ff4500;
+      --dark-bg: #0a0a0f;
+      --card-bg: #111118;
+      --card-border: #1e1e2e;
+      --text-light: #f0f0f5;
+      --text-muted: #888;
+      --success-color: #00e676;
+      --accent: #e67e22;
+      --paid-color: #00e676;
+      --pending-color: #ffc107;
+      --failed-color: #ff4444;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Exo 2', sans-serif;
+      background-color: var(--dark-bg);
+      color: var(--text-light);
+      user-select: text;
+      background-image: 
+        radial-gradient(ellipse at 20% 0%, rgba(230,126,34,0.06) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 100%, rgba(52,152,219,0.04) 0%, transparent 50%);
+    }
+
+    header {
+      background: linear-gradient(135deg, #0d0d14 0%, #1a1020 100%);
+      border-bottom: 2px solid var(--ujasusi-color);
+      padding: 1rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 4px 30px rgba(230,126,34,0.15);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    header .logo {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--ujasusi-color);
+      letter-spacing: 2px;
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+    }
+
+    header .logo i { color: #fff; }
+
+    header .header-right {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    header .header-right .live-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--success-color);
+      box-shadow: 0 0 8px var(--success-color);
+      animation: pulse 2s infinite;
+      display: inline-block;
+      margin-right: 5px;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    .dashboard {
+      padding: 2rem;
+      max-width: 1300px;
+      margin: auto;
+    }
+
+    /* ── SUMMARY CARDS ── */
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.2rem;
+      margin-bottom: 2rem;
+    }
+
+    .summary-box {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      padding: 1.4rem;
+      border-radius: 12px;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .summary-box::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 3px;
+    }
+
+    .summary-box:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+    }
+
+    .summary-box.ujasusi::before { background: var(--ujasusi-color); }
+    .summary-box.huzuni::before { background: var(--huzuni-color); }
+    .summary-box.horror::before { background: var(--horror-color); }
+    .summary-box.drama::before { background: var(--drama-color); }
+    .summary-box.simulizi::before { background: var(--simulizi-color); }
+    .summary-box.chombezo::before { background: var(--chombezo-color); }
+
+    .summary-box h3 {
+      margin: 0 0 0.3rem 0;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .summary-box.ujasusi h3 { color: var(--ujasusi-color); }
+    .summary-box.huzuni h3 { color: var(--huzuni-color); }
+    .summary-box.horror h3 { color: var(--horror-color); }
+    .summary-box.drama h3 { color: var(--drama-color); }
+    .summary-box.simulizi h3 { color: var(--simulizi-color); }
+    .summary-box.chombezo h3 { color: var(--chombezo-color); }
+
+    .summary-box p {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 2.2rem;
+      margin: 0.2rem 0;
+      font-weight: 700;
+      color: var(--text-light);
+    }
+
+    .summary-box small {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    /* ── REVENUE TOTAL BOX ── */
+    .revenue-total-bar {
+      background: linear-gradient(135deg, #1a110a, #201508);
+      border: 1px solid rgba(230,126,34,0.3);
+      border-radius: 12px;
+      padding: 1.4rem 2rem;
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 3rem;
+      flex-wrap: wrap;
+    }
+
+    .revenue-total-bar .rev-item {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .revenue-total-bar .rev-label {
+      font-size: 0.75rem;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 0.2rem;
+    }
+
+    .revenue-total-bar .rev-value {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.9rem;
+      font-weight: 700;
+      color: var(--success-color);
+    }
+
+    .revenue-total-bar .rev-value.orange { color: var(--ujasusi-color); }
+    .revenue-total-bar .rev-value.blue { color: var(--huzuni-color); }
+
+    /* ── TABS ── */
+    .tabs {
+      display: flex;
+      margin-bottom: 1.5rem;
+      border-bottom: 1px solid var(--card-border);
+      overflow-x: auto;
+      gap: 0.2rem;
+    }
+
+    .tab {
+      padding: 0.75rem 1.3rem;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.85rem;
+      letter-spacing: 0.8px;
+      border-bottom: 3px solid transparent;
+      transition: all 0.25s;
+      white-space: nowrap;
+      color: var(--text-muted);
+    }
+
+    .tab.active {
+      border-bottom-color: var(--ujasusi-color);
+      color: var(--ujasusi-color);
+    }
+
+    .tab:hover { background-color: rgba(255,255,255,0.03); color: var(--text-light); }
+
+    .upload-form, .payments-section, .users-section, .stories-list, .series-section {
+      background-color: var(--card-bg);
+      border: 1px solid var(--card-border);
+      padding: 2rem;
+      border-radius: 12px;
+      display: none;
+    }
+
+    .upload-form.active, .payments-section.active, .users-section.active, .stories-list.active, .series-section.active {
+      display: block;
+    }
+
+    .upload-form h2, .payments-section h2, .users-section h2, .stories-list h2, .series-section h2 {
+      text-align: center;
+      margin-top: 0;
+      margin-bottom: 1.5rem;
+      color: var(--ujasusi-color);
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.5rem;
+      letter-spacing: 1.5px;
+    }
+
+    /* ── FORMS ── */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+
+    .form-group { margin-bottom: 1.2rem; }
+    .form-group.full-width { grid-column: 1 / -1; }
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      font-size: 0.85rem;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 0.8rem 1rem;
+      border-radius: 8px;
+      border: 1px solid #2a2a3a;
+      background-color: #0d0d16;
+      color: var(--text-light);
+      font-size: 0.95rem;
+      font-family: 'Exo 2', sans-serif;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--ujasusi-color);
+      box-shadow: 0 0 0 3px rgba(230,126,34,0.12);
+    }
+
+    textarea { min-height: 120px; resize: vertical; }
+
+    button.primary-btn, .upload-form button[type="submit"], .series-section button[type="submit"] {
+      background: linear-gradient(135deg, var(--ujasusi-color), #d35400);
+      color: #000;
+      padding: 0.85rem 2rem;
+      border: none;
+      border-radius: 8px;
+      font-weight: 700;
+      cursor: pointer;
+      display: block;
+      margin: 2rem auto 0;
+      font-size: 0.95rem;
+      font-family: 'Exo 2', sans-serif;
+      letter-spacing: 0.8px;
+      transition: all 0.25s;
+    }
+
+    button.primary-btn:hover, .upload-form button[type="submit"]:hover, .series-section button[type="submit"]:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(230,126,34,0.35);
+    }
+
+    .file-upload { position: relative; overflow: hidden; display: inline-block; width: 100%; }
+
+    .file-upload-btn {
+      border: 2px dashed #2a2a3a;
+      border-radius: 8px;
+      padding: 2rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.25s;
+      color: var(--text-muted);
+    }
+
+    .file-upload-btn:hover {
+      border-color: var(--ujasusi-color);
+      background-color: rgba(230,126,34,0.04);
+    }
+
+    .file-upload input[type="file"] {
+      position: absolute; left: 0; top: 0;
+      opacity: 0; width: 100%; height: 100%; cursor: pointer;
+    }
+
+    .preview-container { margin-top: 1rem; display: flex; flex-wrap: wrap; gap: 1rem; }
+
+    .thumbnail-preview {
+      width: 150px; height: 100px;
+      border-radius: 6px; overflow: hidden; position: relative;
+      border: 1px solid #2a2a3a;
+    }
+
+    .thumbnail-preview img { width: 100%; height: 100%; object-fit: cover; }
+
+    .video-preview {
+      width: 100%; max-width: 300px;
+      border-radius: 6px; overflow: hidden; position: relative;
+      border: 1px solid #2a2a3a;
+    }
+
+    .video-preview video { width: 100%; display: block; }
+
+    .remove-btn {
+      position: absolute; top: 5px; right: 5px;
+      background-color: rgba(0,0,0,0.8);
+      color: white; border: none; border-radius: 50%;
+      width: 22px; height: 22px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; font-size: 0.7rem;
+    }
+
+    .upload-option { display: flex; gap: 0.8rem; margin-bottom: 1rem; flex-wrap: wrap; }
+
+    .upload-option-btn {
+      padding: 0.5rem 1.2rem;
+      border-radius: 6px;
+      background-color: #1a1a26;
+      border: 1px solid #2a2a3a;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .upload-option-btn.active {
+      background-color: var(--ujasusi-color);
+      color: #000;
+      border-color: var(--ujasusi-color);
+    }
+
+    /* ── ALERT ── */
+    .custom-alert {
+      position: fixed;
+      top: 20px; right: 20px;
+      padding: 14px 22px;
+      border-radius: 8px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      z-index: 9999;
+      transform: translateX(120%);
+      transition: transform 0.3s ease-out;
+      font-weight: 600;
+      font-size: 0.9rem;
+      max-width: 380px;
+    }
+
+    .custom-alert.success { background: linear-gradient(135deg, #0d2b1a, #0a3520); border: 1px solid var(--success-color); color: var(--success-color); }
+    .custom-alert.error { background: linear-gradient(135deg, #2b0d0d, #350a0a); border: 1px solid var(--failed-color); color: var(--failed-color); }
+    .custom-alert.info { background: linear-gradient(135deg, #0d1a2b, #0a2035); border: 1px solid var(--huzuni-color); color: var(--huzuni-color); }
+    .custom-alert.show { transform: translateX(0); }
+    .custom-alert .close-btn { margin-left: 10px; cursor: pointer; opacity: 0.7; }
+
+    /* ── PAYMENTS TABLE ── */
+    .payments-table, .users-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1.5rem;
+      font-size: 0.88rem;
+    }
+
+    .payments-table th, .users-table th {
+      background-color: #0d0d18;
+      padding: 0.9rem 1rem;
+      text-align: left;
+      font-size: 0.75rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    .payments-table td, .users-table td {
+      padding: 0.9rem 1rem;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      vertical-align: middle;
+    }
+
+    .payments-table tr:hover td, .users-table tr:hover td {
+      background-color: rgba(255,255,255,0.02);
+    }
+
+    /* ── STATUS BADGES ── */
+    .payment-status, .user-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 0.25rem 0.7rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .payment-status.paid { background: rgba(0,230,118,0.12); color: var(--paid-color); border: 1px solid rgba(0,230,118,0.3); }
+    .payment-status.pending { background: rgba(255,193,7,0.12); color: var(--pending-color); border: 1px solid rgba(255,193,7,0.3); }
+    .payment-status.failed { background: rgba(255,68,68,0.12); color: var(--failed-color); border: 1px solid rgba(255,68,68,0.3); }
+    .user-status.active { background: rgba(0,230,118,0.12); color: var(--paid-color); border: 1px solid rgba(0,230,118,0.3); }
+    .user-status.inactive { background: rgba(255,68,68,0.12); color: var(--failed-color); border: 1px solid rgba(255,68,68,0.3); }
+    .user-status.admin { background: rgba(230,126,34,0.12); color: var(--ujasusi-color); border: 1px solid rgba(230,126,34,0.3); }
+
+    /* ── TOP STORIES ── */
+    .top-stories {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    .top-story-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      overflow: hidden;
+      transition: transform 0.3s, box-shadow 0.3s;
+      position: relative;
+    }
+
+    .top-story-card::before {
+      content: attr(data-rank);
+      position: absolute;
+      top: 10px; left: 10px;
+      background: var(--ujasusi-color);
+      color: #000;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      z-index: 2;
+    }
+
+    .top-story-card:hover { transform: translateY(-5px); box-shadow: 0 12px 40px rgba(0,0,0,0.4); }
+
+    .top-story-image { height: 160px; overflow: hidden; }
+
+    .top-story-image img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s; }
+    .top-story-card:hover .top-story-image img { transform: scale(1.06); }
+
+    .top-story-content { padding: 1.2rem; }
+
+    .top-story-title {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.1rem;
+      margin: 0 0 0.5rem;
+      color: var(--ujasusi-color);
+    }
+
+    .top-story-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-bottom: 0.8rem;
+    }
+
+    /* ── STORY SALES METRICS (kadi ndogo za hesabu) ── */
+    .story-metrics-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem;
+      margin-top: 0.7rem;
+    }
+
+    .metric-chip {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--card-border);
+      border-radius: 6px;
+      padding: 0.5rem 0.7rem;
+      text-align: center;
+    }
+
+    .metric-chip .mc-label {
+      font-size: 0.65rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      display: block;
+      margin-bottom: 0.2rem;
+    }
+
+    .metric-chip .mc-value {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+    }
+
+    .metric-chip.sales .mc-value { color: var(--huzuni-color); }
+    .metric-chip.revenue .mc-value { color: var(--success-color); }
+    .metric-chip.views .mc-value { color: var(--ujasusi-color); }
+    .metric-chip.pending .mc-value { color: var(--pending-color); }
+
+    /* ── SECTION TITLE ── */
+    .section-title {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.3rem;
+      margin: 2rem 0 1rem;
+      color: var(--ujasusi-color);
+      letter-spacing: 1.5px;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      border-bottom: 1px solid rgba(230,126,34,0.2);
+      padding-bottom: 0.5rem;
+    }
+
+    /* ── STORY LIST ── */
+    .story-item {
+      display: flex;
+      gap: 1.5rem;
+      padding: 1.2rem;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      transition: background-color 0.2s;
+      border-radius: 8px;
+    }
+
+    .story-item:hover { background-color: rgba(255,255,255,0.02); }
+
+    .story-thumbnail {
+      width: 120px; height: 80px;
+      border-radius: 6px; overflow: hidden; flex-shrink: 0;
+      border: 1px solid var(--card-border);
+    }
+
+    .story-thumbnail img { width: 100%; height: 100%; object-fit: cover; }
+
+    .document-preview {
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      width: 100%; height: 100%;
+      font-size: 0.8rem; color: var(--text-muted); text-align: center;
+      background: #0d0d18;
+    }
+
+    .document-preview i { font-size: 1.8rem; margin-bottom: 0.3rem; }
+
+    .story-details { flex-grow: 1; }
+
+    .story-title {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.05rem;
+      margin: 0 0 0.4rem;
+      color: var(--ujasusi-color);
+    }
+
+    .story-meta {
+      display: flex; flex-wrap: wrap;
+      gap: 0.7rem;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+      align-items: center;
+    }
+
+    .story-category {
+      display: inline-block;
+      padding: 0.15rem 0.55rem;
+      border-radius: 4px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .story-category.ujasusi { background: rgba(230,126,34,0.15); color: var(--ujasusi-color); }
+    .story-category.huzuni { background: rgba(52,152,219,0.15); color: var(--huzuni-color); }
+    .story-category.horror { background: rgba(255,0,0,0.15); color: var(--horror-color); }
+    .story-category.drama { background: rgba(255,215,0,0.15); color: var(--drama-color); }
+    .story-category.simulizi { background: rgba(155,89,182,0.15); color: var(--simulizi-color); }
+    .story-category.chombezo { background: rgba(255,69,0,0.15); color: var(--chombezo-color); }
+
+    /* ── STORY SALES INFO ── */
+    .story-sales-info {
+      display: flex;
+      gap: 0.6rem;
+      align-items: center;
+      margin: 0.5rem 0;
+      flex-wrap: wrap;
+    }
+
+    .sales-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+
+    .sales-badge.mauzo {
+      background: rgba(52,152,219,0.12);
+      border: 1px solid rgba(52,152,219,0.3);
+      color: var(--huzuni-color);
+    }
+
+    .sales-badge.mapato {
+      background: rgba(0,230,118,0.1);
+      border: 1px solid rgba(0,230,118,0.25);
+      color: var(--success-color);
+    }
+
+    .sales-badge.pending-pay {
+      background: rgba(255,193,7,0.1);
+      border: 1px solid rgba(255,193,7,0.25);
+      color: var(--pending-color);
+    }
+
+    .story-actions { display: flex; gap: 0.5rem; margin-top: 0.6rem; flex-wrap: wrap; }
+
+    .action-btn {
+      padding: 0.35rem 0.8rem;
+      border-radius: 5px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      letter-spacing: 0.3px;
+    }
+
+    .action-btn.edit { background: rgba(52,152,219,0.15); color: var(--huzuni-color); border: 1px solid rgba(52,152,219,0.3); }
+    .action-btn.delete { background: rgba(255,0,0,0.12); color: var(--horror-color); border: 1px solid rgba(255,0,0,0.25); }
+    .action-btn.view { background: rgba(255,215,0,0.12); color: var(--drama-color); border: 1px solid rgba(255,215,0,0.25); }
+    .action-btn.change-password { background: rgba(155,89,182,0.12); color: var(--simulizi-color); border: 1px solid rgba(155,89,182,0.25); }
+    .action-btn:hover { opacity: 0.75; transform: translateY(-1px); }
+
+    /* ── CATEGORY LINKS ── */
+    .category-links {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    .category-link {
+      display: block;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      padding: 1.2rem;
+      border-radius: 8px;
+      text-align: center;
+      color: var(--text-light);
+      text-decoration: none;
+      transition: all 0.25s;
+    }
+
+    .category-link:hover { transform: translateY(-3px); border-color: var(--ujasusi-color); box-shadow: 0 6px 20px rgba(0,0,0,0.2); }
+    .category-link i { font-size: 1.4rem; margin-bottom: 0.5rem; display: block; }
+    .category-link.huzuni i { color: var(--huzuni-color); }
+    .category-link.horror i { color: var(--horror-color); }
+    .category-link.drama i { color: var(--drama-color); }
+    .category-link.simulizi i { color: var(--simulizi-color); }
+    .category-link.chombezo i { color: var(--chombezo-color); }
+    .category-link i.fa-user-secret { color: var(--ujasusi-color); }
+
+    /* ── MODALS ── */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.75);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+    }
+
+    .modal-content {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      margin: 5% auto;
+      padding: 2rem;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 500px;
+      position: relative;
+    }
+
+    .modal-content.modal-large {
+      max-width: 800px;
+      max-height: 85vh;
+      overflow-y: auto;
+    }
+
+    .modal-content h2 {
+      font-family: 'Rajdhani', sans-serif;
+      color: var(--ujasusi-color);
+      letter-spacing: 1.5px;
+      margin-top: 0;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 12px; right: 16px;
+      font-size: 1.4rem;
+      cursor: pointer;
+      color: var(--text-muted);
+      transition: color 0.2s;
+    }
+    .modal-close:hover { color: var(--text-light); }
+
+    /* ── SERIES ── */
+    .series-section { background: var(--card-bg); border: 1px solid var(--card-border); padding: 2rem; border-radius: 12px; display: none; }
+    .series-section.active { display: block; }
+
+    .series-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-top: 1.5rem;
+    }
+
+    .series-card {
+      background: #0d0d18;
+      border-radius: 10px;
+      overflow: hidden;
+      transition: transform 0.3s;
+      border: 1px solid var(--card-border);
+    }
+
+    .series-card:hover { transform: translateY(-4px); border-color: var(--ujasusi-color); }
+
+    .series-card-image { height: 170px; overflow: hidden; background: #0a0a14; }
+    .series-card-image img { width: 100%; height: 100%; object-fit: cover; }
+    .series-card-content { padding: 1rem; }
+
+    .series-card-title {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.05rem;
+      margin: 0 0 0.4rem;
+      color: var(--ujasusi-color);
+    }
+
+    .series-card-meta {
+      display: flex;
+      gap: 1rem;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 0.7rem;
+    }
+
+    .series-card-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .series-card-actions .action-btn { flex: 1; min-width: fit-content; justify-content: center; }
+
+    .episodes-list { background: #0a0a14; border-radius: 8px; padding: 1rem; margin-top: 1rem; }
+
+    .episode-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.8rem;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      transition: background 0.2s;
+    }
+
+    .episode-item:last-child { border-bottom: none; }
+    .episode-item:hover { background: rgba(255,255,255,0.02); }
+
+    .episode-info { flex-grow: 1; }
+    .episode-title { font-weight: 600; color: var(--text-light); margin-bottom: 0.2rem; font-size: 0.9rem; }
+    .episode-meta { font-size: 0.78rem; color: var(--text-muted); }
+    .episode-price { font-weight: 700; color: var(--success-color); margin-right: 1rem; font-size: 0.85rem; }
+
+    /* ── PAYMENTS PER STORY (in payments tab) ── */
+    .story-payment-row {
+      display: flex;
+      align-items: center;
+      gap: 1.2rem;
+      padding: 1rem 1.2rem;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      transition: background 0.2s;
+    }
+
+    .story-payment-row:hover { background: rgba(255,255,255,0.02); }
+
+    .spr-thumb {
+      width: 60px; height: 42px;
+      border-radius: 5px; overflow: hidden; flex-shrink: 0;
+      border: 1px solid var(--card-border);
+    }
+
+    .spr-thumb img { width: 100%; height: 100%; object-fit: cover; }
+
+    .spr-info { flex-grow: 1; }
+    .spr-title { font-weight: 600; font-size: 0.9rem; color: var(--text-light); margin-bottom: 0.2rem; }
+    .spr-cat { font-size: 0.75rem; color: var(--text-muted); }
+
+    .spr-stats {
+      display: flex;
+      gap: 1.2rem;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    .spr-stat {
+      text-align: center;
+      min-width: 70px;
+    }
+
+    .spr-stat .spr-val {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      display: block;
+    }
+
+    .spr-stat .spr-lab {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--text-muted);
+    }
+
+    .spr-stat.mauzo .spr-val { color: var(--huzuni-color); }
+    .spr-stat.mapato .spr-val { color: var(--success-color); }
+    .spr-stat.pending-s .spr-val { color: var(--pending-color); }
+    .spr-stat.failed-s .spr-val { color: var(--failed-color); }
+
+    /* ── PAYMENT DETAIL ROW (individual transactions) ── */
+    .payment-tx-badge {
+      font-size: 0.72rem;
+      font-family: monospace;
+      background: #0d0d18;
+      border: 1px solid var(--card-border);
+      border-radius: 4px;
+      padding: 0.15rem 0.5rem;
+      color: var(--text-muted);
+    }
+
+    /* ── SEARCH ── */
+    .search-bar {
+      display: flex;
+      gap: 0.8rem;
+      margin-bottom: 1.5rem;
+      align-items: center;
+    }
+
+    .search-bar input {
+      flex-grow: 1;
+      border-radius: 8px;
+    }
+
+    .search-bar .filter-select {
+      width: auto;
+      min-width: 140px;
+    }
+
+    /* ── LOADER ── */
+    .loader {
+      text-align: center;
+      padding: 3rem;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    .spinner {
+      border: 3px solid rgba(230,126,34,0.1);
+      border-top-color: var(--ujasusi-color);
+      border-radius: 50%;
+      width: 30px; height: 30px;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 1rem;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      .form-grid { grid-template-columns: 1fr; }
+      .summary { grid-template-columns: 1fr 1fr; }
+      .payments-table, .users-table { display: block; overflow-x: auto; }
+      .story-item { flex-direction: column; }
+      .story-thumbnail { width: 100%; height: 150px; }
+      .category-links { grid-template-columns: 1fr 1fr; }
+      .series-grid { grid-template-columns: 1fr; }
+      .story-payment-row { flex-direction: column; align-items: flex-start; }
+      .revenue-total-bar { gap: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo">
+      <i class="fas fa-user-shield"></i>
+      SIMULIZI HOUSE
+    </div>
+    <div class="header-right">
+      <span><span class="live-dot"></span>Admin Dashboard</span>
+      <button onclick="loadData()" style="background:rgba(230,126,34,0.12);border:1px solid rgba(230,126,34,0.3);color:var(--ujasusi-color);padding:0.4rem 1rem;border-radius:6px;cursor:pointer;font-size:0.8rem;font-family:'Exo 2',sans-serif;">
+        <i class="fas fa-sync-alt"></i> Refresh
+      </button>
+    </div>
+  </header>
+
+  <div class="dashboard">
+
+    <!-- Summary Boxes -->
+    <div class="summary">
+      <div class="summary-box ujasusi">
+        <h3><i class="fas fa-user-secret"></i> Ujasusi</h3>
+        <p id="ujasusi-count">0</p>
+        <small>Views: <span id="ujasusi-views">0</span></small>
+      </div>
+      <div class="summary-box huzuni">
+        <h3><i class="fas fa-sad-tear"></i> Huzuni</h3>
+        <p id="huzuni-count">0</p>
+        <small>Views: <span id="huzuni-views">0</span></small>
+      </div>
+      <div class="summary-box horror">
+        <h3><i class="fas fa-ghost"></i> Horror</h3>
+        <p id="horror-count">0</p>
+        <small>Views: <span id="horror-views">0</span></small>
+      </div>
+      <div class="summary-box drama">
+        <h3><i class="fas fa-theater-masks"></i> Drama</h3>
+        <p id="drama-count">0</p>
+        <small>Views: <span id="drama-views">0</span></small>
+      </div>
+      <div class="summary-box simulizi">
+        <h3><i class="fas fa-microphone-alt"></i> Simulizi</h3>
+        <p id="simulizi-count">0</p>
+        <small>Views: <span id="simulizi-views">0</span></small>
+      </div>
+      <div class="summary-box chombezo">
+        <h3><i class="fas fa-heart-broken"></i> Chombezo</h3>
+        <p id="chombezo-count">0</p>
+        <small>Views: <span id="chombezo-views">0</span></small>
+      </div>
+    </div>
+
+    <!-- Revenue Bar -->
+    <div class="revenue-total-bar">
+      <div class="rev-item">
+        <span class="rev-label"><i class="fas fa-coins"></i> Jumla Mapato (Paid)</span>
+        <span class="rev-value" id="total-revenue">0 TZS</span>
+      </div>
+      <div class="rev-item">
+        <span class="rev-label"><i class="fas fa-shopping-cart"></i> Jumla Mauzo (Paid)</span>
+        <span class="rev-value orange" id="total-sales">0</span>
+      </div>
+      <div class="rev-item">
+        <span class="rev-label"><i class="fas fa-clock"></i> Pending</span>
+        <span class="rev-value blue" id="total-pending">0</span>
+      </div>
+      <div class="rev-item">
+        <span class="rev-label"><i class="fas fa-book"></i> Jumla Hadithi</span>
+        <span class="rev-value" style="color:#aaa" id="total-stories">0</span>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <div class="tab active" data-tab="upload"><i class="fas fa-cloud-upload-alt"></i> Pakia</div>
+      <div class="tab" data-tab="stories"><i class="fas fa-book-open"></i> Hadithi</div>
+      <div class="tab" data-tab="series"><i class="fas fa-film"></i> Series</div>
+      <div class="tab" data-tab="payments"><i class="fas fa-money-bill-wave"></i> Malipo</div>
+      <div class="tab" data-tab="users"><i class="fas fa-users"></i> Watumiaji</div>
+      <div class="tab" data-tab="categories"><i class="fas fa-tags"></i> Kategoria</div>
+      <div class="tab" data-tab="settings"><i class="fas fa-cog"></i> Mipangilio</div>
+      <div class="tab" data-tab="adminSignup"><i class="fas fa-user-plus"></i> Admin</div>
+    </div>
+
+    <!-- UPLOAD TAB -->
+    <div class="upload-form active" id="uploadTab">
+      <h2><i class="fas fa-cloud-upload-alt"></i> Pakia Hadithi Mpya</h2>
+      <form id="storyUploadForm" enctype="multipart/form-data">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="title">Jina la Hadithi</label>
+            <input type="text" id="title" name="title" required placeholder="Weka jina la hadithi"/>
+          </div>
+          <div class="form-group">
+            <label for="category">Aina ya Hadithi</label>
+            <select id="category" name="category" required>
+              <option value="">-- Chagua aina --</option>
+              <option value="ujasusi">Ujasusi</option>
+              <option value="huzuni">Huzuni</option>
+              <option value="horror">Horror</option>
+              <option value="drama">Drama</option>
+              <option value="simulizi">Simulizi</option>
+              <option value="chombezo">Chombezo</option>
+              <option value="ujasusi-simulizi">Ujasusi Simulizi</option>
+              <option value="huzuni-simulizi">Huzuni Simulizi</option>
+              <option value="horror-simulizi">Horror Simulizi</option>
+              <option value="drama-simulizi">Drama Simulizi</option>
+              <option value="video">Video</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="offerType">Aina ya Ofa</label>
+            <select id="offerType" name="offerType" required>
+              <option value="free">Bure</option>
+              <option value="price">Bei</option>
+            </select>
+          </div>
+          <div class="form-group" id="priceGroup" style="display:none;">
+            <label for="price">Bei (TZS)</label>
+            <input type="number" id="price" name="price" value="2000" required/>
+          </div>
+          <div class="form-group full-width">
+            <label for="summary">Muhtasari wa Hadithi</label>
+            <textarea id="summary" name="summary" required placeholder="Andika muhtasari..."></textarea>
+          </div>
+          <div class="form-group">
+            <label>Pakia Picha ya Hadithi</label>
+            <div class="file-upload">
+              <div class="file-upload-btn">
+                <i class="fas fa-image" style="font-size:2rem;margin-bottom:0.5rem;"></i>
+                <p>Bonyeza hapa au buruta picha</p>
+                <small>800x450px inashauriwa</small>
+              </div>
+              <input type="file" id="thumbnail" name="thumbnail" accept="image/*" required/>
+            </div>
+            <div class="preview-container" id="thumbnailPreview"></div>
+          </div>
+          <div class="form-group full-width">
+            <label>Chagua Aina ya Upakiaji</label>
+            <div class="upload-option">
+              <div class="upload-option-btn" id="textOption"><i class="fas fa-book"></i> Hadithi</div>
+              <div class="upload-option-btn" id="videoOption"><i class="fas fa-video"></i> Video</div>
+              <div class="upload-option-btn" id="audioOption"><i class="fas fa-microphone"></i> Simulizi</div>
+            </div>
+          </div>
+          <div class="form-group full-width" id="textUploadGroup" style="display:none;">
+            <label for="storyContent">Hadithi Kamili</label>
+            <textarea id="storyContent" name="storyContent" placeholder="Andika hadithi yako kamili hapa..." style="min-height:200px;"></textarea>
+          </div>
+          <div class="form-group full-width" id="videoUploadGroup" style="display:none;">
+            <label>Pakia Video</label>
+            <div class="file-upload">
+              <div class="file-upload-btn">
+                <i class="fas fa-video" style="font-size:2rem;margin-bottom:0.5rem;"></i>
+                <p>Bonyeza hapa au buruta video</p>
+                <small>.mp4 inapendelewa</small>
+              </div>
+              <input type="file" id="video" name="video" accept="video/*"/>
+            </div>
+            <div class="preview-container" id="videoPreview"></div>
+          </div>
+          <div class="form-group full-width" id="audioUploadGroup">
+            <label>Pakia Simulizi</label>
+            <div class="file-upload">
+              <div class="file-upload-btn">
+                <i class="fas fa-microphone" style="font-size:2rem;margin-bottom:0.5rem;"></i>
+                <p>Bonyeza hapa au buruta faili ya sauti</p>
+                <small>MP3 au WAV</small>
+              </div>
+              <input type="file" id="audio" name="audio" accept="audio/*"/>
+            </div>
+            <div class="preview-container" id="audioPreview"></div>
+          </div>
+          <div class="form-group full-width">
+            <label for="secretCode">Secret Code <span style="color:#ff4444;">(Inahitajika)</span></label>
+            <input type="password" id="secretCode" placeholder="Weka secret code" required/>
+          </div>
+        </div>
+        <button type="submit"><i class="fas fa-upload"></i> Pakia Hadithi</button>
+      </form>
+    </div>
+
+    <!-- STORIES TAB -->
+    <div class="stories-list" id="storiesTab">
+      <h2><i class="fas fa-book-open"></i> Orodha ya Hadithi Zote</h2>
+      <div class="search-bar">
+        <input type="text" id="storiesSearch" placeholder="Tafuta hadithi..." oninput="filterStories()"/>
+        <select class="filter-select" id="storiesCatFilter" onchange="filterStories()">
+          <option value="">Kategoria Zote</option>
+          <option value="ujasusi">Ujasusi</option>
+          <option value="huzuni">Huzuni</option>
+          <option value="horror">Horror</option>
+          <option value="drama">Drama</option>
+          <option value="simulizi">Simulizi</option>
+          <option value="chombezo">Chombezo</option>
+        </select>
+      </div>
+      <div id="storiesListContainer">
+        <div class="loader"><div class="spinner"></div>Inapakia hadithi...</div>
+      </div>
+    </div>
+
+    <!-- SERIES TAB -->
+    <div class="series-section" id="seriesTab">
+      <h2><i class="fas fa-film"></i> Usimamizi wa Series</h2>
+      <button onclick="openAddSeriesModal()" class="action-btn edit" style="margin-bottom:1.5rem;padding:0.7rem 1.4rem;font-size:0.9rem;">
+        <i class="fas fa-plus"></i> Ongeza Series Mpya
+      </button>
+      <div class="series-grid" id="seriesGridContainer">
+        <div class="loader"><div class="spinner"></div>Inapakia series...</div>
+      </div>
+    </div>
+
+    <!-- PAYMENTS TAB -->
+    <div class="payments-section" id="paymentsTab">
+      <h2><i class="fas fa-money-bill-wave"></i> Malipo kwa Kila Hadithi</h2>
+      <p style="color:var(--text-muted);font-size:0.88rem;text-align:center;margin-bottom:1.5rem;">Jedwali hili linaonyesha idadi ya mauzo halisi na mapato yaliyofanyika kutoka Snippe</p>
+
+      <!-- Per-story payments breakdown -->
+      <div id="storyPaymentsContainer">
+        <div class="loader"><div class="spinner"></div>Inapakia data ya malipo...</div>
+      </div>
+
+      <div class="section-title"><i class="fas fa-list-alt"></i> Muamala Wote wa Hivi Karibuni</div>
+
+      <div class="search-bar" style="margin-top:1rem;">
+        <input type="text" id="paymentsSearch" placeholder="Tafuta kwa ref au simu..." oninput="filterPayments()"/>
+        <select class="filter-select" id="paymentsStatusFilter" onchange="filterPayments()">
+          <option value="">Hali Zote</option>
+          <option value="paid">Paid</option>
+          <option value="pending">Pending</option>
+          <option value="failed">Failed</option>
+        </select>
+      </div>
+
+      <table class="payments-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Hadithi</th>
+            <th>Kiasi</th>
+            <th>Simu</th>
+            <th>Ref</th>
+            <th>Tarehe</th>
+            <th>Hali</th>
+          </tr>
+        </thead>
+        <tbody id="paymentsTableBody">
+          <tr><td colspan="7" class="loader">Inapakia...</td></tr>
+        </tbody>
+      </table>
+
+      <div class="section-title" style="margin-top:2.5rem;"><i class="fas fa-trophy"></i> Hadithi 3 Zilizofanya Vizuri</div>
+      <div class="top-stories" id="topStoriesContainer"></div>
+    </div>
+
+    <!-- USERS TAB -->
+    <div class="users-section" id="usersTab">
+      <h2><i class="fas fa-users"></i> Orodha ya Watumiaji</h2>
+      <table class="users-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Jina Kamili</th>
+            <th>Barua Pepe</th>
+            <th>Tarehe</th>
+            <th>Jukumu</th>
+            <th>Hali</th>
+            <th>Vitendo</th>
+          </tr>
+        </thead>
+        <tbody id="usersTableBody">
+          <tr><td colspan="7" class="loader">Inapakia...</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- CATEGORIES TAB -->
+    <div class="payments-section" id="categoriesTab">
+      <h2><i class="fas fa-tags"></i> Kategoria za Hadithi</h2>
+      <div class="category-links">
+        <a href="login.html" class="category-link"><i class="fas fa-sign-in-alt"></i><span>Ingia</span></a>
+        <a href="signup.html" class="category-link"><i class="fas fa-user-plus"></i><span>Jisajili</span></a>
+        <a href="video.html" class="category-link"><i class="fas fa-video"></i><span>Video Zote</span></a>
+        <a href="Hadithi-za-horror.html" class="category-link horror"><i class="fas fa-ghost"></i><span>Horror</span></a>
+        <a href="Hadithi-za-huzuni.html" class="category-link huzuni"><i class="fas fa-sad-tear"></i><span>Huzuni</span></a>
+        <a href="Hadithi-za-ujasusi.html" class="category-link"><i class="fas fa-user-secret"></i><span>Ujasusi</span></a>
+        <a href="drama.html" class="category-link drama"><i class="fas fa-theater-masks"></i><span>Drama</span></a>
+        <a href="horror-simulizi.html" class="category-link horror"><i class="fas fa-ghost"></i><span>Horror Simulizi</span></a>
+        <a href="huzuni-simulizi.html" class="category-link huzuni"><i class="fas fa-sad-tear"></i><span>Huzuni Simulizi</span></a>
+        <a href="drama-simulizi.html" class="category-link drama"><i class="fas fa-theater-masks"></i><span>Drama Simulizi</span></a>
+        <a href="ujasusi-simulizi.html" class="category-link"><i class="fas fa-user-secret"></i><span>Ujasusi Simulizi</span></a>
+        <a href="zote.html" class="category-link"><i class="fas fa-list"></i><span>Hadithi Zote</span></a>
+        <a href="chombezo.html" class="category-link chombezo"><i class="fas fa-heart-broken"></i><span>Chombezo</span></a>
+      </div>
+    </div>
+
+    <!-- SETTINGS TAB -->
+    <div class="payments-section" id="settingsTab">
+      <h2><i class="fas fa-cog"></i> Mipangilio ya Mfumo</h2>
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="siteName">Jina la Tovuti</label>
+          <input type="text" id="siteName" value="SIMULIZI HOUSE"/>
+        </div>
+        <div class="form-group">
+          <label for="defaultPrice">Bei Chaguo-msingi (TZS)</label>
+          <input type="number" id="defaultPrice" value="2000"/>
+        </div>
+        <div class="form-group">
+          <label for="currency">Sarafu</label>
+          <select id="currency">
+            <option value="TZS">Tanzanian Shilling (TZS)</option>
+            <option value="KES">Kenyan Shilling (KES)</option>
+            <option value="UGX">Ugandan Shilling (UGX)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="language">Lugha</label>
+          <select id="language">
+            <option value="sw">Kiswahili</option>
+            <option value="en">Kiingereza</option>
+          </select>
+        </div>
+        <div class="form-group full-width">
+          <label for="adminEmail">Barua Pepe ya Admin</label>
+          <input type="email" id="adminEmail" placeholder="admin@example.com"/>
+        </div>
+        <div class="form-group full-width">
+          <button type="button" onclick="updateSettings()" class="action-btn edit" style="padding:0.8rem 1.5rem;font-size:0.9rem;margin:0;">
+            <i class="fas fa-save"></i> Hifadhi Mipangilio
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADMIN SIGNUP TAB -->
+    <div class="payments-section" id="adminSignupTab">
+      <h2><i class="fas fa-user-plus"></i> Jisajili kama Admin</h2>
+      <form id="adminSignupForm" class="form-grid">
+        <div class="form-group">
+          <label for="adminFullName">Jina Kamili</label>
+          <input type="text" id="adminFullName" required placeholder="Jina lako kamili"/>
+        </div>
+        <div class="form-group">
+          <label for="adminEmailSignup">Barua Pepe</label>
+          <input type="email" id="adminEmailSignup" required placeholder="admin@example.com"/>
+        </div>
+        <div class="form-group">
+          <label for="adminPassword">Neno la Siri</label>
+          <input type="password" id="adminPassword" required placeholder="Neno la siri"/>
+        </div>
+        <div class="form-group full-width">
+          <button type="submit" class="action-btn edit" style="padding:0.8rem 1.5rem;font-size:0.9rem;margin:0;">
+            <i class="fas fa-user-plus"></i> Jisajili
+          </button>
+        </div>
+      </form>
+    </div>
+
+  </div><!-- /dashboard -->
+
+  <!-- MODAL: Badilisha Nenosiri -->
+  <div id="passwordModal" class="modal">
+    <div class="modal-content">
+      <span class="modal-close" onclick="document.getElementById('passwordModal').style.display='none'">×</span>
+      <h2>Badilisha Nenosiri</h2>
+      <form id="changePasswordForm">
+        <div class="form-group">
+          <label>Nenosiri Jipya</label>
+          <input type="password" id="newPassword" required placeholder="Nenosiri jipya"/>
+        </div>
+        <div class="form-group">
+          <label>Thibitisha Nenosiri</label>
+          <input type="password" id="confirmPassword" required placeholder="Thibitisha nenosiri"/>
+        </div>
+        <button type="submit" class="action-btn edit" style="padding:0.7rem 1.5rem;margin-top:1rem;">Badilisha</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: Futa Hadithi -->
+  <div id="deleteModal" class="modal">
+    <div class="modal-content">
+      <span class="modal-close" onclick="document.getElementById('deleteModal').style.display='none'">×</span>
+      <h2>Thibitisha Kufuta</h2>
+      <p style="color:var(--text-muted);font-size:0.9rem;">Ingiza <strong style="color:var(--ujasusi-color)">secret code</strong> ili kufuta hadithi hii.</p>
+      <input type="password" id="deleteSecretCode" placeholder="Secret code" style="width:100%;padding:0.8rem;margin-bottom:1rem;"/>
+      <button onclick="confirmDelete()" style="background:rgba(255,68,68,0.15);color:var(--horror-color);border:1px solid rgba(255,68,68,0.3);padding:0.7rem 1.5rem;border-radius:6px;cursor:pointer;font-weight:700;font-family:'Exo 2',sans-serif;">
+        <i class="fas fa-trash"></i> Futa Hadithi
+      </button>
+    </div>
+  </div>
+
+  <!-- MODAL: Ongeza Series -->
+  <div id="addSeriesModal" class="modal">
+    <div class="modal-content modal-large">
+      <span class="modal-close" onclick="closeAddSeriesModal()">×</span>
+      <h2><i class="fas fa-plus-circle"></i> Tengeneza Series Mpya</h2>
+      <form id="addSeriesForm">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Jina la Series</label>
+            <input type="text" id="seriesTitle" required placeholder="Weka jina la series"/>
+          </div>
+          <div class="form-group">
+            <label>Idadi ya Seasons</label>
+            <input type="number" id="seriesSeasons" min="1" value="1" required/>
+          </div>
+          <div class="form-group">
+            <label>Jumla ya Episodes</label>
+            <input type="number" id="seriesTotalEpisodes" min="1" required placeholder="Jumla ya episodes"/>
+          </div>
+          <div class="form-group">
+            <label>Kategoria</label>
+            <select id="seriesCategory" required>
+              <option value="">-- Chagua --</option>
+              <option value="ujasusi">Ujasusi</option>
+              <option value="huzuni">Huzuni</option>
+              <option value="horror">Horror</option>
+              <option value="drama">Drama</option>
+              <option value="simulizi">Simulizi</option>
+              <option value="chombezo">Chombezo</option>
+            </select>
+          </div>
+          <div class="form-group full-width">
+            <label>Maelezo ya Series</label>
+            <textarea id="seriesSummary" required placeholder="Andika maelezo ya series..."></textarea>
+          </div>
+          <div class="form-group full-width">
+            <label>Thumbnail ya Series</label>
+            <div class="file-upload">
+              <div class="file-upload-btn">
+                <i class="fas fa-image" style="font-size:2rem;margin-bottom:0.5rem;"></i>
+                <p>Bonyeza hapa au buruta picha</p>
+              </div>
+              <input type="file" id="seriesThumbnail" accept="image/*" required/>
+            </div>
+            <div class="preview-container" id="seriesThumbnailPreview"></div>
+          </div>
+          <div class="form-group full-width">
+            <label>Secret Code <span style="color:#ff4444;">(Inahitajika)</span></label>
+            <input type="password" id="seriesSecretCode" required placeholder="Weka secret code"/>
+          </div>
+        </div>
+        <button type="submit"><i class="fas fa-save"></i> Tengeneza Series</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: Ongeza Episode -->
+  <div id="addEpisodeModal" class="modal">
+    <div class="modal-content modal-large">
+      <span class="modal-close" onclick="closeAddEpisodeModal()">×</span>
+      <h2><i class="fas fa-plus-circle"></i> Ongeza Episode</h2>
+      <p id="episodeSeriesTitle" style="color:var(--text-muted);margin-bottom:1.5rem;"></p>
+      <form id="addEpisodeForm">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Season</label>
+            <input type="number" id="episodeSeason" min="1" required placeholder="Season namba"/>
+          </div>
+          <div class="form-group">
+            <label>Namba ya Episode</label>
+            <input type="number" id="episodeNumber" min="1" required placeholder="Episode namba"/>
+          </div>
+          <div class="form-group full-width">
+            <label>Jina la Episode</label>
+            <input type="text" id="episodeTitle" required placeholder="Weka jina la episode"/>
+          </div>
+          <div class="form-group">
+            <label>Aina ya Ofa</label>
+            <select id="episodeOfferType" required>
+              <option value="free">Bure</option>
+              <option value="price">Bei</option>
+            </select>
+          </div>
+          <div class="form-group" id="episodePriceGroup" style="display:none;">
+            <label>Bei (TZS)</label>
+            <input type="number" id="episodePrice" value="2000"/>
+          </div>
+          <div class="form-group full-width">
+            <label>Chagua Aina ya Maudhui</label>
+            <div class="upload-option">
+              <div class="upload-option-btn active" id="episodeTextOption"><i class="fas fa-book"></i> Hadithi</div>
+              <div class="upload-option-btn" id="episodeVideoOption"><i class="fas fa-video"></i> Video</div>
+              <div class="upload-option-btn" id="episodeAudioOption"><i class="fas fa-microphone"></i> Audio</div>
+            </div>
+          </div>
+          <div class="form-group full-width" id="episodeTextUploadGroup">
+            <label>Hadithi Kamili</label>
+            <textarea id="episodeContent" placeholder="Andika hadithi kamili hapa..." style="min-height:200px;"></textarea>
+          </div>
+          <div class="form-group full-width" id="episodeVideoUploadGroup" style="display:none;">
+            <label>Pakia Video</label>
+            <div class="file-upload">
+              <div class="file-upload-btn">
+                <i class="fas fa-video" style="font-size:2rem;margin-bottom:0.5rem;"></i>
+                <p>Bonyeza hapa au buruta video</p>
+              </div>
+              <input type="file" id="episodeVideo" accept="video/*"/>
+            </div>
+            <div class="preview-container" id="episodeVideoPreview"></div>
+          </div>
+          <div class="form-group full-width" id="episodeAudioUploadGroup" style="display:none;">
+            <label>Pakia Audio</label>
+            <div class="file-upload">
+              <div class="file-upload-btn">
+                <i class="fas fa-microphone" style="font-size:2rem;margin-bottom:0.5rem;"></i>
+                <p>Bonyeza hapa au buruta audio</p>
+              </div>
+              <input type="file" id="episodeAudio" accept="audio/*"/>
+            </div>
+            <div class="preview-container" id="episodeAudioPreview"></div>
+          </div>
+          <div class="form-group full-width">
+            <label>Thumbnail ya Episode (optional)</label>
+            <div class="file-upload">
+              <div class="file-upload-btn">
+                <i class="fas fa-image" style="font-size:2rem;margin-bottom:0.5rem;"></i>
+                <p>Bonyeza hapa au buruta picha</p>
+              </div>
+              <input type="file" id="episodeThumbnail" accept="image/*"/>
+            </div>
+            <div class="preview-container" id="episodeThumbnailPreview"></div>
+          </div>
+          <div class="form-group full-width">
+            <label>Secret Code <span style="color:#ff4444;">(Inahitajika)</span></label>
+            <input type="password" id="episodeSecretCode" required placeholder="Weka secret code"/>
+          </div>
+        </div>
+        <button type="submit"><i class="fas fa-save"></i> Ongeza Episode</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: Angalia Episodes -->
+  <div id="viewEpisodesModal" class="modal">
+    <div class="modal-content modal-large">
+      <span class="modal-close" onclick="document.getElementById('viewEpisodesModal').style.display='none'">×</span>
+      <h2><i class="fas fa-list"></i> Orodha ya Episodes</h2>
+      <p id="viewSeriesTitle" style="color:var(--text-muted);margin-bottom:1.5rem;"></p>
+      <div class="episodes-list" id="episodesListContainer"></div>
+    </div>
+  </div>
+
+
+<script>
+  const SECRET_CODE = "@malkiasimulizi";
+  let storyIdToDelete = null;
+  let currentSeriesId = null;
+
+  const supabaseUrl = 'https://btnzevupmwsdubpgjpds.supabase.co';
+  const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ0bnpldnVwbXdzZHVicGdqcGRzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAyNDEyMzAsImV4cCI6MjA2NTgxNzIzMH0.Cn36rmP6IeSI-LfTUgViCcpBzeqlpplDbSPH3pXrCg4';
+  const storiesDB = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+  let validStories = [];
+  let allPaymentsData = [];
+
+  // ─── ALERT ───────────────────────────────────────────────────
+  function showAlert(type, message) {
+    const el = document.createElement('div');
+    el.className = `custom-alert ${type}`;
+    el.innerHTML = `<i class="fas ${type==='success'?'fa-check-circle':type==='error'?'fa-exclamation-circle':'fa-info-circle'}"></i><span>${message}</span><span class="close-btn" onclick="this.parentElement.remove()">×</span>`;
+    document.body.appendChild(el);
+    setTimeout(() => el.classList.add('show'), 10);
+    setTimeout(() => { el.classList.remove('show'); setTimeout(() => el.remove(), 300); }, 5000);
+  }
+
+  function getCategoryName(category) {
+    if (!category) return 'N/A';
+    const m = { ujasusi:'Ujasusi', huzuni:'Huzuni', horror:'Horror', drama:'Drama', video:'Video',
+      'ujasusi-simulizi':'Ujasusi Simulizi','huzuni-simulizi':'Huzuni Simulizi',
+      'horror-simulizi':'Horror Simulizi','drama-simulizi':'Drama Simulizi', chombezo:'Chombezo', simulizi:'Simulizi' };
+    return m[category.toLowerCase()] || category;
+  }
+
+  // ─── HELPER: Hesabu stats za malipo kwa hadithi moja ──────────────────────
+  function calcStoryPaymentStats(storyId) {
+    const txs = allPaymentsData.filter(p => p.story_id === storyId);
+    const paid    = txs.filter(p => (p.status||'').toLowerCase() === 'paid');
+    const pending = txs.filter(p => (p.status||'').toLowerCase() === 'pending');
+    const failed  = txs.filter(p => (p.status||'').toLowerCase() === 'failed');
+
+    return {
+      totalTx:      txs.length,
+      paidCount:    paid.length,
+      pendingCount: pending.length,
+      failedCount:  failed.length,
+      revenue:      paid.reduce((s, p)    => s + (parseFloat(p.amount) || 0), 0),
+      pendingAmt:   pending.reduce((s, p) => s + (parseFloat(p.amount) || 0), 0),
+    };
+  }
+
+  // ─── LOAD ALL DATA ────────────────────────────────────────────
+  async function loadData() {
+    try {
+      const { data: { user } } = await storiesDB.auth.getUser();
+      if (!user?.id) { window.location.href = 'admin-login.html'; return; }
+
+      const { data: userCheck, error: ucErr } = await storiesDB.from('users').select('role').eq('id', user.id).single();
+      if (ucErr || userCheck?.role !== 'admin') { await storiesDB.auth.signOut(); window.location.href = 'admin-login.html'; return; }
+
+      // Fetch stories
+      const { data: stories, error: sErr } = await storiesDB.from('stories').select('*');
+      if (sErr) throw sErr;
+      validStories = stories || [];
+
+      // Fetch ALL payments from payments table (created by edge function)
+      const { data: payments, error: pErr } = await storiesDB
+        .from('payments')
+        .select('*')
+        .order('created_at', { ascending: false });
+      if (pErr) throw pErr;
+      allPaymentsData = payments || [];
+
+      // Fetch users
+      const { data: users, error: uErr } = await storiesDB.from('users').select('*');
+      if (uErr) throw uErr;
+
+      // ── Summary counts
+      const cats = { ujasusi:0, huzuni:0, horror:0, drama:0, simulizi:0, chombezo:0 };
+      const views = { ujasusi:0, huzuni:0, horror:0, drama:0, simulizi:0, chombezo:0 };
+      validStories.forEach(s => {
+        const c = (s.category || '').toLowerCase();
+        if (['ujasusi','ujasusi-simulizi'].includes(c))   { cats.ujasusi++;  views.ujasusi  += s.views||0; }
+        if (['huzuni','huzuni-simulizi'].includes(c))     { cats.huzuni++;   views.huzuni   += s.views||0; }
+        if (['horror','horror-simulizi'].includes(c))     { cats.horror++;   views.horror   += s.views||0; }
+        if (['drama','drama-simulizi'].includes(c))       { cats.drama++;    views.drama    += s.views||0; }
+        if (c.includes('simulizi'))                       { cats.simulizi++; views.simulizi += s.views||0; }
+        if (c === 'chombezo')                             { cats.chombezo++; views.chombezo += s.views||0; }
+      });
+
+      ['ujasusi','huzuni','horror','drama','simulizi','chombezo'].forEach(cat => {
+        document.getElementById(`${cat}-count`).textContent = cats[cat];
+        document.getElementById(`${cat}-views`).textContent = views[cat];
+      });
+
+      // ── Revenue bar
+      const paidPayments    = allPaymentsData.filter(p => (p.status||'').toLowerCase() === 'paid');
+      const pendingPayments = allPaymentsData.filter(p => (p.status||'').toLowerCase() === 'pending');
+      const totalRev  = paidPayments.reduce((s, p) => s + (parseFloat(p.amount)||0), 0);
+      const totalSales = paidPayments.length;
+      document.getElementById('total-revenue').textContent  = totalRev.toLocaleString('sw') + ' TZS';
+      document.getElementById('total-sales').textContent    = totalSales;
+      document.getElementById('total-pending').textContent  = pendingPayments.length;
+      document.getElementById('total-stories').textContent  = validStories.length;
+
+      // ── Render sections
+      renderStoryPayments();
+      renderPaymentsTable(allPaymentsData);
+      renderTopStories();
+      renderStoriesList(validStories);
+      updateUsersList(users || []);
+
+    } catch (err) {
+      console.error(err);
+      showAlert('error', `Hitilafu: ${err.message}`);
+    }
+  }
+
+  // ─── PER-STORY PAYMENTS (Payments Tab top section) ────────────────────────
+  function renderStoryPayments() {
+    const container = document.getElementById('storyPaymentsContainer');
+
+    // Only show stories that have at least one payment OR all stories
+    const storiesWithStats = validStories.map(s => ({
+      ...s,
+      stats: calcStoryPaymentStats(s.id)
+    })).filter(s => s.stats.totalTx > 0).sort((a, b) => b.stats.revenue - a.stats.revenue);
+
+    if (storiesWithStats.length === 0) {
+      container.innerHTML = `<div style="text-align:center;padding:2rem;color:var(--text-muted)"><i class="fas fa-inbox" style="font-size:2.5rem;display:block;margin-bottom:1rem;"></i>Hakuna malipo yaliyofanyika bado.</div>`;
+      return;
+    }
+
+    container.innerHTML = storiesWithStats.map(s => {
+      const thumbSrc = s.thumbnail_url || 'https://via.placeholder.com/60x42/111118/555?text=...';
+      const st = s.stats;
+      return `
+        <div class="story-payment-row">
+          <div class="spr-thumb"><img src="${thumbSrc}" alt="${s.title}" onerror="this.src='https://via.placeholder.com/60x42/111118/555'"/></div>
+          <div class="spr-info">
+            <div class="spr-title">${s.title}</div>
+            <div class="spr-cat">
+              <span class="story-category ${s.category||''}">${getCategoryName(s.category)}</span>
+              &nbsp;${s.offer_type === 'free' ? '<span style="color:var(--text-muted);font-size:0.75rem;">Bure</span>' : `<span style="color:var(--success-color);font-size:0.75rem;font-weight:700;">${s.price||0} TZS</span>`}
+            </div>
+          </div>
+          <div class="spr-stats">
+            <div class="spr-stat mauzo">
+              <span class="spr-val">${st.paidCount}</span>
+              <span class="spr-lab"><i class="fas fa-check-circle"></i> Paid</span>
+            </div>
+            <div class="spr-stat mapato">
+              <span class="spr-val">${st.revenue.toLocaleString('sw')}</span>
+              <span class="spr-lab">TZS Mapato</span>
+            </div>
+            <div class="spr-stat pending-s">
+              <span class="spr-val">${st.pendingCount}</span>
+              <span class="spr-lab"><i class="fas fa-clock"></i> Pending</span>
+            </div>
+            <div class="spr-stat failed-s">
+              <span class="spr-val">${st.failedCount}</span>
+              <span class="spr-lab"><i class="fas fa-times-circle"></i> Failed</span>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  // ─── PAYMENTS TABLE (individual transactions) ────────────────────────────
+  function renderPaymentsTable(payments) {
+    const tbody = document.getElementById('paymentsTableBody');
+    if (!payments || payments.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--text-muted);">Hakuna muamala wa malipo.</td></tr>';
+      return;
+    }
+
+    tbody.innerHTML = payments.map((p, i) => {
+      const story = validStories.find(s => s.id === p.story_id);
+      const storyTitle = story ? story.title : (p.story_id ? `#${String(p.story_id).substring(0,8)}` : '—');
+      const status = (p.status || 'pending').toLowerCase();
+      const date = p.created_at ? new Date(p.created_at).toLocaleDateString('sw', {day:'2-digit',month:'2-digit',year:'2-digit'}) : '—';
+      const ref = p.reference_code ? p.reference_code.substring(0,12)+'...' : '—';
+      const statusIcon = status === 'paid' ? 'fa-check-circle' : status === 'failed' ? 'fa-times-circle' : 'fa-clock';
+
+      return `
+        <tr>
+          <td style="color:var(--text-muted)">${i+1}</td>
+          <td style="font-weight:600;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${storyTitle}</td>
+          <td style="font-family:'Rajdhani',sans-serif;font-weight:700;color:var(--success-color);">${parseFloat(p.amount||0).toLocaleString('sw')} TZS</td>
+          <td style="color:var(--text-muted);font-size:0.82rem;">${p.phone_number || '—'}</td>
+          <td><span class="payment-tx-badge">${ref}</span></td>
+          <td style="color:var(--text-muted);font-size:0.82rem;">${date}</td>
+          <td><span class="payment-status ${status}"><i class="fas ${statusIcon}"></i>${status.charAt(0).toUpperCase()+status.slice(1)}</span></td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  // ─── TOP STORIES ──────────────────────────────────────────────
+  function renderTopStories() {
+    const storiesWithRev = validStories.map(s => ({ ...s, stats: calcStoryPaymentStats(s.id) }))
+      .sort((a, b) => b.stats.revenue - a.stats.revenue).slice(0, 3);
+
+    const container = document.getElementById('topStoriesContainer');
+    if (!storiesWithRev.length) { container.innerHTML = '<p style="color:var(--text-muted)">Hakuna hadithi.</p>'; return; }
+
+    container.innerHTML = storiesWithRev.map((s, idx) => `
+      <div class="top-story-card" data-rank="${idx+1}">
+        <div class="top-story-image"><img src="${s.thumbnail_url || 'https://via.placeholder.com/300x160/111118/555'}" alt="${s.title}" onerror="this.src='https://via.placeholder.com/300x160/111118/555'"/></div>
+        <div class="top-story-content">
+          <h3 class="top-story-title">${s.title}</h3>
+          <div class="top-story-meta">
+            <span>${getCategoryName(s.category)}</span>
+            <span>${new Date(s.created_at).toLocaleDateString('sw')}</span>
+          </div>
+          <div class="story-metrics-grid">
+            <div class="metric-chip sales">
+              <span class="mc-label">Mauzo (Paid)</span>
+              <span class="mc-value">${s.stats.paidCount}</span>
+            </div>
+            <div class="metric-chip revenue">
+              <span class="mc-label">Mapato</span>
+              <span class="mc-value">${s.stats.revenue.toLocaleString('sw')} TZS</span>
+            </div>
+            <div class="metric-chip views">
+              <span class="mc-label">Views</span>
+              <span class="mc-value">${s.views || 0}</span>
+            </div>
+            <div class="metric-chip pending">
+              <span class="mc-label">Pending</span>
+              <span class="mc-value">${s.stats.pendingCount}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // ─── STORIES LIST ─────────────────────────────────────────────
+  function renderStoriesList(stories) {
+    const container = document.getElementById('storiesListContainer');
+    if (!stories.length) {
+      container.innerHTML = '<p style="text-align:center;padding:2rem;color:var(--text-muted)">Hakuna hadithi.</p>';
+      return;
+    }
+
+    container.innerHTML = stories.map(s => {
+      const st = calcStoryPaymentStats(s.id);
+      let thumb = '';
+      if (s.thumbnail_url) {
+        thumb = `<div class="story-thumbnail"><img src="${s.thumbnail_url}" alt="${s.title}" onerror="this.src='https://via.placeholder.com/120x80/111118/555'"/></div>`;
+      } else if (s.audio_url) {
+        thumb = `<div class="story-thumbnail"><div class="document-preview"><i class="fas fa-music"></i><span>Sauti</span></div></div>`;
+      } else if (s.video_url) {
+        thumb = `<div class="story-thumbnail"><div class="document-preview"><i class="fas fa-video"></i><span>Video</span></div></div>`;
+      } else {
+        thumb = `<div class="story-thumbnail"><div class="document-preview"><i class="fas fa-book"></i><span>Maandishi</span></div></div>`;
+      }
+
+      return `
+        <div class="story-item" data-title="${(s.title||'').toLowerCase()}" data-cat="${s.category||''}">
+          ${thumb}
+          <div class="story-details">
+            <h3 class="story-title">${s.title}</h3>
+            <div class="story-meta">
+              <span><i class="fas fa-calendar"></i> ${new Date(s.created_at).toLocaleDateString('sw')}</span>
+              <span class="story-category ${s.category||''}">${getCategoryName(s.category)}</span>
+              <span><i class="fas fa-eye"></i> ${s.views||0}</span>
+              <span style="color:${s.offer_type==='free'?'var(--text-muted)':'var(--success-color)'};font-weight:600;">${s.offer_type==='free'?'Bure':(s.price||0)+' TZS'}</span>
+            </div>
+            <p style="margin:0.3rem 0;font-size:0.82rem;color:var(--text-muted);line-height:1.5;">${s.summary ? s.summary.substring(0,120)+'...' : 'Hakuna muhtasari'}</p>
+            <div class="story-sales-info">
+              <span class="sales-badge mauzo"><i class="fas fa-check-circle"></i> Mauzo: ${st.paidCount}</span>
+              <span class="sales-badge mapato"><i class="fas fa-coins"></i> ${st.revenue.toLocaleString('sw')} TZS</span>
+              ${st.pendingCount > 0 ? `<span class="sales-badge pending-pay"><i class="fas fa-clock"></i> Pending: ${st.pendingCount}</span>` : ''}
+            </div>
+            <div class="story-actions">
+              <button class="action-btn edit" onclick="editStory('${s.id}')"><i class="fas fa-edit"></i> Hariri</button>
+              <button class="action-btn delete" onclick="openDeleteModal('${s.id}')"><i class="fas fa-trash"></i> Futa</button>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  // ─── FILTER STORIES ───────────────────────────────────────────
+  function filterStories() {
+    const q   = (document.getElementById('storiesSearch').value || '').toLowerCase();
+    const cat = (document.getElementById('storiesCatFilter').value || '').toLowerCase();
+    document.querySelectorAll('.story-item').forEach(el => {
+      const titleMatch = (el.dataset.title || '').includes(q);
+      const catMatch   = !cat || (el.dataset.cat || '').toLowerCase().includes(cat);
+      el.style.display = titleMatch && catMatch ? '' : 'none';
+    });
+  }
+
+  // ─── FILTER PAYMENTS ──────────────────────────────────────────
+  function filterPayments() {
+    const q      = (document.getElementById('paymentsSearch').value || '').toLowerCase();
+    const status = (document.getElementById('paymentsStatusFilter').value || '').toLowerCase();
+    const filtered = allPaymentsData.filter(p => {
+      const ref   = (p.reference_code || '').toLowerCase();
+      const phone = (p.phone_number || '').toLowerCase();
+      const st    = (p.status || '').toLowerCase();
+      const matchQ = !q || ref.includes(q) || phone.includes(q);
+      const matchS = !status || st === status;
+      return matchQ && matchS;
+    });
+    renderPaymentsTable(filtered);
+  }
+
+  // ─── USERS ────────────────────────────────────────────────────
+  function updateUsersList(users) {
+    const tbody = document.getElementById('usersTableBody');
+    tbody.innerHTML = users.length ? users.map((u, i) => `
+      <tr>
+        <td style="color:var(--text-muted)">${i+1}</td>
+        <td style="font-weight:600;">${u.full_name||'—'}</td>
+        <td style="color:var(--text-muted);font-size:0.85rem;">${u.email||'—'}</td>
+        <td style="color:var(--text-muted);font-size:0.82rem;">${new Date(u.created_at).toLocaleDateString('sw')}</td>
+        <td><span class="user-status ${u.role==='admin'?'admin':'active'}">${u.role||'user'}</span></td>
+        <td><span class="user-status ${(u.status||'active').toLowerCase()}">${u.status||'Active'}</span></td>
+        <td class="story-actions">
+          <button class="action-btn edit" onclick="editUser('${u.id}')"><i class="fas fa-edit"></i></button>
+          <button class="action-btn delete" onclick="deleteUser('${u.id}')"><i class="fas fa-trash"></i></button>
+          <button class="action-btn change-password" onclick="openPasswordModal('${u.id}','${u.email}')"><i class="fas fa-lock"></i></button>
+        </td>
+      </tr>
+    `).join('') : '<tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--text-muted);">Hakuna watumiaji.</td></tr>';
+  }
+
+  // ─── DELETE ───────────────────────────────────────────────────
+  function openDeleteModal(id) {
+    storyIdToDelete = id;
+    document.getElementById('deleteModal').style.display = 'block';
+    document.getElementById('deleteSecretCode').value = '';
+  }
+
+  async function confirmDelete() {
+    if (document.getElementById('deleteSecretCode').value.trim() !== SECRET_CODE) {
+      showAlert('error', 'Secret code si sahihi!');
+      return;
+    }
+    try {
+      const { error } = await storiesDB.from('stories').delete().eq('id', storyIdToDelete);
+      if (error) throw error;
+      showAlert('success', 'Hadithi imefutwa!');
+      document.getElementById('deleteModal').style.display = 'none';
+      loadData();
+    } catch (e) { showAlert('error', e.message); }
+  }
+
+  async function deleteUser(id) {
+    if (!confirm('Futa mtumiaji huyu?')) return;
+    try {
+      const { error } = await storiesDB.from('users').delete().eq('id', id);
+      if (error) throw error;
+      showAlert('success', 'Mtumiaji amefutwa!');
+      loadData();
+    } catch (e) { showAlert('error', e.message); }
+  }
+
+  function editUser(id)  { showAlert('info', 'Kuhariri mtumiaji: hakujatekelezwa bado.'); }
+  function editStory(id) { showAlert('info', 'Kuhariri hadithi: hakujatekelezwa bado.'); }
+
+  // ─── SETTINGS ─────────────────────────────────────────────────
+  async function updateSettings() {
+    try {
+      const { error } = await storiesDB.from('settings').upsert({
+        site_name:     document.getElementById('siteName').value,
+        default_price: parseInt(document.getElementById('defaultPrice').value),
+        currency:      document.getElementById('currency').value,
+        language:      document.getElementById('language').value,
+        admin_email:   document.getElementById('adminEmail').value,
+      });
+      if (error) throw error;
+      showAlert('success', 'Mipangilio imehifadhiwa!');
+    } catch (e) { showAlert('error', e.message); }
+  }
+
+  // ─── UPLOAD FORM ──────────────────────────────────────────────
+  document.getElementById('thumbnail').addEventListener('change', function() {
+    const prev = document.getElementById('thumbnailPreview');
+    prev.innerHTML = '';
+    if (this.files?.[0]) {
+      const r = new FileReader();
+      r.onload = e => {
+        const d = document.createElement('div');
+        d.className = 'thumbnail-preview';
+        d.innerHTML = `<img src="${e.target.result}" alt="preview"/><button class="remove-btn" onclick="this.parentElement.remove();document.getElementById('thumbnail').value=''"><i class="fas fa-times"></i></button>`;
+        prev.appendChild(d);
+      };
+      r.readAsDataURL(this.files[0]);
+    }
+  });
+
+  document.getElementById('video').addEventListener('change', function() {
+    const prev = document.getElementById('videoPreview');
+    prev.innerHTML = '';
+    if (this.files?.[0]) {
+      const d = document.createElement('div');
+      d.className = 'video-preview';
+      d.innerHTML = `<video controls><source src="${URL.createObjectURL(this.files[0])}" type="${this.files[0].type}"></video><button class="remove-btn" onclick="this.parentElement.remove();document.getElementById('video').value=''"><i class="fas fa-times"></i></button>`;
+      prev.appendChild(d);
+    }
+  });
+
+  document.getElementById('audio').addEventListener('change', function() {
+    const prev = document.getElementById('audioPreview');
+    prev.innerHTML = '';
+    if (this.files?.[0]) {
+      const f = this.files[0];
+      const d = document.createElement('div');
+      d.className = 'document-preview';
+      d.innerHTML = `<i class="fas fa-music"></i><span>${f.name}</span><audio controls src="${URL.createObjectURL(f)}" style="width:100%;margin-top:0.5rem;"></audio><button class="remove-btn" onclick="this.parentElement.remove();document.getElementById('audio').value=''"><i class="fas fa-times"></i></button>`;
+      prev.appendChild(d);
+    }
+  });
+
+  ['text','video','audio'].forEach(type => {
+    document.getElementById(`${type}Option`).addEventListener('click', function() {
+      ['text','video','audio'].forEach(t => {
+        document.getElementById(`${t}Option`).classList.toggle('active', t === type);
+        document.getElementById(`${t}UploadGroup`).style.display = t === type ? 'block' : 'none';
+      });
+    });
+  });
+
+  document.getElementById('offerType').addEventListener('change', function() {
+    const pg = document.getElementById('priceGroup');
+    const pi = document.getElementById('price');
+    if (this.value === 'free') { pg.style.display='none'; pi.removeAttribute('required'); pi.value=0; }
+    else { pg.style.display='block'; pi.setAttribute('required','required'); pi.value=2000; }
+  });
+
+  document.getElementById('storyUploadForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    if (document.getElementById('secretCode').value.trim() !== SECRET_CODE) {
+      showAlert('error', 'Secret code si sahihi!'); return;
+    }
+    try {
+      const formData = new FormData(this);
+      const fileType = document.querySelector('.upload-option-btn.active').id.replace('Option','');
+      let thumbnailUrl=null, mediaUrl=null;
+
+      const { data: { user } } = await storiesDB.auth.getUser();
+      if (!user?.id) { window.location.href='admin-login.html'; return; }
+
+      if (formData.get('thumbnail')) {
+        const f = formData.get('thumbnail');
+        const { data, error } = await storiesDB.storage.from('thumbnails').upload(`${Date.now()}_${f.name}`, f, {cacheControl:'3600',upsert:false});
+        if (error) throw new Error(`Picha: ${error.message}`);
+        thumbnailUrl = storiesDB.storage.from('thumbnails').getPublicUrl(data.path).data.publicUrl;
+      }
+
+      if (fileType === 'video' && formData.get('video')) {
+        const f = formData.get('video');
+        const { data, error } = await storiesDB.storage.from('videos').upload(`${Date.now()}_${f.name}`, f, {cacheControl:'3600',upsert:false});
+        if (error) throw new Error(`Video: ${error.message}`);
+        mediaUrl = storiesDB.storage.from('videos').getPublicUrl(data.path).data.publicUrl;
+      } else if (fileType === 'audio' && formData.get('audio')) {
+        const f = formData.get('audio');
+        const { data, error } = await storiesDB.storage.from('audio').upload(`${Date.now()}_${f.name}`, f, {cacheControl:'3600',upsert:false});
+        if (error) throw new Error(`Sauti: ${error.message}`);
+        mediaUrl = storiesDB.storage.from('audio').getPublicUrl(data.path).data.publicUrl;
+      } else if (fileType === 'text') {
+        const sc = formData.get('storyContent');
+        if (!sc) throw new Error('Tafadhali andika hadithi kamili.');
+      }
+
+      const offerType = formData.get('offerType');
+      const price = offerType === 'free' ? 0 : parseInt(formData.get('price'));
+
+      const { error } = await storiesDB.from('stories').insert({
+        title:         formData.get('title'),
+        category:      formData.get('category'),
+        offer_type:    offerType,
+        price:         price,
+        summary:       formData.get('summary'),
+        story_content: fileType==='text' ? formData.get('storyContent') : null,
+        thumbnail_url: thumbnailUrl,
+        video_url:     fileType==='video'  ? mediaUrl : null,
+        audio_url:     fileType==='audio'  ? mediaUrl : null,
+        views:         0,
+        created_at:    new Date().toISOString(),
+        user_id:       user.id
+      });
+      if (error) throw error;
+
+      showAlert('success', 'Hadithi imepakiwa!');
+      this.reset();
+      ['thumbnail','video','audio'].forEach(id => document.getElementById(`${id}Preview`).innerHTML='');
+      document.getElementById('priceGroup').style.display='block';
+      document.getElementById('offerType').value='price';
+      document.getElementById('price').value=2000;
+      loadData();
+    } catch (e) {
+      showAlert('error', `Hitilafu: ${e.message}`);
+    }
+  });
+
+  // ─── ADMIN SIGNUP ──────────────────────────────────────────────
+  document.getElementById('adminSignupForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    try {
+      const fullName = document.getElementById('adminFullName').value.trim();
+      const email    = document.getElementById('adminEmailSignup').value.trim();
+      const password = document.getElementById('adminPassword').value;
+      if (!fullName || !email || !password) { showAlert('error','Jaza sehemu zote!'); return; }
+
+      const { data, error } = await storiesDB.auth.signUp({ email, password, options: { data: { full_name: fullName, role: 'admin' } } });
+      if (error) throw error;
+      if (!data.user) throw new Error('Usajili ulishindwa.');
+
+      const { error: rErr } = await storiesDB.from('users').insert({ id:data.user.id, full_name:fullName, email, role:'admin', created_at:new Date().toISOString() });
+      if (rErr) { await storiesDB.auth.signOut(); throw new Error('Imeshindwa kuweka admin: '+rErr.message); }
+
+      showAlert('success', 'Umesajiliwa kama admin!');
+      this.reset();
+      window.location.href = 'admin-login.html';
+    } catch (e) { showAlert('error', e.message); }
+  });
+
+  // ─── SERIES ───────────────────────────────────────────────────
+  document.getElementById('seriesThumbnail').addEventListener('change', function() {
+    const prev = document.getElementById('seriesThumbnailPreview');
+    prev.innerHTML='';
+    if (this.files?.[0]) {
+      const r = new FileReader();
+      r.onload = e => {
+        const d = document.createElement('div');
+        d.className='thumbnail-preview';
+        d.innerHTML=`<img src="${e.target.result}" alt="thumb"/><button class="remove-btn" onclick="this.parentElement.remove();document.getElementById('seriesThumbnail').value=''"><i class="fas fa-times"></i></button>`;
+        prev.appendChild(d);
+      };
+      r.readAsDataURL(this.files[0]);
+    }
+  });
+
+  document.getElementById('addSeriesForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    if (document.getElementById('seriesSecretCode').value.trim() !== SECRET_CODE) { showAlert('error','Secret code si sahihi!'); return; }
+    try {
+      let thumbUrl=null;
+      const tf = document.getElementById('seriesThumbnail').files[0];
+      if (tf) {
+        const { data, error } = await storiesDB.storage.from('thumbnails').upload(`series_${Date.now()}_${tf.name}`, tf, {cacheControl:'3600',upsert:false});
+        if (error) throw error;
+        thumbUrl = storiesDB.storage.from('thumbnails').getPublicUrl(data.path).data.publicUrl;
+      }
+      const { error } = await storiesDB.from('series').insert({
+        title:          document.getElementById('seriesTitle').value,
+        seasons:        parseInt(document.getElementById('seriesSeasons').value),
+        total_episodes: parseInt(document.getElementById('seriesTotalEpisodes').value),
+        category:       document.getElementById('seriesCategory').value,
+        summary:        document.getElementById('seriesSummary').value,
+        thumbnail_url:  thumbUrl,
+        views: 0, created_at: new Date().toISOString()
+      });
+      if (error) throw error;
+      showAlert('success','Series imetengenezwa!');
+      closeAddSeriesModal();
+      loadSeries();
+    } catch (e) { showAlert('error', e.message); }
+  });
+
+  async function loadSeries() {
+    try {
+      const { data: series, error } = await storiesDB.from('series').select('*').order('created_at', {ascending:false});
+      if (error) throw error;
+      displaySeries(series || []);
+    } catch (e) { showAlert('error', e.message); }
+  }
+
+  function displaySeries(series) {
+    const c = document.getElementById('seriesGridContainer');
+    if (!series.length) { c.innerHTML='<p style="text-align:center;color:var(--text-muted);padding:2rem;">Hakuna series. Ongeza series mpya ili kuanza.</p>'; return; }
+    c.innerHTML = series.map(s => `
+      <div class="series-card">
+        <div class="series-card-image"><img src="${s.thumbnail_url||'https://via.placeholder.com/300x170/111118/555'}" alt="${s.title}" onerror="this.src='https://via.placeholder.com/300x170/111118/555'"/></div>
+        <div class="series-card-content">
+          <h3 class="series-card-title">${s.title}</h3>
+          <div class="series-card-meta">
+            <span><i class="fas fa-layer-group"></i> ${s.seasons} Seasons</span>
+            <span><i class="fas fa-film"></i> ${s.total_episodes} Episodes</span>
+          </div>
+          <div class="series-card-meta">
+            <span class="story-category ${s.category||''}">${getCategoryName(s.category)}</span>
+            <span><i class="fas fa-eye"></i> ${s.views||0}</span>
+          </div>
+          <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:1rem;">${s.summary?s.summary.substring(0,100)+'...':'Hakuna maelezo'}</p>
+          <div class="series-card-actions">
+            <button class="action-btn view" onclick="viewEpisodes('${s.id}','${s.title}')"><i class="fas fa-list"></i> Angalia</button>
+            <button class="action-btn edit" onclick="openAddEpisodeModal('${s.id}','${s.title}')"><i class="fas fa-plus"></i> Ongeza</button>
+            <button class="action-btn delete" onclick="deleteSeries('${s.id}')"><i class="fas fa-trash"></i> Futa</button>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function openAddSeriesModal()  { document.getElementById('addSeriesModal').style.display='block'; }
+  function closeAddSeriesModal() { document.getElementById('addSeriesModal').style.display='none'; document.getElementById('addSeriesForm').reset(); document.getElementById('seriesThumbnailPreview').innerHTML=''; }
+
+  function openAddEpisodeModal(seriesId, seriesTitle) {
+    currentSeriesId = seriesId;
+    document.getElementById('episodeSeriesTitle').textContent = `Series: ${seriesTitle}`;
+    document.getElementById('addEpisodeModal').style.display = 'block';
+  }
+
+  function closeAddEpisodeModal() {
+    document.getElementById('addEpisodeModal').style.display='none';
+    document.getElementById('addEpisodeForm').reset();
+    ['episodeVideoPreview','episodeAudioPreview','episodeThumbnailPreview'].forEach(id => document.getElementById(id).innerHTML='');
+    document.getElementById('episodePriceGroup').style.display='none';
+    document.getElementById('episodeTextUploadGroup').style.display='block';
+    document.getElementById('episodeVideoUploadGroup').style.display='none';
+    document.getElementById('episodeAudioUploadGroup').style.display='none';
+    ['episodeTextOption','episodeVideoOption','episodeAudioOption'].forEach(id => document.getElementById(id).classList.remove('active'));
+    document.getElementById('episodeTextOption').classList.add('active');
+  }
+
+  async function viewEpisodes(seriesId, seriesTitle) {
+    try {
+      const { data: eps, error } = await storiesDB.from('episodes').select('*').eq('series_id', seriesId).order('season').order('episode_number');
+      if (error) throw error;
+      document.getElementById('viewSeriesTitle').textContent = `Series: ${seriesTitle}`;
+      const c = document.getElementById('episodesListContainer');
+      if (!eps?.length) { c.innerHTML='<p style="text-align:center;color:var(--text-muted);">Hakuna episodes.</p>'; }
+      else {
+        c.innerHTML = eps.map(ep => `
+          <div class="episode-item">
+            <div class="episode-info">
+              <div class="episode-title">S${ep.season}E${ep.episode_number}: ${ep.title}</div>
+              <div class="episode-meta"><span><i class="fas fa-eye"></i> ${ep.views||0}</span> &nbsp; <span>${new Date(ep.created_at).toLocaleDateString('sw')}</span></div>
+            </div>
+            <div class="episode-price">${ep.offer_type==='free'?'Bure':`${ep.price} TZS`}</div>
+            <button class="action-btn delete" onclick="deleteEpisode('${ep.id}')"><i class="fas fa-trash"></i></button>
+          </div>
+        `).join('');
+      }
+      document.getElementById('viewEpisodesModal').style.display='block';
+    } catch (e) { showAlert('error', e.message); }
+  }
+
+  async function deleteSeries(id) {
+    if (!confirm('Futa series hii na episodes zote?')) return;
+    try {
+      await storiesDB.from('episodes').delete().eq('series_id', id);
+      const { error } = await storiesDB.from('series').delete().eq('id', id);
+      if (error) throw error;
+      showAlert('success','Series imefutwa!');
+      loadSeries();
+    } catch (e) { showAlert('error', e.message); }
+  }
+
+  async function deleteEpisode(id) {
+    if (!confirm('Futa episode hii?')) return;
+    try {
+      const { error } = await storiesDB.from('episodes').delete().eq('id', id);
+      if (error) throw error;
+      showAlert('success','Episode imefutwa!');
+      viewEpisodes(currentSeriesId, document.getElementById('viewSeriesTitle').textContent.replace('Series: ',''));
+    } catch (e) { showAlert('error', e.message); }
+  }
+
+  // Episode offer type toggle
+  document.getElementById('episodeOfferType').addEventListener('change', function() {
+    const pg = document.getElementById('episodePriceGroup');
+    if (this.value==='free') { pg.style.display='none'; document.getElementById('episodePrice').value=0; }
+    else { pg.style.display='block'; document.getElementById('episodePrice').value=2000; }
+  });
+
+  // Episode content type toggle
+  ['episodeTextOption','episodeVideoOption','episodeAudioOption'].forEach(btnId => {
+    document.getElementById(btnId).addEventListener('click', function() {
+      ['episodeTextOption','episodeVideoOption','episodeAudioOption'].forEach(id => document.getElementById(id).classList.remove('active'));
+      this.classList.add('active');
+      const type = btnId.replace('episode','').replace('Option','').toLowerCase();
+      document.getElementById('episodeTextUploadGroup').style.display  = type==='text'  ? 'block' : 'none';
+      document.getElementById('episodeVideoUploadGroup').style.display = type==='video' ? 'block' : 'none';
+      document.getElementById('episodeAudioUploadGroup').style.display = type==='audio' ? 'block' : 'none';
+    });
+  });
+
+  // Episode file previews
+  document.getElementById('episodeVideo').addEventListener('change', function() {
+    const p = document.getElementById('episodeVideoPreview'); p.innerHTML='';
+    if (this.files?.[0]) { const d=document.createElement('div'); d.className='video-preview'; d.innerHTML=`<video controls><source src="${URL.createObjectURL(this.files[0])}" type="${this.files[0].type}"></video><button class="remove-btn" onclick="this.parentElement.remove();document.getElementById('episodeVideo').value=''"><i class="fas fa-times"></i></button>`; p.appendChild(d); }
+  });
+
+  document.getElementById('episodeAudio').addEventListener('change', function() {
+    const p = document.getElementById('episodeAudioPreview'); p.innerHTML='';
+    if (this.files?.[0]) { p.innerHTML=`<div style="padding:1rem;background:#0d0d18;border-radius:6px;position:relative;"><audio controls style="width:100%;"><source src="${URL.createObjectURL(this.files[0])}" type="${this.files[0].type}"></audio><button class="remove-btn" onclick="this.parentElement.remove();document.getElementById('episodeAudio').value=''"><i class="fas fa-times"></i></button></div>`; }
+  });
+
+  document.getElementById('episodeThumbnail').addEventListener('change', function() {
+    const p = document.getElementById('episodeThumbnailPreview'); p.innerHTML='';
+    if (this.files?.[0]) { const r=new FileReader(); r.onload=e=>{const d=document.createElement('div');d.className='thumbnail-preview';d.innerHTML=`<img src="${e.target.result}" alt="thumb"/><button class="remove-btn" onclick="this.parentElement.remove();document.getElementById('episodeThumbnail').value=''"><i class="fas fa-times"></i></button>`;p.appendChild(d);}; r.readAsDataURL(this.files[0]); }
+  });
+
+  // Add episode submit
+  document.getElementById('addEpisodeForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    if (document.getElementById('episodeSecretCode').value.trim() !== SECRET_CODE) { showAlert('error','Secret code si sahihi!'); return; }
+    try {
+      const offerType = document.getElementById('episodeOfferType').value;
+      const price = offerType==='free' ? 0 : parseInt(document.getElementById('episodePrice').value);
+      const activeBtnId = document.querySelector('#addEpisodeModal .upload-option-btn.active').id;
+      let contentType='text', videoUrl=null, audioUrl=null, textContent=null, thumbUrl=null;
+
+      const tf = document.getElementById('episodeThumbnail').files[0];
+      if (tf) { const {data,error}=await storiesDB.storage.from('thumbnails').upload(`ep_${Date.now()}_${tf.name}`,tf,{cacheControl:'3600',upsert:false}); if(error)throw error; thumbUrl=storiesDB.storage.from('thumbnails').getPublicUrl(data.path).data.publicUrl; }
+
+      if (activeBtnId === 'episodeVideoOption') {
+        contentType='video'; const vf=document.getElementById('episodeVideo').files[0];
+        if (!vf) throw new Error('Pakia video ya episode');
+        const {data,error}=await storiesDB.storage.from('videos').upload(`ep_${Date.now()}_${vf.name}`,vf,{cacheControl:'3600',upsert:false}); if(error)throw error;
+        videoUrl=storiesDB.storage.from('videos').getPublicUrl(data.path).data.publicUrl;
+      } else if (activeBtnId === 'episodeAudioOption') {
+        contentType='audio'; const af=document.getElementById('episodeAudio').files[0];
+        if (!af) throw new Error('Pakia audio ya episode');
+        const {data,error}=await storiesDB.storage.from('audio').upload(`ep_${Date.now()}_${af.name}`,af,{cacheControl:'3600',upsert:false}); if(error)throw error;
+        audioUrl=storiesDB.storage.from('audio').getPublicUrl(data.path).data.publicUrl;
+      } else {
+        contentType='text'; textContent=document.getElementById('episodeContent').value;
+        if (!textContent) throw new Error('Andika hadithi kamili');
+      }
+
+      const { error } = await storiesDB.from('episodes').insert({
+        series_id:    currentSeriesId,
+        season:       parseInt(document.getElementById('episodeSeason').value),
+        episode_number: parseInt(document.getElementById('episodeNumber').value),
+        title:        document.getElementById('episodeTitle').value,
+        offer_type:   offerType,
+        price:        price,
+        content_type: contentType,
+        video_url:    videoUrl,
+        audio_url:    audioUrl,
+        text_content: textContent,
+        thumbnail_url: thumbUrl,
+        views: 0, created_at: new Date().toISOString()
+      });
+      if (error) throw error;
+      showAlert('success','Episode imeongezwa!');
+      closeAddEpisodeModal();
+      loadSeries();
+    } catch (e) { showAlert('error', e.message); }
+  });
+
+  // ─── PASSWORD MODAL ───────────────────────────────────────────
+  function openPasswordModal(userId, email) {
+    document.getElementById('passwordModal').style.display='block';
+    const f = document.getElementById('changePasswordForm');
+    f.dataset.userId = userId;
+    f.dataset.email  = email;
+  }
+
+  document.getElementById('changePasswordForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const np = document.getElementById('newPassword').value;
+    const cp = document.getElementById('confirmPassword').value;
+    if (np !== cp) { showAlert('error','Nenosiri hazilingani.'); return; }
+    try {
+      const { error } = await storiesDB.auth.updateUser({ password: np });
+      if (error) throw error;
+      showAlert('success','Nenosiri limebadilishwa!');
+      document.getElementById('passwordModal').style.display='none';
+      this.reset();
+    } catch (e) { showAlert('error', e.message); }
+  });
+
+  // ─── TABS ─────────────────────────────────────────────────────
+  const tabContents = {
+    upload:      document.getElementById('uploadTab'),
+    stories:     document.getElementById('storiesTab'),
+    series:      document.getElementById('seriesTab'),
+    payments:    document.getElementById('paymentsTab'),
+    users:       document.getElementById('usersTab'),
+    categories:  document.getElementById('categoriesTab'),
+    settings:    document.getElementById('settingsTab'),
+    adminSignup: document.getElementById('adminSignupTab'),
+  };
+
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      const name = tab.getAttribute('data-tab');
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      Object.values(tabContents).forEach(c => c.style.display='none');
+      tabContents[name].style.display = 'block';
+      if (name === 'series') loadSeries();
+      if (['payments','stories','users'].includes(name)) loadData();
+    });
+  });
+
+  // ─── AUTH & INIT ──────────────────────────────────────────────
+  async function checkAuth() {
+    const { data: { user } } = await storiesDB.auth.getUser();
+    if (!user?.id) { window.location.href='admin-login.html'; return; }
+    const { data: uc, error: ucErr } = await storiesDB.from('users').select('role').eq('id', user.id).single();
+    if (ucErr || uc?.role !== 'admin') { await storiesDB.auth.signOut(); window.location.href='admin-login.html'; return; }
+    loadData();
+  }
+
+  storiesDB.auth.onAuthStateChange((event) => {
+    if (event === 'SIGNED_OUT') window.location.href = 'admin-login.html';
+  });
+
+  window.addEventListener('load', checkAuth);
+</script>
+
+</body>
+</html>

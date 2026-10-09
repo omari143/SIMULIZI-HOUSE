@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Top Audios - SIMULIZI HOUSE</title>
+  <style>
+    :root {
+      --primary: #FF3D81;
+      --secondary: #00F0FF;
+      --dark: #0A0A12;
+      --darker: #05050A;
+      --light: #E6E6FA;
+      --gray: #1F1F2E;
+      --light-gray: #A0A0C0;
+      --whatsapp-green: #25D366;
+      --neon-pink: #FF1F8A;
+      --neon-cyan: #00F0FF;
+      --header-bg-start: #1B0034;
+      --header-bg-end: #3A006F;
+      --accent-purple: #8A2BE2;
+      --accent-blue: #1E90FF;
+      --transition: all 0.4s ease;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+      overflow-x: hidden;
+      font-family: 'Poppins', 'Inter', 'Nunito Sans', sans-serif;
+      background: linear-gradient(180deg, #FFFFFF 0%, #F5F5F5 100%);
+      color: #000000;
+      scroll-behavior: smooth;
+      user-select: none;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+    }
+
+    body.dark-theme {
+      background: linear-gradient(180deg, var(--dark) 0%, var(--darker) 100%);
+      color: var(--light);
+    }
+
+    /* Header Styles */
+    header {
+      background: linear-gradient(135deg, #FFFFFF, #F0F0F0);
+      padding: 0.5rem 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    body.dark-theme header {
+      background: linear-gradient(135deg, var(--header-bg-start), var(--header-bg-end));
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-container img {
+      height: 60px;
+      border-radius: 50%;
+      border: 2px solid var(--neon-cyan);
+      box-shadow: 0 0 10px var(--neon-pink);
+      animation: spinGlow 3s linear infinite;
+      transition: var(--transition);
+    }
+
+    .logo-container img:hover {
+      transform: scale(1.1);
+    }
+
+    @keyframes spinGlow {
+      0% { box-shadow: 0 0 10px var(--neon-pink); }
+      50% { box-shadow: 0 0 15px var(--neon-cyan); }
+      100% { box-shadow: 0 0 10px var(--neon-pink); }
+    }
+
+    .logo-text {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--neon-pink);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      text-shadow: 0 0 5px rgba(255, 31, 138, 0.3);
+      line-height: 1;
+    }
+
+    body.dark-theme .logo-text {
+      color: var(--secondary);
+    }
+
+    .nav-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .back-btn {
+      background: var(--neon-cyan);
+      color: #000000;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      box-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
+    }
+
+    .back-btn:hover {
+      background: var(--neon-pink);
+      color: #FFFFFF;
+      box-shadow: 0 0 15px rgba(255, 31, 138, 0.5);
+      transform: scale(1.1);
+    }
+
+    /* Page Header */
+    .page-header {
+      background: linear-gradient(135deg, var(--neon-pink), var(--neon-cyan));
+      color: #000000;
+      text-align: center;
+      padding: 3rem 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .page-title {
+      font-size: 3rem;
+      font-weight: 800;
+      margin-bottom: 1rem;
+      text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+    }
+
+    .page-subtitle {
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+
+    /* Main Container */
+    .main-container {
+      padding: 2rem;
+      max-width: 1600px;
+      margin: 0 auto;
+    }
+
+    /* Audio Player Styles */
+    .audio-player {
+      background: #FFFFFF;
+      border-radius: 15px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      border: 2px solid var(--neon-cyan);
+      display: none;
+    }
+
+    body.dark-theme .audio-player {
+      background: var(--gray);
+      color: var(--light);
+    }
+
+    .audio-info {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .audio-cover {
+      width: 80px;
+      height: 80px;
+      border-radius: 10px;
+      object-fit: cover;
+      border: 2px solid var(--neon-pink);
+    }
+
+    .audio-details h3 {
+      font-size: 1.3rem;
+      margin-bottom: 0.5rem;
+      color: var(--neon-pink);
+    }
+
+    body.dark-theme .audio-details h3 {
+      color: var(--neon-cyan);
+    }
+
+    .audio-controls {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .play-btn {
+      background: var(--neon-pink);
+      color: #FFFFFF;
+      border: none;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      font-size: 1.2rem;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .play-btn:hover {
+      background: var(--neon-cyan);
+      transform: scale(1.1);
+    }
+
+    .progress-container {
+      flex: 1;
+      background: #E0E0E0;
+      border-radius: 10px;
+      height: 8px;
+      position: relative;
+      cursor: pointer;
+    }
+
+    body.dark-theme .progress-container {
+      background: var(--darker);
+    }
+
+    .progress-bar {
+      background: linear-gradient(135deg, var(--neon-pink), var(--neon-cyan));
+      border-radius: 10px;
+      height: 100%;
+      width: 0%;
+      transition: width 0.1s ease;
+    }
+
+    .time-display {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 0.5rem;
+      font-size: 0.8rem;
+      color: #666666;
+    }
+
+    body.dark-theme .time-display {
+      color: var(--light-gray);
+    }
+
+    /* Stories Grid */
+    .stories-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 0.8rem;
+      margin-bottom: 2rem;
+      animation: fadeIn 0.6s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .story-card {
+      background: #FFFFFF;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+      transition: var(--transition);
+      cursor: pointer;
+      position: relative;
+      border: 1px solid #E0E0E0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    body.dark-theme .story-card {
+      background: linear-gradient(135deg, rgba(31, 31, 46, 0.9), rgba(10, 10, 18, 0.95));
+      border-color: rgba(0, 240, 255, 0.3);
+    }
+
+    .story-card:hover {
+      transform: translateY(-5px) scale(1.03);
+      box-shadow: 0 8px 25px rgba(255,31,138,0.4), 0 0 15px rgba(0,240,255,0.3);
+      border-color: var(--neon-pink);
+    }
+
+    .story-image {
+      width: 100%;
+      position: relative;
+      overflow: hidden;
+      background: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 140px;
+    }
+
+    .story-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      transition: transform 0.4s ease;
+    }
+
+    .story-card:hover .story-image img {
+      transform: scale(1.08) rotate(1deg);
+      filter: brightness(1.1);
+    }
+
+    .story-badge {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      background: linear-gradient(135deg, var(--neon-pink), var(--neon-cyan));
+      color: #000;
+      padding: 2px 6px;
+      border-radius: 10px;
+      font-size: 0.6rem;
+      font-weight: 800;
+      z-index: 10;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+      text-transform: uppercase;
+    }
+
+    .audio-badge {
+      position: absolute;
+      top: 5px;
+      left: 5px;
+      background: var(--accent-purple);
+      color: #FFFFFF;
+      padding: 2px 6px;
+      border-radius: 10px;
+      font-size: 0.6rem;
+      font-weight: 800;
+      z-index: 10;
+    }
+
+    .story-content {
+      padding: 0.6rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .story-title {
+      font-size: 0.75rem;
+      margin: 0;
+      color: #000000;
+      font-weight: 700;
+      line-height: 1.2;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    body.dark-theme .story-title {
+      color: var(--neon-cyan);
+      text-shadow: 0 0 5px rgba(0, 240, 255, 0.3);
+    }
+
+    .story-read-more {
+      background: linear-gradient(135deg, var(--neon-pink), var(--accent-purple));
+      color: #FFF;
+      border: none;
+      padding: 0.3rem 0.6rem;
+      border-radius: 5px;
+      font-size: 0.65rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: var(--transition);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      box-shadow: 0 2px 8px rgba(255, 31, 138, 0.4);
+      margin-top: 0.3rem;
+    }
+
+    .story-read-more:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 12px rgba(0, 240, 255, 0.6);
+      background: linear-gradient(135deg, var(--neon-cyan), var(--neon-pink));
+    }
+
+    .story-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.3rem;
+      flex-wrap: wrap;
+    }
+
+    .story-price {
+      font-weight: 800;
+      font-size: 0.65rem;
+      background: linear-gradient(135deg, var(--neon-pink), var(--neon-cyan));
+      color: #000;
+      padding: 2px 6px;
+      border-radius: 8px;
+      transition: var(--transition);
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    }
+
+    .story-price:hover {
+      transform: scale(1.08);
+    }
+
+    .story-category {
+      padding: 0.2rem 0.4rem;
+      border-radius: 8px;
+      font-size: 0.6rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .category-simulizi { 
+      background: var(--accent-purple); 
+      color: #FFF; 
+    }
+
+    .story-views {
+      font-size: 0.6rem;
+      color: #666666;
+      display: flex;
+      align-items: center;
+      gap: 2px;
+    }
+
+    body.dark-theme .story-views {
+      color: var(--light-gray);
+    }
+
+    .story-views .fa-eye {
+      animation: blink 1.5s infinite;
+      font-size: 0.65rem;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; color: var(--neon-cyan); }
+      50% { opacity: 0.3; color: var(--neon-pink); }
+    }
+
+    .story-likes {
+      font-size: 0.6rem;
+      color: #666666;
+      display: flex;
+      align-items: center;
+      gap: 2px;
+    }
+
+    body.dark-theme .story-likes {
+      color: var(--light-gray);
+    }
+
+    .story-stats {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      padding: 0.3rem 0;
+    }
+
+    .story-share {
+      display: flex;
+      justify-content: center;
+      gap: 3px;
+      margin-top: 0.3rem;
+      padding-top: 0.3rem;
+      border-top: 1px solid rgba(160, 160, 192, 0.2);
+      flex-wrap: wrap;
+    }
+
+    .share-btn {
+      padding: 2px 5px;
+      border-radius: 6px;
+      font-size: 0.55rem;
+      font-weight: 700;
+      text-decoration: none;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      cursor: pointer;
+    }
+
+    .share-whatsapp {
+      background: var(--whatsapp-green);
+      color: #FFFFFF;
+    }
+
+    .share-facebook {
+      background: #1877F2;
+      color: #FFFFFF;
+    }
+
+    .share-twitter {
+      background: #1DA1F2;
+      color: #FFFFFF;
+    }
+
+    .share-telegram {
+      background: #0088CC;
+      color: #FFFFFF;
+    }
+
+    .share-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Loading Spinner */
+    .loading-spinner {
+      text-align: center;
+      padding: 3rem;
+      grid-column: 1 / -1;
+    }
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid rgba(0, 240, 255, 0.3);
+      border-top-color: var(--neon-pink);
+      border-radius: 50%;
+      animation: spin 1s ease-in-out infinite;
+      margin: 0 auto 1rem;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Intro Modal */
+    .intro-modal {
+      display: none;
+      position: fixed;
+      z-index: 10000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.8);
+    }
+
+    .intro-modal.show {
+      display: block;
+    }
+
+    .intro-modal-content {
+      background: #FFFFFF;
+      margin: 10% auto;
+      padding: 1.5rem;
+      border-radius: 15px;
+      width: 90%;
+      max-width: 500px;
+      position: relative;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+
+    body.dark-theme .intro-modal-content {
+      background: var(--gray);
+      color: var(--light);
+    }
+
+    .intro-close-btn {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      font-size: 1.8rem;
+      font-weight: bold;
+      cursor: pointer;
+      color: #666;
+    }
+
+    body.dark-theme .intro-close-btn {
+      color: var(--light-gray);
+    }
+
+    .intro-header {
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+
+    .intro-title {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--neon-pink);
+    }
+
+    .intro-body {
+      font-size: 1rem;
+      line-height: 1.6;
+      margin-bottom: 1rem;
+      color: #333;
+    }
+
+    body.dark-theme .intro-body {
+      color: var(--light);
+    }
+
+    .intro-actions {
+      text-align: center;
+    }
+
+    .intro-read-more-btn {
+      background: linear-gradient(135deg, var(--neon-pink), var(--neon-cyan));
+      color: #000;
+      border: none;
+      padding: 0.8rem 1.5rem;
+      border-radius: 25px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .intro-read-more-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 5px 15px rgba(255, 31, 138, 0.5);
+    }
+
+    /* Footer */
+    footer {
+      background: #F5F5F5;
+      color: #666666;
+      text-align: center;
+      padding: 1.5rem;
+      font-size: 0.8rem;
+      border-top: 2px solid var(--neon-pink);
+      margin-top: 3rem;
+    }
+
+    body.dark-theme footer {
+      background: var(--darker);
+      color: var(--light-gray);
+    }
+
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .social-links a {
+      color: #000000;
+      font-size: 1.5rem;
+      margin: 0 15px;
+      transition: var(--transition);
+    }
+
+    body.dark-theme .social-links a {
+      color: var(--light);
+    }
+
+    .social-links a:hover {
+      color: var(--neon-cyan);
+      transform: scale(1.2);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .page-title { font-size: 2rem; }
+      .page-subtitle { font-size: 1rem; }
+      .stories-grid { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 0.7rem; }
+      .main-container { padding: 1rem; }
+      .audio-info { flex-direction: column; text-align: center; }
+    }
+
+    @media (max-width: 576px) {
+      .stories-grid { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 0.6rem; }
+      .page-header { padding: 2rem 1rem; }
+      .page-title { font-size: 1.8rem; }
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=Inter:wght@400;600;700;800&family=Nunito+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+  <header>
+    <div class="logo-container">
+      <img src="/Picsart_26-05-13_01-57-22-165.png" alt="SIMULIZI HOUSE Logo">
+      <div class="logo-text">SIMULIZI HOUSE</div>
+    </div>
+    <div class="nav-container">
+      <a href="index.html" class="back-btn">
+        <i class="fas fa-arrow-left"></i> Nyumbani
+      </a>
+    </div>
+  </header>
+
+  <div class="page-header">
+    <h1 class="page-title">Top Audios</h1>
+    <p class="page-subtitle">Hadithi za Simulizi Zilizopendwa Zaidi</p>
+  </div>
+
+  <div class="main-container">
+    <div class="audio-player" id="featuredAudioPlayer">
+      <div class="audio-info">
+        <img src="" alt="Audio Cover" class="audio-cover" id="audioCover">
+        <div class="audio-details">
+          <h3 id="audioTitle">Audio Title</h3>
+          <p id="audioDescription">Audio description will appear here</p>
+        </div>
+      </div>
+      <div class="audio-controls">
+        <button class="play-btn" id="playBtn">
+          <i class="fas fa-play"></i>
+        </button>
+        <div class="progress-container" id="progressContainer">
+          <div class="progress-bar" id="progressBar"></div>
+        </div>
+      </div>
+      <div class="time-display">
+        <span id="currentTime">0:00</span>
+        <span id="duration">0:00</span>
+      </div>
+    </div>
+
+    <div class="stories-grid" id="topAudiosGrid">
+      <div class="loading-spinner">
+        <div class="spinner"></div>
+        <p>Inapakia hadithi za simulizi...</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Intro Modal -->
+  <div class="intro-modal" id="introModal">
+    <div class="intro-modal-content">
+      <span class="intro-close-btn" onclick="closeIntroModal()">x</span>
+      <div class="intro-header">
+        <h2 class="intro-title" id="introTitle">Kichwa cha Hadithi</h2>
+      </div>
+      <div class="intro-body" id="introBody"></div>
+      <div id="introMediaType" style="text-align: center; padding: 0.5rem 0; margin-bottom: 1rem; font-size: 0.9rem; font-weight: 700; color: var(--primary); display: none;"></div>
+      <div class="intro-actions">
+        <button class="intro-read-more-btn" id="introReadMoreBtn">Sikiliza Hadithi Kamili</button>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-content">
+      <div class="social-links">
+        <a href="https://www.facebook.com/profile.php?id=100079473949932" target="_blank"><i class="fab fa-facebook"></i></a>
+        <a href="https://x.com/storieszone" target="_blank"><i class="fab fa-twitter"></i></a>
+        <a href="https://instagram.com/storieszone" target="_blank"><i class="fab fa-instagram"></i></a>
+        <a href="https://youtube.com/@storieszone" target="_blank"><i class="fab fa-youtube"></i></a>
+      </div>
+      <p>© <span id="current-year"></span> SIMULIZI HOUSE- Hadithi za Kisasa</p>
+      <p>Haki Zote Zimehifadhiwa</p>
+    </div>
+  </footer>
+
+  <script>
+    // Supabase - TUMIA JINA TOFAUTI
+    const supabaseUrl = 'https://btnzevupmwsdubpgjpds.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ0bnpldnVwbXdzZHVicGdqcGRzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAyNDEyMzAsImV4cCI6MjA2NTgxNzIzMH0.Cn36rmP6IeSI-LfTUgViCcpBzeqlpplDbSPH3pXrCg4';
+    
+    // BADALA YA: const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+    // TUMIA HII:
+    if (typeof window.supabaseAudioClient === 'undefined') {
+      window.supabaseAudioClient = window.supabase.createClient(supabaseUrl, supabaseKey);
+    }
+    const audioSupabase = window.supabaseAudioClient;
+
+    let user = null;
+    let userPaidStories = new Set();
+    let commentsCountCache = new Map();
+    let allStoriesCache = [];
+    let currentAudio = null;
+    let audioPlayer = null;
+
+    document.addEventListener('DOMContentLoaded', function() {
+      document.getElementById('current-year').textContent = new Date().getFullYear();
+      initializeAudioPlayer();
+      loadAllStories();
+    });
+
+    function initializeAudioPlayer() {
+      audioPlayer = new Audio();
+      const playBtn = document.getElementById('playBtn');
+      const progressContainer = document.getElementById('progressContainer');
+      const progressBar = document.getElementById('progressBar');
+      const currentTimeEl = document.getElementById('currentTime');
+      const durationEl = document.getElementById('duration');
+
+      playBtn.addEventListener('click', togglePlay);
+      progressContainer.addEventListener('click', setProgress);
+      audioPlayer.addEventListener('timeupdate', updateProgress);
+      audioPlayer.addEventListener('loadedmetadata', () => {
+        durationEl.textContent = formatTime(audioPlayer.duration);
+      });
+      audioPlayer.addEventListener('ended', () => {
+        playBtn.innerHTML = '<i class="fas fa-play"></i>';
+      });
+    }
+
+    function togglePlay() {
+      if (!currentAudio) return;
+      if (audioPlayer.paused) {
+        audioPlayer.play();
+        document.getElementById('playBtn').innerHTML = '<i class="fas fa-pause"></i>';
+      } else {
+        audioPlayer.pause();
+        document.getElementById('playBtn').innerHTML = '<i class="fas fa-play"></i>';
+      }
+    }
+
+    function updateProgress() {
+      const progressBar = document.getElementById('progressBar');
+      const currentTimeEl = document.getElementById('currentTime');
+      if (audioPlayer.duration) {
+        const progressPercent = (audioPlayer.currentTime / audioPlayer.duration) * 100;
+        progressBar.style.width = progressPercent + '%';
+        currentTimeEl.textContent = formatTime(audioPlayer.currentTime);
+      }
+    }
+
+    function setProgress(e) {
+      const width = this.clientWidth;
+      const clickX = e.offsetX;
+      const duration = audioPlayer.duration;
+      audioPlayer.currentTime = (clickX / width) * duration;
+    }
+
+    function formatTime(seconds) {
+      const mins = Math.floor(seconds / 60);
+      const secs = Math.floor(seconds % 60);
+      return mins + ':' + (secs < 10 ? '0' : '') + secs;
+    }
+
+    async function loadAllStories() {
+      try {
+        const { data: stories, error } = await audioSupabase
+          .from('stories')
+          .select('*')
+          .eq('category', 'simulizi')
+          .order('likes', { ascending: false });
+
+        if (error) throw error;
+
+        allStoriesCache = stories || [];
+        await loadCommentsCount(allStoriesCache.map(s => s.id));
+        renderTopAudios();
+      } catch (error) {
+        console.error('Error:', error);
+        document.getElementById('topAudiosGrid').innerHTML = '<p style="text-align: center; padding: 1.5rem; grid-column: 1 / -1;">Hitilafu: ' + error.message + '</p>';
+      }
+    }
+
+    async function loadCommentsCount(storyIds) {
+      try {
+        const { data: comments } = await audioSupabase.from('comments').select('story_id');
+        storyIds.forEach(id => {
+          const count = comments.filter(c => c.story_id === id).length;
+          commentsCountCache.set(id, count);
+        });
+      } catch (error) {
+        console.error('Comments error:', error);
+      }
+    }
+
+    function renderTopAudios() {
+      const grid = document.getElementById('topAudiosGrid');
+      if (allStoriesCache.length === 0) {
+        grid.innerHTML = '<p style="text-align: center; padding: 1.5rem; grid-column: 1 / -1;">Hakuna hadithi za simulizi kwa sasa.</p>';
+        return;
+      }
+      grid.innerHTML = allStoriesCache.map(story => createStoryCard(story)).join('');
+    }
+
+    function createStoryCard(story) {
+      const imageUrl = story.thumbnail_url || 'https://via.placeholder.com/300x200';
+      const shareUrl = 'https://storieszone.site/story.html?id=' + story.id;
+      const price = story.price || 0;
+      const views = story.views || 0;
+      const likes = story.likes || 0;
+      const comments = commentsCountCache.get(story.id) || 0;
+      const isPaid = price === 0 || userPaidStories.has(story.id);
+      const hasAudio = !!story.audio_url;
+
+      const badge = price > 0 
+        ? (isPaid ? '<div class="story-badge">IMEFUNGULIWA</div>' : '<div class="story-badge">TZS ' + price + '</div>')
+        : '<div class="story-badge">BURE</div>';
+
+      return '<div class="story-card" onclick="handleCardClick(\'' + story.id + '\', ' + price + ', ' + isPaid + ', ' + hasAudio + ')">' +
+        '<div class="story-image">' +
+          '<img src="' + imageUrl + '" alt="' + story.title + '" loading="lazy">' +
+          badge +
+          '<div class="audio-badge"><i class="fas fa-headphones"></i> SIMULIZI</div>' +
+        '</div>' +
+        '<div class="story-content">' +
+          '<h3 class="story-title">' + story.title + '</h3>' +
+          '<button class="story-read-more" onclick="event.stopPropagation(); handleReadMore(\'' + story.id + '\', ' + price + ', ' + isPaid + ')">Sikiliza Utangulizi</button>' +
+          '<div class="story-meta">' +
+            '<span class="story-category category-simulizi">Simulizi</span>' +
+            '<span class="story-price">' + (price > 0 ? (isPaid ? 'Imefunguliwa' : 'TZS ' + price) : 'BURE') + '</span>' +
+          '</div>' +
+          '<div class="story-stats">' +
+            '<div class="story-views"><i class="fas fa-eye"></i><span>' + views + '</span></div>' +
+            '<div class="story-likes"><i class="fas fa-heart"></i><span>' + likes + '</span></div>' +
+            '<div class="story-comments"><i class="fas fa-comments"></i><span>' + comments + '</span></div>' +
+          '</div>' +
+          '<div class="story-share">' +
+            '<a href="https://api.whatsapp.com/send?text=' + encodeURIComponent(story.title + ' - ' + shareUrl) + '" target="_blank" class="share-btn share-whatsapp" onclick="event.stopPropagation()"><i class="fab fa-whatsapp"></i></a>' +
+            '<a href="https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(shareUrl) + '" target="_blank" class="share-btn share-facebook" onclick="event.stopPropagation()"><i class="fab fa-facebook"></i></a>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+    }
+
+    async function handleCardClick(storyId, price, isPaid, hasAudio) {
+      if (hasAudio) {
+        const story = allStoriesCache.find(s => s.id === storyId);
+        if (story) playAudio(story);
+      } else {
+        handleReadMore(storyId, price, isPaid);
+      }
+    }
+
+    function playAudio(story) {
+      currentAudio = story;
+      document.getElementById('audioCover').src = story.thumbnail_url || 'https://via.placeholder.com/300x200';
+      document.getElementById('audioTitle').textContent = story.title;
+      document.getElementById('audioDescription').textContent = story.summary || 'Hadithi ya simulizi';
+      audioPlayer.src = story.audio_url;
+      document.getElementById('featuredAudioPlayer').style.display = 'block';
+      audioPlayer.play();
+      document.getElementById('playBtn').innerHTML = '<i class="fas fa-pause"></i>';
+    }
+
+    async function handleReadMore(storyId, price, isPaid) {
+      try {
+        let story = allStoriesCache.find(s => s.id === storyId);
+        if (!story) {
+          const { data } = await audioSupabase.from('stories').select('*').eq('id', storyId).single();
+          story = data;
+        }
+
+        await audioSupabase.rpc('increment_story_views', { story_id: storyId });
+
+        document.getElementById('introTitle').textContent = story.title;
+        document.getElementById('introBody').textContent = story.summary || 'Hakuna utangulizi.';
+
+        const mediaTypeDiv = document.getElementById('introMediaType');
+        mediaTypeDiv.textContent = 'Sikiliza Simulizi Sasa';
+        mediaTypeDiv.style.display = 'block';
+
+        const btn = document.getElementById('introReadMoreBtn');
+        if (isPaid || price === 0) {
+          btn.textContent = 'Sikiliza Hadithi Kamili';
+          btn.onclick = () => window.location.href = 'story.html?id=' + storyId;
+        } else {
+          btn.textContent = 'Lipia TZS ' + price + ' ili Sikiliza';
+          btn.onclick = () => {
+            closeIntroModal();
+            showCustomAlert('info', 'Tuma TZS ' + price + ' kwa M-Pesa: 255710066699 (Jina: SIMULIZI HOUSE)');
+          };
+        }
+
+        document.getElementById('introModal').classList.add('show');
+      } catch (error) {
+        showCustomAlert('error', 'Hitilafu');
+      }
+    }
+
+    function closeIntroModal() {
+      document.getElementById('introModal').classList.remove('show');
+    }
+
+    function showCustomAlert(type, message) {
+      const div = document.createElement('div');
+      div.style.cssText = 'position:fixed;top:20px;right:20px;background:' + (type === 'error' ? '#FF3F3F' : '#00F0FF') + ';color:' + (type === 'error' ? '#FFF' : '#000') + ';padding:1rem 1.5rem;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.3);z-index:1000;max-width:300px;word-wrap:break-word;';
+      div.textContent = message;
+      document.body.appendChild(div);
+      setTimeout(() => div.remove(), 5000);
+    }
+  </script>
+</body>
+</html>
