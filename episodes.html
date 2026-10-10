@@ -19,7 +19,6 @@
       --light: #e8efff;
       --gray: #1a2b52;
       --light-gray: #a8b4d4;
-      --whatsapp-green: #25D366;
       --header-bg-start: #142447;
       --header-bg-end: #1e3a8a;
       --accent-blue: #3b82f6;
@@ -53,7 +52,7 @@
       user-select: none;
     }
 
-    /* ── Open in Chrome Banner ───────────────────────────────────────────────── */
+    /* ── Open in Chrome Banner ─────────────────────────────────────────────── */
     .open-in-chrome-banner {
       display: none;
       position: fixed;
@@ -110,7 +109,6 @@
       height: 60px; width: 60px;
       border-radius: 50%;
       border: 3px solid var(--accent-blue);
-      box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
       animation: spinGlow 3s linear infinite;
       object-fit: cover;
     }
@@ -124,7 +122,6 @@
       color: var(--light);
       text-transform: uppercase;
       letter-spacing: 1.5px;
-      text-shadow: 0 0 8px rgba(59, 130, 246, 0.3);
       line-height: 1;
     }
 
@@ -142,15 +139,6 @@
       cursor: pointer;
     }
     .nav-btn:hover { background: #2563eb; transform: translateY(-2px); }
-
-    .theme-toggle {
-      background: none;
-      border: none;
-      color: var(--light);
-      font-size: 1.3rem;
-      cursor: pointer;
-      padding: 5px 10px;
-    }
 
     /* ── Main Container ─────────────────────────────────────────────────── */
     .main-container {
@@ -188,8 +176,7 @@
       align-items: center;
     }
     .story-info-card img {
-      width: 110px;
-      height: 155px;
+      width: 110px; height: 155px;
       border-radius: 10px;
       object-fit: cover;
       flex-shrink: 0;
@@ -204,7 +191,6 @@
     .story-info-title {
       font-size: 1.15rem;
       font-weight: 800;
-      color: var(--light);
       line-height: 1.3;
       display: -webkit-box;
       -webkit-line-clamp: 2;
@@ -250,7 +236,6 @@
     .intro-text {
       font-size: 0.9rem;
       line-height: 1.7;
-      color: var(--light);
       white-space: pre-wrap;
     }
     .intro-text.collapsed {
@@ -269,96 +254,6 @@
       padding: 6px 0 0;
       font-family: 'Poppins', sans-serif;
     }
-
-    /* ── Payment Options ──────────────────────────────────────────────── */
-    .payment-options-section {
-      display: flex;
-      flex-direction: column;
-      gap: 0.9rem;
-      margin-bottom: 1.5rem;
-    }
-    .payment-card {
-      background: linear-gradient(135deg, #1e1e2f, #0f172a);
-      border-radius: 16px;
-      padding: 1.2rem 1.3rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 1rem;
-      flex-wrap: wrap;
-      border: 2px solid #FF4777;
-      box-shadow: 0 8px 24px rgba(255, 71, 119, 0.25);
-      transition: var(--transition);
-    }
-    .payment-card.bundle {
-      border-color: #f59e0b;
-      background: linear-gradient(135deg, #2a2418, #1a1408);
-      box-shadow: 0 8px 24px rgba(245, 158, 11, 0.25);
-    }
-    .payment-card:hover { transform: translateY(-2px); }
-    .payment-card-text { flex: 1; min-width: 200px; color: #fff; }
-    .payment-card-text h3 {
-      font-size: 1rem;
-      font-weight: 800;
-      margin-bottom: 4px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .payment-card.bundle .payment-card-text h3 i { color: #f59e0b; }
-    .payment-card.full-story .payment-card-text h3 i { color: #FF4777; }
-    .payment-card-text p { font-size: 0.8rem; opacity: 0.85; line-height: 1.4; }
-    .payment-card-price {
-      font-size: 1.4rem;
-      font-weight: 800;
-      color: #fff;
-      margin-top: 6px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      flex-wrap: wrap;
-    }
-    .payment-card.bundle .payment-card-price { color: #f59e0b; }
-    .payment-card.full-story .payment-card-price { color: #FF8FAB; }
-    .price-original {
-      text-decoration: line-through;
-      font-size: 0.9rem;
-      opacity: 0.5;
-      font-weight: 600;
-    }
-    .price-discount-badge {
-      background: rgba(16, 185, 129, 0.2);
-      color: #10b981;
-      padding: 2px 8px;
-      border-radius: 10px;
-      font-size: 0.7rem;
-      font-weight: 700;
-      border: 1px solid #10b981;
-    }
-    .unlock-btn {
-      background: linear-gradient(95deg, #FF4777, #FF8FAB);
-      border: none;
-      padding: 12px 24px;
-      border-radius: 50px;
-      font-weight: 800;
-      font-size: 0.9rem;
-      color: #fff;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      box-shadow: 0 6px 20px rgba(255, 71, 119, 0.4);
-      white-space: nowrap;
-      font-family: 'Poppins', sans-serif;
-      transition: var(--transition);
-    }
-    .unlock-btn.bundle {
-      background: linear-gradient(95deg, #f59e0b, #fbbf24);
-      box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
-      color: #000;
-    }
-    .unlock-btn:hover { transform: translateY(-2px); }
-    .unlock-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 
     /* ── Episodes Header ─────────────────────────────────────────────── */
     .episodes-header {
@@ -434,8 +329,7 @@
       left: 1rem;
       top: 50%;
       transform: translateY(-50%);
-      width: 22px;
-      height: 22px;
+      width: 22px; height: 22px;
       border-radius: 6px;
       border: 2px solid var(--accent-blue);
       background: var(--darker);
@@ -450,15 +344,12 @@
       border-color: #f59e0b;
     }
     .episode-checkbox i {
-      color: #fff;
-      font-size: 0.75rem;
-      opacity: 0;
+      color: #fff; font-size: 0.75rem; opacity: 0;
     }
     .episode-card.selected .episode-checkbox i { opacity: 1; }
 
     .episode-number {
-      width: 46px;
-      height: 46px;
+      width: 46px; height: 46px;
       border-radius: 12px;
       background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
       color: #fff;
@@ -507,12 +398,238 @@
     }
     .episode-card:hover .episode-arrow { color: var(--accent-blue); }
 
+    /* ═══════════════════════════════════════════════════════════════════════
+       PAYMENT OPTIONS — CHINI KABISA + UKUBWA ULIOPUNGUA
+    ═══════════════════════════════════════════════════════════════════════ */
+    .payment-options-section {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border, rgba(59, 130, 246, 0.15));
+    }
+
+    .payment-options-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--light-gray);
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .payment-card {
+      background: linear-gradient(135deg, #1e1e2f, #0f172a);
+      border-radius: 12px;
+      padding: 0.75rem 0.9rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+      border: 1.5px solid #FF4777;
+      box-shadow: 0 4px 14px rgba(255, 71, 119, 0.18);
+      transition: var(--transition);
+    }
+    .payment-card.bundle {
+      border-color: #f59e0b;
+      background: linear-gradient(135deg, #2a2418, #1a1408);
+      box-shadow: 0 4px 14px rgba(245, 158, 11, 0.18);
+    }
+    .payment-card:hover { transform: translateY(-1px); }
+    .payment-card-text { flex: 1; min-width: 140px; color: #fff; }
+    .payment-card-text h3 {
+      font-size: 0.8rem;
+      font-weight: 700;
+      margin-bottom: 2px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .payment-card-text h3 i { font-size: 0.9rem; }
+    .payment-card.bundle .payment-card-text h3 i { color: #f59e0b; }
+    .payment-card.full-story .payment-card-text h3 i { color: #FF4777; }
+    .payment-card-text p { font-size: 0.68rem; opacity: 0.8; line-height: 1.3; margin: 0; }
+    .payment-card-price {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: #fff;
+      margin-top: 3px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      flex-wrap: wrap;
+    }
+    .payment-card.bundle .payment-card-price { color: #f59e0b; }
+    .payment-card.full-story .payment-card-price { color: #FF8FAB; }
+    .price-original {
+      text-decoration: line-through;
+      font-size: 0.75rem;
+      opacity: 0.5;
+      font-weight: 600;
+    }
+    .price-discount-badge {
+      background: rgba(16, 185, 129, 0.2);
+      color: #10b981;
+      padding: 1px 6px;
+      border-radius: 8px;
+      font-size: 0.6rem;
+      font-weight: 700;
+      border: 1px solid #10b981;
+    }
+    .unlock-btn {
+      background: linear-gradient(95deg, #FF4777, #FF8FAB);
+      border: none;
+      padding: 8px 14px;
+      border-radius: 30px;
+      font-weight: 700;
+      font-size: 0.72rem;
+      color: #fff;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      box-shadow: 0 4px 12px rgba(255, 71, 119, 0.3);
+      white-space: nowrap;
+      font-family: 'Poppins', sans-serif;
+      transition: var(--transition);
+    }
+    .unlock-btn.bundle {
+      background: linear-gradient(95deg, #f59e0b, #fbbf24);
+      box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+      color: #000;
+    }
+    .unlock-btn:hover { transform: translateY(-1px); }
+    .unlock-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    /* ═══════════════════════════════════════════════════════════════════════
+       YOU MAY ALSO LIKE — Sehemu mpya
+    ═══════════════════════════════════════════════════════════════════════ */
+    .you-may-like-section {
+      margin-top: 2.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border, rgba(59, 130, 246, 0.15));
+    }
+    .yml-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      padding: 0 0.2rem;
+    }
+    .yml-title {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--light);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .yml-title i { color: var(--accent-blue); }
+    .yml-subtitle {
+      font-size: 0.72rem;
+      color: var(--light-gray);
+      margin-bottom: 0.8rem;
+      padding: 0 0.2rem;
+    }
+    .yml-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 0.7rem;
+    }
+    .yml-card {
+      background: var(--gray);
+      border-radius: 10px;
+      overflow: hidden;
+      text-decoration: none;
+      color: inherit;
+      border: 1px solid rgba(59, 130, 246, 0.2);
+      transition: var(--transition);
+      display: flex;
+      flex-direction: column;
+    }
+    .yml-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--accent-blue);
+      box-shadow: 0 6px 18px rgba(59, 130, 246, 0.3);
+    }
+    .yml-cover {
+      width: 100%;
+      height: 130px;
+      overflow: hidden;
+      background: var(--darker);
+      position: relative;
+    }
+    .yml-cover img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      transition: transform 0.4s ease;
+    }
+    .yml-card:hover .yml-cover img { transform: scale(1.06); }
+    .yml-badge {
+      position: absolute;
+      top: 5px; right: 5px;
+      background: linear-gradient(135deg, var(--accent-blue), var(--neon-cyan));
+      color: #fff;
+      padding: 2px 7px;
+      border-radius: 8px;
+      font-size: 0.58rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+    }
+    .yml-badge.free { background: linear-gradient(135deg, #10b981, #059669); }
+    .yml-content {
+      padding: 0.5rem 0.6rem 0.7rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+    .yml-name {
+      font-size: 0.78rem;
+      font-weight: 700;
+      line-height: 1.25;
+      color: var(--light);
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .yml-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 4px;
+      font-size: 0.62rem;
+      color: var(--light-gray);
+      flex-wrap: wrap;
+    }
+    .yml-cat {
+      background: rgba(59, 130, 246, 0.15);
+      color: var(--accent-blue);
+      padding: 1px 6px;
+      border-radius: 6px;
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 0.55rem;
+      letter-spacing: 0.3px;
+    }
+    .yml-price {
+      color: var(--primary);
+      font-weight: 700;
+      font-size: 0.65rem;
+    }
+
     /* Bulk Action Bar */
     .bulk-action-bar {
       position: fixed;
       bottom: 0;
-      left: 0;
-      right: 0;
+      left: 0; right: 0;
       background: linear-gradient(135deg, #1e293b, #0f172a);
       border-top: 3px solid #f59e0b;
       padding: 1rem 1.5rem;
@@ -747,60 +864,6 @@
       padding: 0 1.4rem 1.2rem;
     }
 
-    /* ── Custom Alert ────────────────────────────────────────────────────── */
-    .custom-alert {
-      position: fixed;
-      top: 100px;
-      right: 20px;
-      background: var(--gray);
-      color: var(--light);
-      padding: 1rem 1.5rem;
-      border-radius: 12px;
-      z-index: 3000;
-      border-left: 5px solid var(--accent-blue);
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      font-weight: 600;
-      transform: translateX(400px);
-      transition: transform 0.3s;
-      max-width: 400px;
-    }
-    .custom-alert.show { transform: translateX(0); }
-    .custom-alert.error { border-left-color: #dc3545; }
-    .custom-alert.success { border-left-color: #10b981; }
-    .custom-alert.warning { border-left-color: #f59e0b; }
-
-    /* ── Security Overlay ────────────────────────────────────────────── */
-    #securityOverlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: #000000;
-      z-index: 99999;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 2rem;
-      font-family: 'Poppins', sans-serif;
-    }
-    #securityOverlay.show { display: flex; }
-    #securityOverlay .sec-icon { font-size: 5rem; margin-bottom: 1.5rem; animation: pulse 1.5s infinite; }
-    #securityOverlay h1 { font-size: 2rem; font-weight: 800; color: #FF1F8A; margin-bottom: 1rem; }
-    #securityOverlay p { font-size: 1.1rem; color: #aaaaaa; max-width: 500px; line-height: 1.8; margin-bottom: 2rem; }
-    #securityOverlay .sec-close-btn {
-      background: linear-gradient(135deg, #FF1F8A, #8A2BE2);
-      color: #ffffff;
-      border: none;
-      padding: 14px 40px;
-      border-radius: 50px;
-      font-size: 1rem;
-      font-weight: 700;
-      cursor: pointer;
-      font-family: 'Poppins', sans-serif;
-    }
-
     /* ── Footer ─────────────────────────────────────────────────────────── */
     footer {
       background: linear-gradient(135deg, var(--header-bg-start), var(--header-bg-end));
@@ -820,6 +883,8 @@
       .bulk-action-bar { padding: 1rem; }
       .bulk-info { font-size: 0.75rem; }
       .bulk-btn { padding: 10px 16px; font-size: 0.85rem; }
+      .yml-grid { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 0.5rem; }
+      .yml-cover { height: 110px; }
     }
   </style>
 </head>
@@ -839,11 +904,11 @@
 </div>
 
 <!-- Security Overlay -->
-<div id="securityOverlay">
-  <div class="sec-icon" id="secIcon">🔒</div>
-  <h1 id="secTitle">Usalama wa Tovuti</h1>
-  <p id="secMessage">Inaangalia mazingira ya kifaa chako...</p>
-  <button class="sec-close-btn" id="secCloseBtn" onclick="window.close()">Funga Ukurasa</button>
+<div id="securityOverlay" style="display:none; position:fixed; inset:0; background:#000; z-index:99999; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:2rem;">
+  <div style="font-size:5rem; margin-bottom:1.5rem;">🔒</div>
+  <h1 id="secTitle" style="font-size:2rem; font-weight:800; color:#ef4444; margin-bottom:1rem;">Usalama wa Tovuti</h1>
+  <p id="secMessage" style="font-size:1.1rem; color:#aaa; max-width:500px; line-height:1.8; margin-bottom:2rem;">Inaangalia mazingira ya kifaa chako...</p>
+  <button class="sec-close-btn" id="secCloseBtn" onclick="window.close()" style="background:linear-gradient(135deg, #ef4444, #b91c1c); color:#fff; border:none; padding:14px 40px; border-radius:50px; font-size:1rem; font-weight:700; cursor:pointer;">Funga Ukurasa</button>
 </div>
 
 <header>
@@ -863,12 +928,14 @@
     <i class="fas fa-arrow-left"></i> Nyumbani
   </a>
 
+  <!-- Story Info Card -->
   <div class="story-info-card" id="storyInfoCard">
     <div style="padding: 2rem 0; width: 100%; text-align: center;">
       <p>Inapakia hadithi...</p>
     </div>
   </div>
 
+  <!-- Intro Section -->
   <div class="intro-section" id="introSection" style="display:none;">
     <div class="intro-title-bar">
       <i class="fas fa-book-open-reader"></i>
@@ -881,13 +948,34 @@
     </button>
   </div>
 
+  <!-- Episodes Header -->
+  <div class="episodes-header">
+    <h2 class="episodes-title">
+      <i class="fas fa-list-ol"></i> Orodha ya Episodes
+    </h2>
+    <span class="episodes-count" id="episodesCount">0</span>
+  </div>
+
+  <!-- Episodes List -->
+  <div class="episodes-list" id="episodesList">
+    <div style="padding: 4rem 1rem; text-align: center; color: var(--light-gray);">
+      <p>Inapakia episodes...</p>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+       PAYMENT OPTIONS — CHINI KABISA (baada ya episodes)
+  ═══════════════════════════════════════════════════════════════════ -->
   <div class="payment-options-section" id="paymentOptionsSection" style="display:none;">
+    <div class="payment-options-label">
+      <i class="fas fa-lock-open"></i> Chaguo za Malipo
+    </div>
 
     <!-- Full Story Option -->
     <div class="payment-card full-story" id="fullStoryCard" style="display:none;">
       <div class="payment-card-text">
         <h3><i class="fas fa-crown"></i> Nunua Hadithi Nzima</h3>
-        <p>Fungua episodes zote za hadithi hii. Ufikiaji wa kudumu.</p>
+        <p>Fungua episodes zote. Ufikiaji wa kudumu.</p>
         <div class="payment-card-price" id="fullStoryPriceContainer">
           <i class="fas fa-coins"></i>
           <span id="fullStoryPriceLabel">TZS 0</span>
@@ -903,7 +991,7 @@
     <div class="payment-card bundle" id="bundleCard" style="display:none;">
       <div class="payment-card-text">
         <h3><i class="fas fa-layer-group"></i> Nunua Vipande 5</h3>
-        <p>Chagua episodes 5 zenye bei kwa pamoja. Inapunguza gharama!</p>
+        <p>Chagua episodes 5 kwa pamoja. Punguza gharama!</p>
         <div class="payment-card-price">
           <i class="fas fa-coins"></i>
           <span id="bundlePriceLabel">Chagua episodes 5</span>
@@ -914,21 +1002,21 @@
         <span>Anza Kuchagua</span>
       </button>
     </div>
-
   </div>
 
-  <div class="episodes-header">
-    <h2 class="episodes-title">
-      <i class="fas fa-list-ol"></i> Orodha ya Episodes
-    </h2>
-    <span class="episodes-count" id="episodesCount">0</span>
-  </div>
-
-  <div class="episodes-list" id="episodesList">
-    <div style="padding: 4rem 1rem; text-align: center; color: var(--light-gray);">
-      <p>Inapakia episodes...</p>
+  <!-- ═══════════════════════════════════════════════════════════════════
+       YOU MAY ALSO LIKE
+  ═══════════════════════════════════════════════════════════════════ -->
+  <section class="you-may-like-section" id="youMayLikeSection" style="display:none;">
+    <div class="yml-header">
+      <div class="yml-title">
+        <i class="fas fa-sparkles"></i>
+        <span>Unaweza Pia Kupenda</span>
+      </div>
     </div>
-  </div>
+    <div class="yml-subtitle" id="ymlSubtitle">Hadithi zingine za aina hii</div>
+    <div class="yml-grid" id="ymlGrid"></div>
+  </section>
 
 </div>
 
@@ -1006,7 +1094,7 @@
 </footer>
 
 <!-- ═══════════════════════════════════════════════════════════════════════
-     OPEN IN CHROME — inaonekana tu kwenye in-app browsers
+     OPEN IN CHROME
 ═══════════════════════════════════════════════════════════════════════ -->
 <script>
 (function() {
@@ -1077,7 +1165,7 @@
 </script>
 
 <!-- ═══════════════════════════════════════════════════════════════════════
-     SECURITY BLOCK — DevTools / Mobile / Bot detection
+     SECURITY BLOCK
 ═══════════════════════════════════════════════════════════════════════ -->
 <script>
 ;(function SecurityBlock() {
@@ -1102,7 +1190,7 @@
       if (tl)  tl.textContent  = title;
       if (ms)  ms.textContent  = message;
       if (btn) btn.style.display = showCloseBtn ? 'block' : 'none';
-      ov.classList.add('show');
+      ov.style.display = 'flex';
       document.body.style.overflow = 'hidden';
     }
     if (document.readyState === 'loading') {
@@ -1114,7 +1202,7 @@
 
   var ua = (navigator.userAgent || '');
 
-  var inAppBrowserSignatures = ['FBAN', 'FBAV', 'FB_IAB', 'FBIOS', 'FBSV', 'FBSS','Instagram', 'Messenger', 'WhatsApp', 'Line/', 'MicroMessenger','Twitter', 'TwitterAndroid', 'LinkedInApp', 'Snapchat','TikTok', 'musical_ly', 'BytedanceWebview', 'Pinterest', 'Telegram','GSA/', 'YaBrowser', 'OPR/', 'UCBrowser', 'SamsungBrowser','EdgA', 'EdgiOS', 'CriOS', 'FxiOS', 'wv)'];
+  var inAppBrowserSignatures = ['FBAN','FBAV','FB_IAB','FBIOS','FBSV','FBSS','Instagram','Messenger','WhatsApp','Line/','MicroMessenger','Twitter','TwitterAndroid','LinkedInApp','Snapchat','TikTok','musical_ly','BytedanceWebview','Pinterest','Telegram','GSA/','YaBrowser','OPR/','UCBrowser','SamsungBrowser','EdgA','EdgiOS','CriOS','FxiOS','wv)'];
   var isInAppBrowser = false;
   for (var ii = 0; ii < inAppBrowserSignatures.length; ii++) {
     if (ua.indexOf(inAppBrowserSignatures[ii]) !== -1) {
@@ -1123,16 +1211,15 @@
     }
   }
 
-  var botSignatures = ['HeadlessChrome', 'PhantomJS', 'Selenium', 'WebDriver','Puppeteer', 'Playwright', 'Cypress', 'Chrome-Lighthouse', 'slimerjs','HtmlUnit', 'Scrapy', 'python-requests', 'Go-http-client','Java/', 'curl/', 'wget/', 'libwww-perl', 'python-urllib','axios/', 'node-fetch', 'got/', 'superagent'];
+  var botSignatures = ['HeadlessChrome','Headless','PhantomJS','Selenium','WebDriver','Puppeteer','Playwright','Cypress','Chrome-Lighthouse','slimerjs','HtmlUnit','Scrapy','python-requests','Go-http-client','Java/','curl/','wget/','libwww-perl','python-urllib','axios/','node-fetch','got/','superagent'];
   var isBot = false;
-  for (var bi = 0; bi < botSignatures.length; bi++) {
-    if (ua.indexOf(botSignatures[bi]) !== -1) { isBot = true; break; }
+  for (var i = 0; i < botSignatures.length; i++) {
+    if (ua.indexOf(botSignatures[i]) !== -1) { isBot = true; break; }
   }
-  if (!isBot && navigator.webdriver === true) { isBot = true; }
+  if (!isBot && navigator.webdriver === true) isBot = true;
 
   if (isBot && !isInAppBrowser) {
-    showSecOverlay('🤖', 'Ufikiaji Umezuiwa',
-      'Zana za kiotomatiki (bots) haziruhusiwi kwenye tovuti hii. Tafadhali tumia kivinjari cha kawaida.', false);
+    showSecOverlay('🤖', 'Ufikiaji Umezuiwa', 'Zana za kiotomatiki haziruhusiwi.', false);
     return;
   }
 
@@ -1140,80 +1227,39 @@
     if (isInAppBrowser) return true;
     var mobileUA = /Mobi|Android|iPhone|iPad|iPod|BlackBerry|Windows Phone|Opera Mini|IEMobile|Mobile/i.test(ua);
     var smallScreen      = window.screen.width <= 768;
-    var hasTouch         = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0);
+    var hasTouchScreen   = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
     var hasOrientation   = (typeof window.orientation !== 'undefined');
     var desktopOS        = /^(Win|Mac|Linux|X11)/.test(navigator.platform || '');
     var largeScreen      = window.screen.width >= 1024;
-    if (desktopOS && largeScreen && !hasTouch && !mobileUA) return false;
+    if (desktopOS && largeScreen && !hasTouchScreen && !mobileUA) return false;
     if (mobileUA) return true;
     var score = 0;
-    if (mobileUA) score++; if (smallScreen) score++; if (hasTouch) score++; if (hasOrientation) score++;
+    if (mobileUA) score++; if (smallScreen) score++; if (hasTouchScreen) score++; if (hasOrientation) score++;
     return score >= 2;
   }
 
   if (!isMobileDevice()) {
-    showSecOverlay('📱', 'Simu ya Mkononi Inahitajika',
-      'Tovuti hii inapatikana kwenye simu za mkononi pekee. Tafadhali tumia simu yako (Android/iPhone) kuingia.', false);
+    showSecOverlay('📱', 'Simu ya Mkononi Inahitajika', 'Tovuti hii inapatikana kwenye simu za mkononi pekee.', false);
     return;
   }
 
-  var _devToolsCurrentlyOpen = false;
-
-  function detectDevToolsBySize() {
-    // Kama ni in-app browser, ruka check — WebView ina address bar + menu
-    if (isInAppBrowser) return false;
-    var wDiff = window.outerWidth  - window.innerWidth;
-    var hDiff = window.outerHeight - window.innerHeight;
-    return (wDiff > 160 || hDiff > 160);
-  }
-
-  function detectDevToolsByTiming() {
-    // Kama ni in-app browser, ruka check — WebView ina debugger ya kampuni
-    if (isInAppBrowser) return false;
-    var start = performance.now();
-    (function devtoolsCheck() { debugger; })();
-    return (performance.now() - start) > 100;
-  }
-
+  var devToolsOpen = false;
   function openDevToolsHandler() {
-    if (_devToolsCurrentlyOpen) return;
-    _devToolsCurrentlyOpen = true;
-    showSecOverlay('🚫', 'Developer Tools Zimefunguliwa',
-      'Matumizi ya zana za msanidi programu (DevTools) hayaruhusiwi kwenye tovuti hii. Tafadhali funga DevTools na urejee ukurasa.', true);
+    if (devToolsOpen) return;
+    devToolsOpen = true;
+    showSecOverlay('🚫', 'Developer Tools Zimefunguliwa', 'Matumizi ya DevTools hayaruhusiwi.', true);
   }
-
-  function closeDevToolsHandler() {
-    if (!_devToolsCurrentlyOpen) return;
-    _devToolsCurrentlyOpen = false;
-    var ov = document.getElementById('securityOverlay');
-    if (ov) { ov.classList.remove('show'); document.body.style.overflow = ''; }
-  }
-
   setInterval(function () {
-    if (detectDevToolsBySize()) openDevToolsHandler();
-    else closeDevToolsHandler();
+    if (isInAppBrowser) return;
+    var wDiff = window.outerWidth - window.innerWidth;
+    var hDiff = window.outerHeight - window.innerHeight;
+    if (wDiff > 160 || hDiff > 160) openDevToolsHandler();
   }, 1000);
-
-  window.addEventListener('resize', function () {
-    if (detectDevToolsBySize()) openDevToolsHandler();
-    else closeDevToolsHandler();
-  });
-
-  setInterval(function () {
-    if (detectDevToolsByTiming()) openDevToolsHandler();
-  }, 3000);
 
   document.addEventListener('keydown', function (e) {
     if (e.key === 'F12' || e.keyCode === 123) { e.preventDefault(); e.stopPropagation(); openDevToolsHandler(); return false; }
-    if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i')) { e.preventDefault(); e.stopPropagation(); openDevToolsHandler(); return false; }
-    if (e.ctrlKey && e.shiftKey && (e.key === 'J' || e.key === 'j')) { e.preventDefault(); e.stopPropagation(); openDevToolsHandler(); return false; }
-    if (e.ctrlKey && e.shiftKey && (e.key === 'C' || e.key === 'c')) { e.preventDefault(); e.stopPropagation(); openDevToolsHandler(); return false; }
-    if (e.ctrlKey && (e.key === 'u' || e.key === 'U')) { e.preventDefault(); e.stopPropagation(); return false; }
-    if (e.ctrlKey && (e.key === 's' || e.key === 'S')) { e.preventDefault(); e.stopPropagation(); return false; }
-    if (e.ctrlKey && (e.key === 'p' || e.key === 'P')) { e.preventDefault(); e.stopPropagation(); return false; }
-    if (e.ctrlKey && (e.key === 'a' || e.key === 'A')) { e.preventDefault(); return false; }
-    if (e.ctrlKey && (e.key === 'c' || e.key === 'C')) { e.preventDefault(); return false; }
-    if (e.ctrlKey && (e.key === 'x' || e.key === 'X')) { e.preventDefault(); return false; }
+    if (e.ctrlKey && e.shiftKey && ['I','i','J','j','C','c'].indexOf(e.key) !== -1) { e.preventDefault(); e.stopPropagation(); openDevToolsHandler(); return false; }
+    if (e.ctrlKey && ['u','s','p','a','c','x'].indexOf(e.key.toLowerCase()) !== -1) { e.preventDefault(); return false; }
     if (e.key === 'PrintScreen') { e.preventDefault(); return false; }
   }, true);
 
@@ -1222,12 +1268,11 @@
   document.addEventListener('cut', function (e) { e.preventDefault(); return false; }, true);
   document.addEventListener('paste', function (e) { e.preventDefault(); return false; }, true);
   document.addEventListener('dragstart', function (e) { e.preventDefault(); return false; }, true);
-
 })();
 </script>
 
 <!-- ═══════════════════════════════════════════════════════════════════════
-     MAIN APP LOGIC
+     MAIN APP
 ═══════════════════════════════════════════════════════════════════════ -->
 <script>
 const SUPABASE_URL      = 'https://btnzevupmwsdubpgjpds.supabase.co';
@@ -1238,7 +1283,6 @@ const szClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 const SNIPPE_MIN_AMOUNT = 500;
 const BUNDLE_SIZE = 5;
 
-// STATE
 let currentUserId     = null;
 let currentStoryId    = null;
 let currentStory      = null;
@@ -1252,8 +1296,6 @@ let selectionMode     = false;
 let __payInterval   = null;
 let __payTimeoutId  = null;
 let __payReference  = null;
-let __payRedirected = false;
-let __confirmCount  = 0;
 
 let payType          = 'story';
 let payStoryId       = null;
@@ -1263,7 +1305,6 @@ let payEpisodeId     = null;
 let payEpisodePrice  = 0;
 let payEpisodeIds    = null;
 
-// HELPERS
 function showAlert(message, type = 'info') {
   const alertContainer = document.getElementById('alertContainer') || (function() {
     const el = document.createElement('div');
@@ -1356,7 +1397,6 @@ async function loadUserPaidContent() {
   } catch (e) { console.warn('loadUserPaidContent error:', e); }
 }
 
-// FETCH STORY + EPISODES
 async function fetchStory(storyId) {
   const { data, error } = await szClient.from('stories').select('*').eq('id', storyId).single();
   if (error) return null;
@@ -1370,6 +1410,40 @@ async function fetchEpisodes(storyId) {
     .order('episode_number', { ascending: true });
   if (error) return [];
   return data || [];
+}
+
+// FETCH "YOU MAY ALSO LIKE" — same category, different story
+async function fetchYouMayLike(category, excludeStoryId, limit = 8) {
+  try {
+    let query = szClient
+      .from('stories')
+      .select('id, title, thumbnail_url, category, price, views')
+      .neq('id', excludeStoryId)
+      .limit(limit);
+
+    if (category) {
+      query = query.ilike('category', category);
+    }
+
+    const { data, error } = await query;
+    if (error) throw error;
+
+    // Kama hatuna za kategoria hiyo, chukua stories nyingine yoyote
+    if (!data || data.length === 0) {
+      const { data: fallback } = await szClient
+        .from('stories')
+        .select('id, title, thumbnail_url, category, price, views')
+        .neq('id', excludeStoryId)
+        .order('views', { ascending: false })
+        .limit(limit);
+      return fallback || [];
+    }
+
+    return data;
+  } catch (e) {
+    console.warn('fetchYouMayLike error:', e);
+    return [];
+  }
 }
 
 // RENDER STORY INFO
@@ -1439,7 +1513,7 @@ function computeStoryRemainingPrice(story, episodes) {
   return { fullPrice, paidSoFar: paidTotal, remaining };
 }
 
-// RENDER PAYMENT OPTIONS
+// RENDER PAYMENT OPTIONS (CHINI KABISA)
 function renderPaymentOptions(story, episodes) {
   const section    = document.getElementById('paymentOptionsSection');
   const fullCard   = document.getElementById('fullStoryCard');
@@ -1591,6 +1665,46 @@ function renderEpisodes(episodes, story) {
   });
 }
 
+// RENDER YOU MAY ALSO LIKE
+function renderYouMayLike(stories) {
+  const section = document.getElementById('youMayLikeSection');
+  const grid    = document.getElementById('ymlGrid');
+  const subtitle = document.getElementById('ymlSubtitle');
+
+  if (!stories || stories.length === 0) {
+    section.style.display = 'none';
+    return;
+  }
+
+  section.style.display = 'block';
+  const cat = currentStory ? catName(currentStory.category) : 'Hadithi';
+  subtitle.textContent = `Hadithi zingine za aina ya "${cat}"`;
+
+  grid.innerHTML = stories.map(s => {
+    const cover = s.thumbnail_url || 'https://via.placeholder.com/200x300?text=Hadithi';
+    const price = Number(s.price || 0);
+    const badge = price === 0
+      ? `<span class="yml-badge free">BURE</span>`
+      : `<span class="yml-badge">TZS ${price.toLocaleString('sw')}</span>`;
+
+    return `
+      <a href="episodes.html?id=${s.id}" class="yml-card">
+        <div class="yml-cover">
+          <img src="${cover}" alt="${s.title}" loading="lazy" onerror="this.src='https://via.placeholder.com/200x300?text=Hadithi'">
+          ${badge}
+        </div>
+        <div class="yml-content">
+          <div class="yml-name">${s.title || 'Hadithi'}</div>
+          <div class="yml-meta">
+            <span class="yml-cat">${catName(s.category)}</span>
+            <span class="yml-price">${price === 0 ? 'Bure' : `${price.toLocaleString('sw')}`}</span>
+          </div>
+        </div>
+      </a>
+    `;
+  }).join('');
+}
+
 // SELECTION MODE
 function enableSelectionMode() {
   selectionMode = true;
@@ -1656,9 +1770,6 @@ function openPaymentModal(type, itemId, price, category, title, episodeIds = nul
   payEpisodeIds = episodeIds;
 
   __payReference = null;
-  __payRedirected = false;
-  __confirmCount = 0;
-
   if (__payInterval) clearInterval(__payInterval);
   if (__payTimeoutId) clearTimeout(__payTimeoutId);
   __payInterval = null;
@@ -1713,7 +1824,6 @@ function showPayMsg(msg, type = 'error') {
   setTimeout(() => { if (div.firstChild) div.firstChild.remove(); }, 8000);
 }
 
-// INITIATE PAYMENT
 async function initiatePayment(itemId, phone, name, userId, type, episodeIds) {
   const { data: { user } } = await szClient.auth.getUser();
   if (!user) throw new Error('Ingia kwanza.');
@@ -1874,8 +1984,14 @@ window.addEventListener('DOMContentLoaded', async () => {
 
     renderStoryInfo(story);
     renderIntro(story);
-    renderPaymentOptions(story, episodes);
     renderEpisodes(episodes, story);
+    renderPaymentOptions(story, episodes);
+
+    // Fetch "You may also like" — same category
+    if (story) {
+      const yml = await fetchYouMayLike(story.category, story.id, 8);
+      renderYouMayLike(yml);
+    }
 
   } catch (error) {
     console.error('[init] error:', error);
